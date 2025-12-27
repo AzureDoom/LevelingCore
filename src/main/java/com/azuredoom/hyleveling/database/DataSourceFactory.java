@@ -30,9 +30,30 @@ public final class DataSourceFactory {
         cfg.setUsername(username);
         cfg.setPassword(password);
 
+        cfg.setDriverClassName(driverClassNameFor(jdbcUrl));
+
         cfg.setMaximumPoolSize(maxPoolSize);
         cfg.setMinimumIdle(1);
 
         return new HikariDataSource(cfg);
+    }
+
+    private static String driverClassNameFor(String jdbcUrl) {
+        String url = jdbcUrl.toLowerCase();
+
+        if (url.startsWith("jdbc:mysql:")) {
+            return "com.mysql.cj.jdbc.Driver";
+        }
+        if (url.startsWith("jdbc:mariadb:")) {
+            return "org.mariadb.jdbc.Driver";
+        }
+        if (url.startsWith("jdbc:postgresql:")) {
+            return "org.postgresql.Driver";
+        }
+        if (url.startsWith("jdbc:h2:")) {
+            return "org.h2.Driver";
+        }
+
+        throw new IllegalArgumentException("Unsupported jdbcUrl: " + jdbcUrl);
     }
 }
