@@ -28,7 +28,7 @@ public final class ConfigManager {
         # Supported JDBC URLs:
         #   H2 (file):      jdbc:h2:file:./data/hyleveling;MODE=PostgreSQL
         #   MySQL:          jdbc:mysql://host:3306/dbname
-        #   MariaDB:        jdbc:mariadb://host:3306/dbname
+        #   MariaDB:        jdbc:mariadb://host:3307/dbname
         #   PostgreSQL:     jdbc:postgresql://host:5432/dbname
         #
         # Notes:
