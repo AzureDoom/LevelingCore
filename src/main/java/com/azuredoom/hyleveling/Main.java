@@ -14,7 +14,7 @@ public class Main {
         var formula = new ExponentialLevelFormula(100, 1.7);
         var repository = new H2LevelRepository("./data/hyleveling");
         var levelService = new LevelServiceImpl(formula, repository);
-        var testId = UUID.randomUUID();
+        var testId = UUID.fromString("d3804858-4bb8-4026-ae21-386255ed467d");
 
         levelService.addXp(testId, 500);
 
