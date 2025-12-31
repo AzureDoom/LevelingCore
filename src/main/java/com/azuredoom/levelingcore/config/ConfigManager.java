@@ -9,9 +9,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 
 /**
- * ConfigManager is a utility class responsible for managing the configuration of the LevelingCore system. It handles the
- * creation and loading of a YAML-based configuration file, ensuring that the configuration is properly initialized and
- * available for use.
+ * ConfigManager is a utility class responsible for managing the configuration of the LevelingCore system. It handles
+ * the creation and loading of a YAML-based configuration file, ensuring that the configuration is properly initialized
+ * and available for use.
  * <p>
  * This class is final and cannot be instantiated. It provides a static method to load or create the configuration in a
  * specified directory.
@@ -99,9 +99,9 @@ public final class ConfigManager {
     private ConfigManager() {}
 
     /**
-     * Loads an existing LevelingCore configuration file from the specified directory, or creates a new one if it does not
-     * exist. The configuration file is named "levelingcore.yml" and is stored in the provided directory. If creation is
-     * required, a default configuration is written.
+     * Loads an existing LevelingCore configuration file from the specified directory, or creates a new one if it does
+     * not exist. The configuration file is named "levelingcore.yml" and is stored in the provided directory. If
+     * creation is required, a default configuration is written.
      *
      * @param dataDir The directory where the configuration file is located or will be created.
      * @return The loaded or newly created {@link LevelingCoreConfig} instance containing configuration data.

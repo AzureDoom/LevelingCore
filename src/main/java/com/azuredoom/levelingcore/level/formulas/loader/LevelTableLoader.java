@@ -49,7 +49,7 @@ public final class LevelTableLoader {
      * @param fileName The name of the file to be loaded or created within the specified directory. Must not be null.
      * @return A {@code TableLevelFormula} instance containing the validated level-to-XP mapping.
      * @throws IllegalArgumentException If any of the parameters are null.
-     * @throws LevelingCoreException      If any issues occur during file creation, reading, parsing, or validation.
+     * @throws LevelingCoreException    If any issues occur during file creation, reading, parsing, or validation.
      */
     public static TableLevelFormula loadOrCreateFromDataDir(Path dataDir, String fileName) {
         return loadOrCreate(dataDir);
@@ -64,7 +64,7 @@ public final class LevelTableLoader {
      *                created with default values. The directory will also be created if it does not exist.
      * @return A {@code TableLevelFormula} instance containing the validated level-to-XP mapping.
      * @throws LevelingCoreException If any errors occur during file creation, reading, parsing, or validation of the
-     *                             level-to-XP data.
+     *                               level-to-XP data.
      */
     public static TableLevelFormula loadOrCreate(Path dataDir) {
         try {
@@ -118,7 +118,9 @@ public final class LevelTableLoader {
 
             for (var i = 1; i <= maxLevel; i++) {
                 if (!map.containsKey(i)) {
-                    throw new LevelingCoreException("Missing level " + i + " in levels.csv (levels must be contiguous)");
+                    throw new LevelingCoreException(
+                        "Missing level " + i + " in levels.csv (levels must be contiguous)"
+                    );
                 }
             }
 

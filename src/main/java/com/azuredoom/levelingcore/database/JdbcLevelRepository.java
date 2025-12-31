@@ -44,7 +44,7 @@ public class JdbcLevelRepository implements LevelRepository {
      * to guarantee the schema's availability.
      *
      * @throws LevelingCoreException if the table creation fails due to database connectivity issues or an error in the
-     *                             SQL operation.
+     *                               SQL operation.
      */
     private void createTableIfNotExists() {
         var sql = """
@@ -65,8 +65,8 @@ public class JdbcLevelRepository implements LevelRepository {
     }
 
     /**
-     * Ensures the existence of the "levelingcore_meta" table in the database. If the table does not exist, it creates it
-     * with the specified schema.
+     * Ensures the existence of the "levelingcore_meta" table in the database. If the table does not exist, it creates
+     * it with the specified schema.
      * <p>
      * The "levelingcore_meta" table is defined with the following structure: - `meta_key`: A VARCHAR(64) that serves as
      * the primary key. - `meta_value`: A VARCHAR(255) that cannot be null.
@@ -93,8 +93,8 @@ public class JdbcLevelRepository implements LevelRepository {
     }
 
     /**
-     * Retrieves the metadata value associated with the given key from the "levelingcore_meta" table. If the specified key
-     * does not exist in the database, the method returns {@code null}.
+     * Retrieves the metadata value associated with the given key from the "levelingcore_meta" table. If the specified
+     * key does not exist in the database, the method returns {@code null}.
      * <p>
      * This method establishes a connection to the database, executes a SQL query to fetch the metadata value, and
      * ensures that all resources are properly closed after use. If any database-related issue occurs, it wraps and
@@ -103,8 +103,8 @@ public class JdbcLevelRepository implements LevelRepository {
      * @param key The metadata key as a {@link String}. It identifies the entry to retrieve from the database.
      * @return The metadata value as a {@link String} associated with the specified key, or {@code null} if the key does
      *         not exist in the database.
-     * @throws LevelingCoreException If any database operation fails, including connection issues, invalid SQL, or errors
-     *                             during data retrieval.
+     * @throws LevelingCoreException If any database operation fails, including connection issues, invalid SQL, or
+     *                               errors during data retrieval.
      */
     private String metaGet(String key) {
         var sql = "SELECT meta_value FROM levelingcore_meta WHERE meta_key = ?";
@@ -131,7 +131,7 @@ public class JdbcLevelRepository implements LevelRepository {
      * @param value The metadata value as a {@link String}. It is stored or updated in association with the provided
      *              key.
      * @throws LevelingCoreException If any database operation fails, such as connection issues, invalid SQL, or errors
-     *                             during the update or insert process.
+     *                               during the update or insert process.
      */
     private void metaPut(String key, String value) {
         var update = "UPDATE levelingcore_meta SET meta_value = ? WHERE meta_key = ?";
@@ -175,7 +175,7 @@ public class JdbcLevelRepository implements LevelRepository {
      *                   consists of the formula type and its parameters, which are used to identify the formula and
      *                   check for differences during migration.
      * @throws LevelingCoreException If any database operation fails, such as connection issues, invalid SQL, or errors
-     *                             while performing the data migration.
+     *                               while performing the data migration.
      */
     public void migrateFormulaIfNeeded(LevelFormula newFormula, FormulaDescriptor newDesc) {
         createMetaTableIfNotExists();

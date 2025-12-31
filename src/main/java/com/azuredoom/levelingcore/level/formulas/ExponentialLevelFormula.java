@@ -23,7 +23,6 @@ public class ExponentialLevelFormula implements LevelFormula {
      * @param exponent The exponent that determines the growth rate of the XP required for each level. Must be greater
      *                 than 0.
      * @param maxLevel The maximum level supported by this formula. Must be greater than or equal to 1.
-     *
      * @throws IllegalArgumentException If baseXp is less than or equal to 0.
      * @throws IllegalArgumentException If the exponent is less than or equal to 0.
      */
