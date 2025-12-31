@@ -57,6 +57,19 @@ public class CustomExpressionLevelFormula implements LevelFormula {
 
     private final int maxLevel;
 
+    /**
+     * Constructs a new CustomExpressionLevelFormula instance, which evaluates experience point (XP) progression using
+     * a custom mathematical expression. The formula is defined by a string expression and uses constants for calculation.
+     * This constructor validates the provided parameters and initializes the instance with the given configuration.
+     *
+     * @param xpForLevelExpression The mathematical expression used to compute XP for a specific level.
+     *                              Must not be null or blank. This expression may include variables such as "level"
+     *                              and constants provided in the `constants` map.
+     * @param constants            A map of constant values that will be used in the expression evaluation.
+     *                              If null, an empty map will be used.
+     * @param maxLevel             The maximum level supported by this formula. Must be greater than or equal to 1.
+     * @throws LevelingCoreException If `xpForLevelExpression` is null, blank, or if `maxLevel` is less than 1.
+     */
     public CustomExpressionLevelFormula(
         String xpForLevelExpression,
         Map<String, Double> constants,
@@ -74,6 +87,17 @@ public class CustomExpressionLevelFormula implements LevelFormula {
         this.maxLevel = maxLevel;
     }
 
+    /**
+     * Calculates the total experience points (XP) required to reach the specified level.
+     * The calculation is performed using a custom mathematical expression defined in the instance.
+     * If the evaluated value exceeds the maximum possible value for a long type, {@code Long.MAX_VALUE} is returned.
+     * If the evaluated value is non-finite or invalid, the result is clamped accordingly.
+     *
+     * @param level The target level for which XP is to be calculated. Must be greater than or equal to 1.
+     * @return The total XP required to reach the specified level. Returns {@code Long.MAX_VALUE} for overflow
+     *         and {@code 0L} for invalid or out-of-bound values.
+     * @throws LevelingCoreException If the provided level is less than 1.
+     */
     @Override
     public long getXpForLevel(int level) {
         if (level < 1) {
@@ -90,6 +114,19 @@ public class CustomExpressionLevelFormula implements LevelFormula {
         return (long) Math.ceil(value);
     }
 
+    /**
+     * Determines the level corresponding to the given number of experience points (XP).
+     * This method uses a binary search to find the level within the range of possible levels
+     * where the XP value lies. It ensures that the result is clamped between level 1 and the
+     * maximum supported level.
+     *
+     * @param xp The total experience points for which the corresponding level is to be determined.
+     *           Must be greater than or equal to 0.
+     * @return The level corresponding to the specified XP. Returns 1 if the provided XP is less
+     *         than the XP required for level 1, and the maximum level if the provided XP is
+     *         greater than or equal to the maximum XP.
+     * @throws IllegalArgumentException If the provided XP is negative.
+     */
     @Override
     public int getLevelForXp(long xp) {
         if (xp < 0)
