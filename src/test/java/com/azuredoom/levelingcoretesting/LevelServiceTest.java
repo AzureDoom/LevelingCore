@@ -1,6 +1,7 @@
 package com.azuredoom.levelingcoretesting;
 
 import com.azuredoom.levelingcore.Main;
+import com.azuredoom.levelingcore.config.ConfigBootstrap;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
@@ -12,7 +13,7 @@ class LevelServiceTest {
 
     @Test
     void addXp_increasesXpAndLevel() {
-        var service = AppBootstrap.createLevelService(Main.configPath);
+        var service = ConfigBootstrap.bootstrap().service();
         var id = UUID.fromString("00000000-0000-0000-0000-000000000001");
         var amount = 500;
         var beforeXp = service.getXp(id);
