@@ -31,9 +31,9 @@ public final class ConfigManager {
         #
         # Supported JDBC URLs:
         #   H2 (file):      jdbc:h2:file:./hyleveling/hyleveling;MODE=PostgreSQL
-        #   MySQL:          jdbc:mysql://host:3306/dbname
-        #   MariaDB:        jdbc:mariadb://host:3307/dbname
-        #   PostgreSQL:     jdbc:postgresql://host:5432/dbname
+        #   MySQL:          jdbc:mysql://host:port/dbname
+        #   MariaDB:        jdbc:mariadb://host:port/dbname
+        #   PostgreSQL:     jdbc:postgresql://host:port/dbname
         #
         # Notes:
         # - H2 commonly uses empty username/password unless you configured otherwise.
