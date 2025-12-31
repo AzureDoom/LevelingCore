@@ -1,4 +1,4 @@
-package com.azuredoom.hyleveling.level.formulas;
+package com.azuredoom.levelingcore.level.formulas;
 
 /**
  * Implementation of the LevelFormula interface that calculates experience points (XP) and level values using a linear

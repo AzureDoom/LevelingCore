@@ -1,13 +1,13 @@
-package com.azuredoom.hyleveling.config;
+package com.azuredoom.levelingcore.config;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represents the configuration settings for the HyLeveling system. This configuration includes database connection
+ * Represents the configuration settings for the LevelingCore system. This configuration includes database connection
  * settings and level progress formula details.
  */
-public class HyLevelingConfig {
+public class LevelingCoreConfig {
 
     public Database database = new Database();
 
@@ -15,7 +15,7 @@ public class HyLevelingConfig {
 
     public static class Database {
 
-        public String jdbcUrl = "jdbc:h2:file:./hyleveling/hyleveling;MODE=PostgreSQL";
+        public String jdbcUrl = "jdbc:h2:file:./data/plugins/levelingcore/levelingcore;MODE=PostgreSQL";
 
         public String username = "";
 

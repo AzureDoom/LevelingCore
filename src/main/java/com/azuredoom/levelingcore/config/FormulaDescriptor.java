@@ -1,9 +1,9 @@
-package com.azuredoom.hyleveling.config;
+package com.azuredoom.levelingcore.config;
 
 /**
  * A descriptor class for defining the type and parameters of a leveling formula.
  * <p>
- * This record is used to represent the configuration of a formula within the HyLeveling system. It provides a
+ * This record is used to represent the configuration of a formula within the LevelingCore system. It provides a
  * structured way to specify the formula type and its associated parameters.
  * <p>
  * Fields:

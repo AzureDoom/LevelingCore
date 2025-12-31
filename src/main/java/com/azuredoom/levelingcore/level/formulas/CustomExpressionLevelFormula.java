@@ -1,6 +1,6 @@
-package com.azuredoom.hyleveling.level.formulas;
+package com.azuredoom.levelingcore.level.formulas;
 
-import com.azuredoom.hyleveling.HyLevelingException;
+import com.azuredoom.levelingcore.LevelingCoreException;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 import java.util.Map;
@@ -63,10 +63,10 @@ public class CustomExpressionLevelFormula implements LevelFormula {
         int maxLevel
     ) {
         if (xpForLevelExpression == null || xpForLevelExpression.isBlank()) {
-            throw new HyLevelingException("custom.xpForLevel must not be blank");
+            throw new LevelingCoreException("custom.xpForLevel must not be blank");
         }
         if (maxLevel < 1) {
-            throw new HyLevelingException("maxLevel must be >= 1");
+            throw new LevelingCoreException("maxLevel must be >= 1");
         }
 
         this.expressionText = xpForLevelExpression.trim();
@@ -77,7 +77,7 @@ public class CustomExpressionLevelFormula implements LevelFormula {
     @Override
     public long getXpForLevel(int level) {
         if (level < 1) {
-            throw new HyLevelingException("level must be >= 1");
+            throw new LevelingCoreException("level must be >= 1");
         }
 
         var value = eval(level);

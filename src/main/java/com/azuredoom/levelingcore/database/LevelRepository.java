@@ -1,6 +1,6 @@
-package com.azuredoom.hyleveling.database;
+package com.azuredoom.levelingcore.database;
 
-import com.azuredoom.hyleveling.playerdata.PlayerLevelData;
+import com.azuredoom.levelingcore.playerdata.PlayerLevelData;
 
 import java.util.UUID;
 

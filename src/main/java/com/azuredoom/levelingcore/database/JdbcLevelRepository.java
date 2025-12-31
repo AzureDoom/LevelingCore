@@ -1,11 +1,11 @@
-package com.azuredoom.hyleveling.database;
+package com.azuredoom.levelingcore.database;
 
-import com.azuredoom.hyleveling.HyLevelingException;
-import com.azuredoom.hyleveling.Main;
-import com.azuredoom.hyleveling.config.FormulaDescriptor;
-import com.azuredoom.hyleveling.config.LevelFormulaFactory;
-import com.azuredoom.hyleveling.level.formulas.LevelFormula;
-import com.azuredoom.hyleveling.playerdata.PlayerLevelData;
+import com.azuredoom.levelingcore.LevelingCoreException;
+import com.azuredoom.levelingcore.Main;
+import com.azuredoom.levelingcore.config.FormulaDescriptor;
+import com.azuredoom.levelingcore.config.LevelFormulaFactory;
+import com.azuredoom.levelingcore.level.formulas.LevelFormula;
+import com.azuredoom.levelingcore.playerdata.PlayerLevelData;
 
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -36,14 +36,14 @@ public class JdbcLevelRepository implements LevelRepository {
      * <p>
      * This method establishes a connection to the database using the provided DataSource and executes a SQL "CREATE
      * TABLE IF NOT EXISTS" statement to create the table if it does not already exist. If any exception occurs during
-     * the operation, it wraps and rethrows the exception as a {@link HyLevelingException} to provide a clear context
+     * the operation, it wraps and rethrows the exception as a {@link LevelingCoreException} to provide a clear context
      * about the failure.
      * <p>
      * Implementation Notes: - Uses a try-with-resources block to ensure the proper closure of the database connection
      * and statement. - The method is private and intended to be used internally within the class during initialization
      * to guarantee the schema's availability.
      *
-     * @throws HyLevelingException if the table creation fails due to database connectivity issues or an error in the
+     * @throws LevelingCoreException if the table creation fails due to database connectivity issues or an error in the
      *                             SQL operation.
      */
     private void createTableIfNotExists() {
@@ -60,27 +60,27 @@ public class JdbcLevelRepository implements LevelRepository {
         ) {
             stmt.execute(sql);
         } catch (Exception e) {
-            throw new HyLevelingException("Failed to create player_levels table", e);
+            throw new LevelingCoreException("Failed to create player_levels table", e);
         }
     }
 
     /**
-     * Ensures the existence of the "hyleveling_meta" table in the database. If the table does not exist, it creates it
+     * Ensures the existence of the "levelingcore_meta" table in the database. If the table does not exist, it creates it
      * with the specified schema.
      * <p>
-     * The "hyleveling_meta" table is defined with the following structure: - `meta_key`: A VARCHAR(64) that serves as
+     * The "levelingcore_meta" table is defined with the following structure: - `meta_key`: A VARCHAR(64) that serves as
      * the primary key. - `meta_value`: A VARCHAR(255) that cannot be null.
      * <p>
      * This method uses the provided data source to establish a database connection and executes the SQL statement to
      * create the table. If the table already exists, the SQL statement has no effect.
      * <p>
-     * If an error occurs during table creation, a {@link HyLevelingException} is thrown.
+     * If an error occurs during table creation, a {@link LevelingCoreException} is thrown.
      *
-     * @throws HyLevelingException if a database access error occurs or table creation fails.
+     * @throws LevelingCoreException if a database access error occurs or table creation fails.
      */
     private void createMetaTableIfNotExists() {
         var sql = """
-            CREATE TABLE IF NOT EXISTS hyleveling_meta (
+            CREATE TABLE IF NOT EXISTS levelingcore_meta (
                 meta_key VARCHAR(64) PRIMARY KEY,
                 meta_value VARCHAR(255) NOT NULL
             )
@@ -88,32 +88,32 @@ public class JdbcLevelRepository implements LevelRepository {
         try (var c = dataSource.getConnection(); var s = c.createStatement()) {
             s.execute(sql);
         } catch (Exception e) {
-            throw new HyLevelingException("Failed to create hyleveling_meta table", e);
+            throw new LevelingCoreException("Failed to create levelingcore_meta table", e);
         }
     }
 
     /**
-     * Retrieves the metadata value associated with the given key from the "hyleveling_meta" table. If the specified key
+     * Retrieves the metadata value associated with the given key from the "levelingcore_meta" table. If the specified key
      * does not exist in the database, the method returns {@code null}.
      * <p>
      * This method establishes a connection to the database, executes a SQL query to fetch the metadata value, and
      * ensures that all resources are properly closed after use. If any database-related issue occurs, it wraps and
-     * rethrows the exception as a {@link HyLevelingException}.
+     * rethrows the exception as a {@link LevelingCoreException}.
      *
      * @param key The metadata key as a {@link String}. It identifies the entry to retrieve from the database.
      * @return The metadata value as a {@link String} associated with the specified key, or {@code null} if the key does
      *         not exist in the database.
-     * @throws HyLevelingException If any database operation fails, including connection issues, invalid SQL, or errors
+     * @throws LevelingCoreException If any database operation fails, including connection issues, invalid SQL, or errors
      *                             during data retrieval.
      */
     private String metaGet(String key) {
-        var sql = "SELECT meta_value FROM hyleveling_meta WHERE meta_key = ?";
+        var sql = "SELECT meta_value FROM levelingcore_meta WHERE meta_key = ?";
         try (var c = dataSource.getConnection(); var ps = c.prepareStatement(sql)) {
             ps.setString(1, key);
             var rs = ps.executeQuery();
             return rs.next() ? rs.getString(1) : null;
         } catch (Exception e) {
-            throw new HyLevelingException("Failed to read meta key: " + key, e);
+            throw new LevelingCoreException("Failed to read meta key: " + key, e);
         }
     }
 
@@ -121,21 +121,21 @@ public class JdbcLevelRepository implements LevelRepository {
      * Inserts or updates a metadata key-value pair in the database. If the specified key already exists, its
      * corresponding value is updated. If the key does not exist, a new entry is inserted.
      * <p>
-     * This operation ensures consistent storage of metadata in the "hyleveling_meta" table. The method uses two SQL
+     * This operation ensures consistent storage of metadata in the "levelingcore_meta" table. The method uses two SQL
      * statements: 1. An "UPDATE" statement to modify the value of an existing key. 2. An "INSERT" statement to create a
      * new key-value pair if the update does not affect any rows.
      * <p>
-     * Any database operation failure is wrapped and rethrown as a {@link HyLevelingException}.
+     * Any database operation failure is wrapped and rethrown as a {@link LevelingCoreException}.
      *
      * @param key   The metadata key as a {@link String}. It identifies the entry to be inserted or updated.
      * @param value The metadata value as a {@link String}. It is stored or updated in association with the provided
      *              key.
-     * @throws HyLevelingException If any database operation fails, such as connection issues, invalid SQL, or errors
+     * @throws LevelingCoreException If any database operation fails, such as connection issues, invalid SQL, or errors
      *                             during the update or insert process.
      */
     private void metaPut(String key, String value) {
-        var update = "UPDATE hyleveling_meta SET meta_value = ? WHERE meta_key = ?";
-        var insert = "INSERT INTO hyleveling_meta (meta_key, meta_value) VALUES (?, ?)";
+        var update = "UPDATE levelingcore_meta SET meta_value = ? WHERE meta_key = ?";
+        var insert = "INSERT INTO levelingcore_meta (meta_key, meta_value) VALUES (?, ?)";
         try (var c = dataSource.getConnection()) {
             int changed;
             try (var ps = c.prepareStatement(update)) {
@@ -151,7 +151,7 @@ public class JdbcLevelRepository implements LevelRepository {
                 }
             }
         } catch (Exception e) {
-            throw new HyLevelingException("Failed to write meta key: " + key, e);
+            throw new LevelingCoreException("Failed to write meta key: " + key, e);
         }
     }
 
@@ -174,7 +174,7 @@ public class JdbcLevelRepository implements LevelRepository {
      * @param newDesc    The descriptor of the new formula, represented as a {@link FormulaDescriptor}. This descriptor
      *                   consists of the formula type and its parameters, which are used to identify the formula and
      *                   check for differences during migration.
-     * @throws HyLevelingException If any database operation fails, such as connection issues, invalid SQL, or errors
+     * @throws LevelingCoreException If any database operation fails, such as connection issues, invalid SQL, or errors
      *                             while performing the data migration.
      */
     public void migrateFormulaIfNeeded(LevelFormula newFormula, FormulaDescriptor newDesc) {
@@ -238,7 +238,7 @@ public class JdbcLevelRepository implements LevelRepository {
             c.commit();
             Main.LOGGER.log(System.Logger.Level.INFO, "Migration completed");
         } catch (Exception e) {
-            throw new HyLevelingException("Failed to migrate XP to preserve levels", e);
+            throw new LevelingCoreException("Failed to migrate XP to preserve levels", e);
         }
 
         metaPut("formula.type", newDesc.type());
@@ -259,7 +259,7 @@ public class JdbcLevelRepository implements LevelRepository {
      * @param data The {@link PlayerLevelData} instance containing the player's unique identifier and XP value. The
      *             unique identifier is used to check for existing database entries, and the XP value is saved or
      *             updated accordingly.
-     * @throws HyLevelingException if any database operation fails, such as connection issues or invalid SQL.
+     * @throws LevelingCoreException if any database operation fails, such as connection issues or invalid SQL.
      */
     @Override
     public void save(PlayerLevelData data) {
@@ -282,7 +282,7 @@ public class JdbcLevelRepository implements LevelRepository {
                 }
             }
         } catch (Exception e) {
-            throw new HyLevelingException("Failed to save player level data", e);
+            throw new LevelingCoreException("Failed to save player level data", e);
         }
     }
 
@@ -290,12 +290,12 @@ public class JdbcLevelRepository implements LevelRepository {
      * Loads the level-related data for a player identified by their unique UUID. This method retrieves the player's
      * experience points (XP) from the database and creates a {@link PlayerLevelData} instance with the retrieved
      * values. If no data exists for the given UUID, the method returns null. If any database-related issue occurs, it
-     * wraps and rethrows the exception as a {@link HyLevelingException}.
+     * wraps and rethrows the exception as a {@link LevelingCoreException}.
      *
      * @param id The unique identifier of the player as a {@link UUID}.
      * @return A {@link PlayerLevelData} instance containing the player's XP and unique identifier, or null if no data
      *         exists for the given UUID.
-     * @throws HyLevelingException if any database operation fails, such as connection issues or invalid SQL.
+     * @throws LevelingCoreException if any database operation fails, such as connection issues or invalid SQL.
      */
     @Override
     public PlayerLevelData load(UUID id) {
@@ -316,7 +316,7 @@ public class JdbcLevelRepository implements LevelRepository {
             }
             return null;
         } catch (Exception e) {
-            throw new HyLevelingException("Failed to load player level data", e);
+            throw new LevelingCoreException("Failed to load player level data", e);
         }
     }
 
@@ -326,7 +326,7 @@ public class JdbcLevelRepository implements LevelRepository {
      *
      * @param id The unique identifier of the player as a {@link UUID}.
      * @return {@code true} if a record exists for the given UUID; {@code false} otherwise.
-     * @throws HyLevelingException if any database operation fails, such as connection issues or invalid SQL.
+     * @throws LevelingCoreException if any database operation fails, such as connection issues or invalid SQL.
      */
     @Override
     public boolean exists(UUID id) {
@@ -341,7 +341,7 @@ public class JdbcLevelRepository implements LevelRepository {
             var rs = ps.executeQuery();
             return rs.next();
         } catch (Exception e) {
-            throw new HyLevelingException("exists() failed", e);
+            throw new LevelingCoreException("exists() failed", e);
         }
     }
 
@@ -352,7 +352,7 @@ public class JdbcLevelRepository implements LevelRepository {
                 c.close();
             }
         } catch (Exception e) {
-            throw new HyLevelingException("Failed to close JDBC datasource", e);
+            throw new LevelingCoreException("Failed to close JDBC datasource", e);
         }
     }
 }

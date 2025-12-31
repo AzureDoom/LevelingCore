@@ -1,4 +1,4 @@
-package com.azuredoom.hyleveling.events;
+package com.azuredoom.levelingcore.events;
 
 import java.util.UUID;
 

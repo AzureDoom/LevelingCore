@@ -1,12 +1,12 @@
-package com.azuredoom.hyleveling.config;
+package com.azuredoom.levelingcore.config;
 
-import com.azuredoom.hyleveling.HyLevelingException;
-import com.azuredoom.hyleveling.Main;
-import com.azuredoom.hyleveling.level.formulas.CustomExpressionLevelFormula;
-import com.azuredoom.hyleveling.level.formulas.ExponentialLevelFormula;
-import com.azuredoom.hyleveling.level.formulas.LevelFormula;
-import com.azuredoom.hyleveling.level.formulas.LinearLevelFormula;
-import com.azuredoom.hyleveling.level.formulas.loader.LevelTableLoader;
+import com.azuredoom.levelingcore.LevelingCoreException;
+import com.azuredoom.levelingcore.Main;
+import com.azuredoom.levelingcore.level.formulas.CustomExpressionLevelFormula;
+import com.azuredoom.levelingcore.level.formulas.ExponentialLevelFormula;
+import com.azuredoom.levelingcore.level.formulas.LevelFormula;
+import com.azuredoom.levelingcore.level.formulas.LinearLevelFormula;
+import com.azuredoom.levelingcore.level.formulas.loader.LevelTableLoader;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -37,9 +37,9 @@ public final class LevelFormulaFactory {
      *               null and must specify a valid type ("EXPONENTIAL", "LINEAR", "TABLE", or "CUSTOM").
      * @return an instance of {@link LevelFormula}, either {@link ExponentialLevelFormula} or
      *         {@link LinearLevelFormula}, depending on the type specified in the configuration.
-     * @throws HyLevelingException if the specified formula type is unknown or unsupported.
+     * @throws LevelingCoreException if the specified formula type is unknown or unsupported.
      */
-    public static LevelFormula fromConfig(HyLevelingConfig config) {
+    public static LevelFormula fromConfig(LevelingCoreConfig config) {
         if (config == null || config.formula == null || config.formula.type == null) {
             return new ExponentialLevelFormula(100, 1.7);
         }
@@ -66,22 +66,22 @@ public final class LevelFormulaFactory {
                 var maxLevel = config.formula.custom.maxLevel;
                 yield new CustomExpressionLevelFormula(expr, constants, maxLevel);
             }
-            default -> throw new HyLevelingException(
+            default -> throw new LevelingCoreException(
                 "Unknown formula.type '" + config.formula.type + "'. Expected EXPONENTIAL or LINEAR."
             );
         };
     }
 
     /**
-     * Constructs a {@link FormulaDescriptor} based on the provided {@link HyLevelingConfig}. The type and parameters
+     * Constructs a {@link FormulaDescriptor} based on the provided {@link LevelingCoreConfig}. The type and parameters
      * for the descriptor are determined by the configuration's formula settings. Supports the following formula types:
      * "EXPONENTIAL", "LINEAR", "TABLE", and "CUSTOM". Throws an exception if an unsupported formula type is specified.
      *
      * @param cfg the configuration object containing the formula type and its relevant parameter values
      * @return a {@link FormulaDescriptor} instance encapsulating the formula type and its parameters
-     * @throws HyLevelingException if the formula type specified in the configuration is unknown
+     * @throws LevelingCoreException if the formula type specified in the configuration is unknown
      */
-    public static FormulaDescriptor descriptorFromConfig(HyLevelingConfig cfg) {
+    public static FormulaDescriptor descriptorFromConfig(LevelingCoreConfig cfg) {
         var type = cfg.formula.type.trim().toUpperCase(java.util.Locale.ROOT);
         return switch (type) {
             case "EXPONENTIAL" -> new FormulaDescriptor(
@@ -107,7 +107,7 @@ public final class LevelFormulaFactory {
                     "exprB64=" + exprB64 + ";constB64=" + constantsB64 + ";maxLevel=" + maxLevel
                 );
             }
-            default -> throw new HyLevelingException("Unknown formula.type: " + cfg.formula.type);
+            default -> throw new LevelingCoreException("Unknown formula.type: " + cfg.formula.type);
         };
     }
 
@@ -118,7 +118,7 @@ public final class LevelFormulaFactory {
      *
      * @param d the formula descriptor containing the type and parameters for constructing the level formula
      * @return a {@link LevelFormula} instance constructed according to the descriptor
-     * @throws HyLevelingException if the descriptor contains an unknown formula type
+     * @throws LevelingCoreException if the descriptor contains an unknown formula type
      */
     public static LevelFormula formulaFromDescriptor(FormulaDescriptor d, Path dataDir) {
         var type = d.type().trim().toUpperCase(Locale.ROOT);
@@ -151,7 +151,7 @@ public final class LevelFormulaFactory {
 
                 yield new CustomExpressionLevelFormula(expr, constants, maxLevel);
             }
-            default -> throw new HyLevelingException("Unknown stored formula.type: " + d.type());
+            default -> throw new LevelingCoreException("Unknown stored formula.type: " + d.type());
         };
     }
 

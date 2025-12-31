@@ -1,4 +1,4 @@
-package com.azuredoom.hyleveling.database;
+package com.azuredoom.levelingcore.database;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

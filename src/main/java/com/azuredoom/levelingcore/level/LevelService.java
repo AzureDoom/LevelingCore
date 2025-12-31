@@ -1,6 +1,6 @@
-package com.azuredoom.hyleveling.level;
+package com.azuredoom.levelingcore.level;
 
-import com.azuredoom.hyleveling.events.*;
+import com.azuredoom.levelingcore.events.*;
 
 import java.util.UUID;
 

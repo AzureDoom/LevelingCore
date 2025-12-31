@@ -1,4 +1,4 @@
-package com.azuredoom.hyleveling.level.formulas;
+package com.azuredoom.levelingcore.level.formulas;
 
 import java.util.Arrays;
 

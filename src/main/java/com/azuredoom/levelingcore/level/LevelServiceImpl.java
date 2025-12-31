@@ -1,9 +1,9 @@
-package com.azuredoom.hyleveling.level;
+package com.azuredoom.levelingcore.level;
 
-import com.azuredoom.hyleveling.database.LevelRepository;
-import com.azuredoom.hyleveling.events.*;
-import com.azuredoom.hyleveling.level.formulas.LevelFormula;
-import com.azuredoom.hyleveling.playerdata.PlayerLevelData;
+import com.azuredoom.levelingcore.database.LevelRepository;
+import com.azuredoom.levelingcore.events.*;
+import com.azuredoom.levelingcore.level.formulas.LevelFormula;
+import com.azuredoom.levelingcore.playerdata.PlayerLevelData;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

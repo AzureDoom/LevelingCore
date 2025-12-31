@@ -1,16 +1,15 @@
-package com.azuredoom.hyleveling.config;
+package com.azuredoom.levelingcore.config;
 
-import com.azuredoom.hyleveling.HyLevelingException;
+import com.azuredoom.levelingcore.LevelingCoreException;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 
-import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 
 /**
- * ConfigManager is a utility class responsible for managing the configuration of the HyLeveling system. It handles the
+ * ConfigManager is a utility class responsible for managing the configuration of the LevelingCore system. It handles the
  * creation and loading of a YAML-based configuration file, ensuring that the configuration is properly initialized and
  * available for use.
  * <p>
@@ -23,14 +22,14 @@ import java.nio.file.*;
 public final class ConfigManager {
 
     private static final String DEFAULT_YAML = """
-        # HyLeveling configuration
+        # LevelingCore configuration
         #
         # =========================
         # Database Configuration
         # =========================
         #
         # Supported JDBC URLs:
-        #   H2 (file):      jdbc:h2:file:./hyleveling/hyleveling;MODE=PostgreSQL
+        #   H2 (file):      jdbc:h2:file:./data/plugins/levelingcore/levelingcore;MODE=PostgreSQL
         #   MySQL:          jdbc:mysql://host:port/dbname
         #   MariaDB:        jdbc:mariadb://host:port/dbname
         #   PostgreSQL:     jdbc:postgresql://host:port/dbname
@@ -40,7 +39,7 @@ public final class ConfigManager {
         # - For MySQL/MariaDB/Postgres, set username/password.
         #
         database:
-          jdbcUrl: "jdbc:h2:file:./hyleveling/hyleveling;MODE=PostgreSQL"
+          jdbcUrl: "jdbc:h2:file:./data/plugins/levelingcore/levelingcore;MODE=PostgreSQL"
           username: ""
           password: ""
           maxPoolSize: 10
@@ -96,19 +95,19 @@ public final class ConfigManager {
     private ConfigManager() {}
 
     /**
-     * Loads an existing HyLeveling configuration file from the specified directory, or creates a new one if it does not
-     * exist. The configuration file is named "hyleveling.yml" and is stored in the provided directory. If creation is
+     * Loads an existing LevelingCore configuration file from the specified directory, or creates a new one if it does not
+     * exist. The configuration file is named "levelingcore.yml" and is stored in the provided directory. If creation is
      * required, a default configuration is written.
      *
      * @param dataDir The directory where the configuration file is located or will be created.
-     * @return The loaded or newly created {@link HyLevelingConfig} instance containing configuration data.
-     * @throws HyLevelingException If any error occurs during file creation, reading, or parsing the configuration.
+     * @return The loaded or newly created {@link LevelingCoreConfig} instance containing configuration data.
+     * @throws LevelingCoreException If any error occurs during file creation, reading, or parsing the configuration.
      */
-    public static HyLevelingConfig loadOrCreate(Path dataDir) {
+    public static LevelingCoreConfig loadOrCreate(Path dataDir) {
         try {
             Files.createDirectories(dataDir);
 
-            var configPath = dataDir.resolve("hyleveling.yml");
+            var configPath = dataDir.resolve("levelingcore.yml");
             if (Files.notExists(configPath)) {
                 Files.writeString(
                     configPath,
@@ -121,13 +120,13 @@ public final class ConfigManager {
             var opts = new LoaderOptions();
             opts.setMaxAliasesForCollections(50);
 
-            var yaml = new Yaml(new Constructor(HyLevelingConfig.class, opts));
+            var yaml = new Yaml(new Constructor(LevelingCoreConfig.class, opts));
             try (var reader = Files.newBufferedReader(configPath, StandardCharsets.UTF_8)) {
-                HyLevelingConfig cfg = yaml.load(reader);
-                return (cfg != null) ? cfg : new HyLevelingConfig();
+                LevelingCoreConfig cfg = yaml.load(reader);
+                return (cfg != null) ? cfg : new LevelingCoreConfig();
             }
         } catch (Exception e) {
-            throw new HyLevelingException("Failed to load config", e);
+            throw new LevelingCoreException("Failed to load config", e);
         }
     }
 }

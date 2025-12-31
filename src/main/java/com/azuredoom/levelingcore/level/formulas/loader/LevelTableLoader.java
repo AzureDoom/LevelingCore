@@ -1,7 +1,7 @@
-package com.azuredoom.hyleveling.level.formulas.loader;
+package com.azuredoom.levelingcore.level.formulas.loader;
 
-import com.azuredoom.hyleveling.HyLevelingException;
-import com.azuredoom.hyleveling.level.formulas.TableLevelFormula;
+import com.azuredoom.levelingcore.LevelingCoreException;
+import com.azuredoom.levelingcore.level.formulas.TableLevelFormula;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
@@ -49,7 +49,7 @@ public final class LevelTableLoader {
      * @param fileName The name of the file to be loaded or created within the specified directory. Must not be null.
      * @return A {@code TableLevelFormula} instance containing the validated level-to-XP mapping.
      * @throws IllegalArgumentException If any of the parameters are null.
-     * @throws HyLevelingException      If any issues occur during file creation, reading, parsing, or validation.
+     * @throws LevelingCoreException      If any issues occur during file creation, reading, parsing, or validation.
      */
     public static TableLevelFormula loadOrCreateFromDataDir(Path dataDir, String fileName) {
         return loadOrCreate(dataDir);
@@ -63,7 +63,7 @@ public final class LevelTableLoader {
      * @param dataDir Path to the directory containing the levels.csv file. If the file does not exist, it will be
      *                created with default values. The directory will also be created if it does not exist.
      * @return A {@code TableLevelFormula} instance containing the validated level-to-XP mapping.
-     * @throws HyLevelingException If any errors occur during file creation, reading, parsing, or validation of the
+     * @throws LevelingCoreException If any errors occur during file creation, reading, parsing, or validation of the
      *                             level-to-XP data.
      */
     public static TableLevelFormula loadOrCreate(Path dataDir) {
@@ -86,39 +86,39 @@ public final class LevelTableLoader {
 
                 var parts = line.split(",", 2);
                 if (parts.length != 2) {
-                    throw new HyLevelingException("Invalid CSV line (expected level,xp): " + raw);
+                    throw new LevelingCoreException("Invalid CSV line (expected level,xp): " + raw);
                 }
 
                 var level = Integer.parseInt(parts[0].trim());
                 var xp = Long.parseLong(parts[1].trim());
 
                 if (level < 1) {
-                    throw new HyLevelingException("Level must be >= 1: " + raw);
+                    throw new LevelingCoreException("Level must be >= 1: " + raw);
                 }
                 if (xp < 0) {
-                    throw new HyLevelingException("XP must be >= 0: " + raw);
+                    throw new LevelingCoreException("XP must be >= 0: " + raw);
                 }
 
                 if (map.put(level, xp) != null) {
-                    throw new HyLevelingException("Duplicate level in CSV: " + level);
+                    throw new LevelingCoreException("Duplicate level in CSV: " + level);
                 }
             }
 
             if (map.isEmpty()) {
-                throw new HyLevelingException("levels.csv is empty");
+                throw new LevelingCoreException("levels.csv is empty");
             }
             if (!map.containsKey(1)) {
-                throw new HyLevelingException("levels.csv must include level 1");
+                throw new LevelingCoreException("levels.csv must include level 1");
             }
             if (map.get(1) != 0L) {
-                throw new HyLevelingException("Level 1 must require 0 XP");
+                throw new LevelingCoreException("Level 1 must require 0 XP");
             }
 
             int maxLevel = map.keySet().stream().max(Integer::compareTo).orElse(1);
 
             for (var i = 1; i <= maxLevel; i++) {
                 if (!map.containsKey(i)) {
-                    throw new HyLevelingException("Missing level " + i + " in levels.csv (levels must be contiguous)");
+                    throw new LevelingCoreException("Missing level " + i + " in levels.csv (levels must be contiguous)");
                 }
             }
 
@@ -128,10 +128,10 @@ public final class LevelTableLoader {
             }
 
             return new TableLevelFormula(xpByLevel);
-        } catch (HyLevelingException e) {
+        } catch (LevelingCoreException e) {
             throw e;
         } catch (Exception e) {
-            throw new HyLevelingException("Failed to load levels.csv", e);
+            throw new LevelingCoreException("Failed to load levels.csv", e);
         }
     }
 }

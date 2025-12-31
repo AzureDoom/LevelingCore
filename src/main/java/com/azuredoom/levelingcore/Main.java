@@ -1,10 +1,10 @@
-package com.azuredoom.hyleveling;
+package com.azuredoom.levelingcore;
 
-import com.azuredoom.hyleveling.config.ConfigManager;
-import com.azuredoom.hyleveling.config.LevelFormulaFactory;
-import com.azuredoom.hyleveling.database.DataSourceFactory;
-import com.azuredoom.hyleveling.database.JdbcLevelRepository;
-import com.azuredoom.hyleveling.level.LevelServiceImpl;
+import com.azuredoom.levelingcore.config.ConfigManager;
+import com.azuredoom.levelingcore.config.LevelFormulaFactory;
+import com.azuredoom.levelingcore.database.DataSourceFactory;
+import com.azuredoom.levelingcore.database.JdbcLevelRepository;
+import com.azuredoom.levelingcore.level.LevelServiceImpl;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -14,7 +14,7 @@ public class Main {
 
     public static final System.Logger LOGGER = System.getLogger(Main.class.getName());
 
-    public static Path configPath = Paths.get("./hyleveling");
+    public static Path configPath = Paths.get("./data/plugins/levelingcore/");
 
     static void main() {
         // TODO: Move to server startup so registration are auto handled
