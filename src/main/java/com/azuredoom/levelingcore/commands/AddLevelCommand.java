@@ -1,5 +1,6 @@
 package com.azuredoom.levelingcore.commands;
 
+import com.azuredoom.levelingcore.lang.CommandLang;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
@@ -30,29 +31,28 @@ public class AddLevelCommand extends CommandBase {
         super("addlevel", "Add level to player");
         this.playerArg = this.withRequiredArg(
             "player",
-            "server.commands.levelingcore.addlevel.desc",
+            "player to add levels to",
             ArgTypes.PLAYER_REF
         );
-        this.levelArg = this.withRequiredArg("level", "server.commands.levelingcore.addlevel.desc", ArgTypes.INTEGER);
+        this.levelArg = this.withRequiredArg("level", "amount of levels to add", ArgTypes.INTEGER);
     }
 
     @Override
     protected void executeSync(@Nonnull CommandContext commandContext) {
         if (LevelingCoreApi.getLevelServiceIfPresent().isEmpty()) {
-            commandContext.sendMessage(Message.raw("Leveling Core is not initialized"));
+            commandContext.sendMessage(CommandLang.NOT_INITIALIZED);
             return;
         }
         var playerRef = this.playerArg.get(commandContext);
         var levelRef = this.levelArg.get(commandContext);
         var playerUUID = playerRef.getUuid();
         LevelingCoreApi.getLevelServiceIfPresent().get().addLevel(playerUUID, levelRef);
-        var addedLevelMsg = "Added " + levelRef + " levels to " + playerRef.getUsername();
-        var levelTotalMsg = "Player " + playerRef.getUsername() + " is now level " + LevelingCoreApi
-            .getLevelServiceIfPresent()
-            .get()
-            .getLevel(playerUUID);
-        EventTitleUtil.showEventTitleToPlayer(playerRef, Message.raw(levelTotalMsg), Message.raw(levelTotalMsg), true);
-        commandContext.sendMessage(Message.raw(addedLevelMsg));
-        commandContext.sendMessage(Message.raw(levelTotalMsg));
+        var level = LevelingCoreApi.getLevelServiceIfPresent().get().getLevel(playerUUID);
+        var addLevelMsg = levelRef == 1 ? CommandLang.ADD_LEVEL_1 : CommandLang.ADD_LEVEL_2;
+        var finalAddLevelMsg = addLevelMsg.param("level", levelRef).param("player", playerRef.getUsername());
+        var playerLevelNowMsg = CommandLang.ADD_LEVEL_3.param("player", playerRef.getUsername()).param("level", level);
+        EventTitleUtil.showEventTitleToPlayer(playerRef, playerLevelNowMsg, finalAddLevelMsg, true);
+        commandContext.sendMessage(finalAddLevelMsg);
+        commandContext.sendMessage(playerLevelNowMsg);
     }
 }

@@ -1,5 +1,6 @@
 package com.azuredoom.levelingcore.commands;
 
+import com.azuredoom.levelingcore.lang.CommandLang;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
@@ -37,21 +38,19 @@ public class SetLevelCommand extends CommandBase {
     @Override
     protected void executeSync(@Nonnull CommandContext commandContext) {
         if (LevelingCoreApi.getLevelServiceIfPresent().isEmpty()) {
-            commandContext.sendMessage(Message.raw("Leveling Core is not initialized"));
+            commandContext.sendMessage(CommandLang.NOT_INITIALIZED);
             return;
         }
         var playerRef = this.playerArg.get(commandContext);
         var levelRef = this.levelArg.get(commandContext);
         var playerUUID = playerRef.getUuid();
         LevelingCoreApi.getLevelServiceIfPresent().get().setLevel(playerUUID, levelRef);
-        var setLevelMsg = "Set " + playerRef.getUsername() + " level to " + levelRef;
-        var levelTotalMsg = "Player " + playerRef.getUsername() + " is now level " + LevelingCoreApi
-            .getLevelServiceIfPresent()
-            .get()
-            .getLevel(playerUUID);
-        EventTitleUtil.showEventTitleToPlayer(playerRef, Message.raw(levelTotalMsg), Message.raw(setLevelMsg), true);
-        commandContext.sendMessage(Message.raw(setLevelMsg));
-        commandContext.sendMessage(Message.raw(levelTotalMsg));
+        var level = LevelingCoreApi.getLevelServiceIfPresent().get().getLevel(playerUUID);
+        var setLevelMsg = CommandLang.SET_LEVEL_1.param("player", playerRef.getUsername()).param("level", levelRef);
+        var levelTotalMsg = CommandLang.SET_LEVEL_2.param("player", playerRef.getUsername()).param("level", level);
+        EventTitleUtil.showEventTitleToPlayer(playerRef, levelTotalMsg, setLevelMsg, true);
+        commandContext.sendMessage(setLevelMsg);
+        commandContext.sendMessage(levelTotalMsg);
     }
 
 }

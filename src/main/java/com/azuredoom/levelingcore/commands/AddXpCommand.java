@@ -1,5 +1,6 @@
 package com.azuredoom.levelingcore.commands;
 
+import com.azuredoom.levelingcore.lang.CommandLang;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
@@ -39,20 +40,18 @@ public class AddXpCommand extends CommandBase {
     @Override
     protected void executeSync(@Nonnull CommandContext commandContext) {
         if (LevelingCoreApi.getLevelServiceIfPresent().isEmpty()) {
-            commandContext.sendMessage(Message.raw("Leveling Core is not initialized"));
+            commandContext.sendMessage(CommandLang.NOT_INITIALIZED);
             return;
         }
         var playerRef = this.playerArg.get(commandContext);
         var xpRef = this.xpArg.get(commandContext);
         var playerUUID = playerRef.getUuid();
         LevelingCoreApi.getLevelServiceIfPresent().get().addXp(playerUUID, xpRef);
-        var setXPMsg = "Set " + playerRef.getUsername() + " xp to " + xpRef;
-        var levelTotalMsg = "Player " + playerRef.getUsername() + " is now level " + LevelingCoreApi
-            .getLevelServiceIfPresent()
-            .get()
-            .getLevel(playerUUID);
-        EventTitleUtil.showEventTitleToPlayer(playerRef, Message.raw(levelTotalMsg), Message.raw(setXPMsg), true);
-        commandContext.sendMessage(Message.raw(setXPMsg));
-        commandContext.sendMessage(Message.raw(levelTotalMsg));
+        var level = LevelingCoreApi.getLevelServiceIfPresent().get().getLevel(playerUUID);
+        var setXPMsg = CommandLang.ADD_XP_1.param("xp", xpRef).param("player", playerRef.getUsername());
+        var levelTotalMsg = CommandLang.ADD_XP_2.param("player", playerRef.getUsername()).param("level", level);
+        EventTitleUtil.showEventTitleToPlayer(playerRef, levelTotalMsg, setXPMsg, true);
+        commandContext.sendMessage(setXPMsg);
+        commandContext.sendMessage(levelTotalMsg);
     }
 }

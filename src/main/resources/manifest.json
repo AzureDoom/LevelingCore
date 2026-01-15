@@ -18,5 +18,5 @@
     },
     "DisabledByDefault": false,
     "Main": "com.azuredoom.levelingcore.LevelingCore",
-    "IncludesAssetPack": false
+    "IncludesAssetPack": true
 }

@@ -1,5 +1,6 @@
 package com.azuredoom.levelingcore.events;
 
+import com.azuredoom.levelingcore.lang.CommandLang;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -78,10 +79,10 @@ public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
                 LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService -> {
                     int levelBefore = levelService.getLevel(player.getUuid());
                     levelService.addXp(player.getUuid(), xpAmount);
-                    player.sendMessage(Message.raw("Gained " + xpAmount + " XP"));
+                    player.sendMessage(CommandLang.GAINED.param("xp", xpAmount));
                     int levelAfter = levelService.getLevel(player.getUuid());
                     if (levelAfter > levelBefore) {
-                        player.sendMessage(Message.raw("Level Up! You are now level " + levelAfter));
+                        player.sendMessage(CommandLang.LEVEL_UP.param("level", levelAfter));
                     }
                 });
             }

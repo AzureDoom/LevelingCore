@@ -88,12 +88,12 @@ idea.project.settings.runConfigurations {
     'HytaleServer'(org.jetbrains.gradle.ext.Application) {
         mainClass = 'com.hypixel.hytale.Main'
         moduleName = project.idea.module.name + '.main'
-        programParameters = "--allow-op --assets=$hytaleHome/install/$patchline/package/game/latest/Assets.zip"
+        programParameters = '--allow-op --assets="' + "${hytaleHome}/install/$patchline/package/game/latest/Assets.zip" + '"'
         if (includes_pack.toBoolean()) {
-            programParameters += " --mods=${sourceSets.main.java.srcDirs.first().parentFile.absolutePath}"
+            programParameters += ' --mods="' + sourceSets.main.java.srcDirs.first().parentFile.absolutePath + '"'
         }
         if (load_user_mods.toBoolean()) {
-            programParameters += " --mods=$hytaleHome/UserData/Mods"
+            programParameters += ' --mods="' + "${hytaleHome}/UserData/Mods" + '"'
         }
         workingDirectory = serverRunDir.absolutePath
     }

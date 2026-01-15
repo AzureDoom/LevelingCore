@@ -1,5 +1,6 @@
 package com.azuredoom.levelingcore.commands;
 
+import com.azuredoom.levelingcore.lang.CommandLang;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
@@ -34,14 +35,14 @@ public class CheckLevelCommand extends CommandBase {
     @Override
     protected void executeSync(@Nonnull CommandContext commandContext) {
         if (LevelingCoreApi.getLevelServiceIfPresent().isEmpty()) {
-            commandContext.sendMessage(Message.raw("Leveling Core is not initialized"));
+            commandContext.sendMessage(CommandLang.NOT_INITIALIZED);
             return;
         }
         var playerRef = this.playerArg.get(commandContext);
         var playerUUID = playerRef.getUuid();
         var levelRef = LevelingCoreApi.getLevelServiceIfPresent().get().getLevel(playerUUID);
-        var currentLevelMsg = playerRef.getUsername() + " current level is " + levelRef;
-        EventTitleUtil.showEventTitleToPlayer(playerRef, Message.raw(currentLevelMsg), Message.raw(""), true);
-        commandContext.sendMessage(Message.raw(currentLevelMsg));
+        var currentLevelMsg = CommandLang.CHECK_LEVEL.param("player", playerRef.getUsername()).param("level", levelRef);
+        EventTitleUtil.showEventTitleToPlayer(playerRef, currentLevelMsg, Message.raw(""), true);
+        commandContext.sendMessage(currentLevelMsg);
     }
 }
