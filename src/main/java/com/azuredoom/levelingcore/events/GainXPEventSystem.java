@@ -1,5 +1,6 @@
 package com.azuredoom.levelingcore.events;
 
+import com.hypixel.hytale.common.plugin.PluginIdentifier;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -10,12 +11,14 @@ import com.hypixel.hytale.server.core.modules.entity.damage.DeathComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.DeathSystems;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.EntityStatType;
+import com.hypixel.hytale.server.core.plugin.PluginManager;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 
 import javax.annotation.Nonnull;
 
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
+import com.azuredoom.levelingcore.compat.SimplePartyCompat;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.lang.CommandLang;
 
@@ -77,9 +80,13 @@ public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
                 var xpAmount = Math.max(1, (long) (maxHealth * this.config.get().getDefaultXPGainPercentage()));
                 LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService -> {
                     var levelBefore = levelService.getLevel(player.getUuid());
+                    if (PluginManager.get().getPlugin(new PluginIdentifier("net.justmadlime", "SimpleParty")) != null) {
+                        SimplePartyCompat.onXPGain(xpAmount, player.getUuid(), levelService, config, player);
+                    } else {
                         levelService.addXp(player.getUuid(), xpAmount);
                         if (config.get().isEnableXPChatMsgs())
                             player.sendMessage(CommandLang.GAINED.param("xp", xpAmount));
+                    }
                     var levelAfter = levelService.getLevel(player.getUuid());
                     if (levelAfter > levelBefore) {
                         if (config.get().isEnableLevelChatMsgs())

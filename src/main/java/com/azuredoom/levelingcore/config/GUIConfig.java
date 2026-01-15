@@ -73,6 +73,12 @@ public class GUIConfig {
             (exConfig, extraInfo) -> exConfig.enableLevelAndXPTitles
         )
         .add()
+        .append(
+            new KeyedCodec<Boolean>("EnableSimplePartyXPShareCompat", Codec.BOOLEAN),
+            (exConfig, aDouble, extraInfo) -> exConfig.enableSimplePartyXPShareCompat = aDouble,
+            (exConfig, extraInfo) -> exConfig.enableSimplePartyXPShareCompat
+        )
+        .add()
         .build();
 
     private boolean enableXPLossOnDeath = false;
@@ -94,6 +100,8 @@ public class GUIConfig {
     private boolean enableXPChatMsgs = true;
 
     private boolean enableLevelAndXPTitles = true;
+
+    private boolean enableSimplePartyXPShareCompat = true;
 
     public GUIConfig() {}
 
@@ -185,5 +193,14 @@ public class GUIConfig {
      */
     public boolean isEnableLevelAndXPTitles() {
         return enableLevelAndXPTitles;
+    }
+
+    /**
+     * Determines whether the simple party experience points (XP) share compatibility is enabled in the configuration.
+     *
+     * @return {@code true} if simple party XP share compatibility is enabled, otherwise {@code false}.
+     */
+    public boolean isEnableSimplePartyXPShareCompat() {
+        return enableSimplePartyXPShareCompat;
     }
 }

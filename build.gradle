@@ -47,6 +47,8 @@ dependencies {
     runtimeOnly(files("$hytaleHome/install/$patchline/package/game/latest/Server/HytaleServer.jar"))
     compileOnly("com.buuz135:MultipleHUD:1.0.1")
     runtimeOnly("com.buuz135:MultipleHUD:1.0.1")
+    compileOnly fileTree(dir: "$rootDir/libs", include: ["*.jar"])
+    runtimeOnly fileTree(dir: "$rootDir/libs", include: ["*.jar"])
     // Needed libs
     shadowBundle 'com.h2database:h2:2.4.240'
     shadowBundle 'com.zaxxer:HikariCP:7.0.2'
