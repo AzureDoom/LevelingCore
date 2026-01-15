@@ -11,9 +11,9 @@ levelingcore.addlevel.2 = Added {level} levels to {player}
 levelingcore.addlevel.3 = Player {player} is now level {level}
 
 levelingcore.addxp.1 = Added {xp} XP to {player}
-levelingcore.addxp.2 = Player {player} is now level {level}
+levelingcore.addxp.2 = {player} is now level {level}
 
-levelingcore.checklevel = {player} current level is {level}
+levelingcore.checklevel = {player}'s current level is {level}
 
 levelingcore.removelevel.1 = Removed {level} level from {player}
 levelingcore.removelevel.2 = Player {player} is now level {level}
