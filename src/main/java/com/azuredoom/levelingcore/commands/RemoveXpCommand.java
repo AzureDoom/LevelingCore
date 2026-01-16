@@ -1,12 +1,18 @@
 package com.azuredoom.levelingcore.commands;
 
+import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
-import com.hypixel.hytale.server.core.command.system.basecommands.CommandBase;
+import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
+import com.hypixel.hytale.server.core.permissions.HytalePermissions;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.World;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 import com.hypixel.hytale.server.core.util.EventTitleUtil;
+import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import javax.annotation.Nonnull;
 
@@ -20,7 +26,7 @@ import com.azuredoom.levelingcore.lang.CommandLang;
  * the XP. It retrieves the player's XP and calculates their level after removal, providing feedback messages to both
  * the player and the command executor.
  */
-public class RemoveXpCommand extends CommandBase {
+public class RemoveXpCommand extends AbstractPlayerCommand {
 
     @Nonnull
     private final RequiredArg<PlayerRef> playerArg;
@@ -32,6 +38,7 @@ public class RemoveXpCommand extends CommandBase {
 
     public RemoveXpCommand(Config<GUIConfig> config) {
         super("removexp", "Remove XP from player");
+        this.requirePermission(HytalePermissions.fromCommand("levelingcore.removexp"));
         this.config = config;
         this.playerArg = this.withRequiredArg(
             "player",
@@ -42,12 +49,18 @@ public class RemoveXpCommand extends CommandBase {
     }
 
     @Override
-    protected void executeSync(@Nonnull CommandContext commandContext) {
+    protected void execute(
+        @NonNullDecl CommandContext commandContext,
+        @NonNullDecl Store<EntityStore> store,
+        @NonNullDecl Ref<EntityStore> ref,
+        @NonNullDecl PlayerRef playerRef,
+        @NonNullDecl World world
+    ) {
         if (LevelingCoreApi.getLevelServiceIfPresent().isEmpty()) {
             commandContext.sendMessage(CommandLang.NOT_INITIALIZED);
             return;
         }
-        var playerRef = this.playerArg.get(commandContext);
+        playerRef = this.playerArg.get(commandContext);
         var xpRef = this.xpArg.get(commandContext);
         var playerUUID = playerRef.getUuid();
         LevelingCoreApi.getLevelServiceIfPresent().get().removeXp(playerUUID, xpRef);
