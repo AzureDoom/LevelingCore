@@ -13,7 +13,7 @@ Group {
     LayoutMode: Middle;
 
     Group #Icon {
-      Anchor: (Left: -32, Width: 24, Height: 24, Right: 4, Top: -8);
+      Anchor: (Left: -32, Width: 26, Height: 24, Right: 4, Top: -8);
       Background: "XPIcon.png";
     }
 
