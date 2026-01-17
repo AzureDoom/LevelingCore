@@ -2,6 +2,7 @@ package com.azuredoom.levelingcore.compat;
 
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.util.Config;
 import net.justmadlime.SimpleParty.party.PartyManager;
 
@@ -40,7 +41,7 @@ public class SimplePartyCompat {
             Arrays.stream(party.getAllPartyMembers())
                 .distinct()
                 .forEach(uuid -> {
-                    NotificationsUtil.sendNotification(playerRef, "Gained " + xp + " XP");
+                    NotificationsUtil.sendNotification(Universe.get().getPlayer(uuid), "Gained " + xp + " XP");
                     levelService.addXp(uuid, xp);
                 });
         } else {
