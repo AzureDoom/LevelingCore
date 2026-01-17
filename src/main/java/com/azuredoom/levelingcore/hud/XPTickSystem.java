@@ -64,6 +64,8 @@ public class XPTickSystem extends EntityTickingSystem<EntityStore> {
             if (config.get().isEnableStatLeveling()) {
                 player.getWorld().execute(() -> {
                     levelService1.registerLevelUpListener(((playerId, newLevel) -> {
+                        if (playerId != playerRef.getUuid())
+                            return;
                         StatsUtils.doHealthIncrease(
                             store,
                             playerRef,
