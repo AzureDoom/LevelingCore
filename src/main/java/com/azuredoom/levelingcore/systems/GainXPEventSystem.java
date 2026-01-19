@@ -97,22 +97,33 @@ public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
                 var xpAmount = config.get().isUseConfigXPMappingsInsteadOfHealthDefaults()
                     ? getXPMapping
                     : xpAmountHealth;
-                LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService -> {
-                    var levelBefore = levelService.getLevel(player.getUuid());
-                    // Checks that the SimpleParty plugin is installed
-                    if (PluginManager.get().getPlugin(new PluginIdentifier("net.justmadlime", "SimpleParty")) != null) {
-                        // INFO: Handle XP gain for SimpleParty plugin when it's installed
-                        SimplePartyCompat.onXPGain(xpAmount, player.getUuid(), levelService, config, player, playerRef);
-                    } else {
-                        // Fallback to default XP gain if SimpleParty is not installed
-                        NotificationsUtil.sendNotification(playerRef, "Gained " + xpAmount + " XP");
-                        levelService.addXp(player.getUuid(), xpAmount);
-                    }
-                    var levelAfter = levelService.getLevel(player.getUuid());
-                    if (levelAfter > levelBefore) {
-                        if (config.get().isEnableLevelChatMsgs())
-                            player.sendMessage(CommandLang.LEVEL_UP.param("level", levelAfter));
-                    }
+                player.getWorld().execute(() -> {
+                    LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService -> {
+                        var levelBefore = levelService.getLevel(player.getUuid());
+                        // Checks that the SimpleParty plugin is installed
+                        if (
+                            PluginManager.get()
+                                .getPlugin(new PluginIdentifier("net.justmadlime", "SimpleParty")) != null
+                        ) {
+                            // INFO: Handle XP gain for SimpleParty plugin when it's installed
+                            SimplePartyCompat.onXPGain(
+                                xpAmount,
+                                player.getUuid(),
+                                levelService,
+                                config,
+                                playerRef
+                            );
+                        } else {
+                            // Fallback to default XP gain if SimpleParty is not installed
+                            NotificationsUtil.sendNotification(playerRef, "Gained " + xpAmount + " XP");
+                            levelService.addXp(player.getUuid(), xpAmount);
+                        }
+                        var levelAfter = levelService.getLevel(player.getUuid());
+                        if (levelAfter > levelBefore) {
+                            if (config.get().isEnableLevelChatMsgs())
+                                player.sendMessage(CommandLang.LEVEL_UP.param("level", levelAfter));
+                        }
+                    });
                 });
             }
         }

@@ -44,20 +44,23 @@ public class XPTickSystem extends EntityTickingSystem<EntityStore> {
         if (player == null || playerRef == null) {
             return;
         }
-        LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService1 -> {
-            var xpHud = new XPBarHud(playerRef, levelService1, config);
-            if (PluginManager.get().getPlugin(new PluginIdentifier("Buuz135", "MultipleHUD")) != null) {
-                MultipleHudCompat.showHud(player, playerRef, xpHud);
-            } else {
-                player.sendMessage(
-                    Message.raw(
-                        "LevelingCore Error: MultipleHUD not found, XP HUD will not work correctly with other mods adding custom UI"
-                    )
-                );
-                LevelingCore.LOGGER.at(Level.WARNING)
-                    .log("MultipleHUD not found, XP HUD will not work correctly with other mods adding custom UI");
-                player.getHudManager().setCustomHud(playerRef, xpHud);
-            }
+
+        player.getWorld().execute(() -> {
+            LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService1 -> {
+                var xpHud = new XPBarHud(playerRef, levelService1, config);
+                if (PluginManager.get().getPlugin(new PluginIdentifier("Buuz135", "MultipleHUD")) != null) {
+                    MultipleHudCompat.showHud(player, playerRef, xpHud);
+                } else {
+                    player.sendMessage(
+                        Message.raw(
+                            "LevelingCore Error: MultipleHUD not found, XP HUD will not work correctly with other mods adding custom UI"
+                        )
+                    );
+                    LevelingCore.LOGGER.at(Level.WARNING)
+                        .log("MultipleHUD not found, XP HUD will not work correctly with other mods adding custom UI");
+                    player.getHudManager().setCustomHud(playerRef, xpHud);
+                }
+            });
         });
     }
 

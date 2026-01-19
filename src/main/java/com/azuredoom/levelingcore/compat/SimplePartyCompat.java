@@ -1,6 +1,5 @@
 package com.azuredoom.levelingcore.compat;
 
-import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.util.Config;
@@ -33,7 +32,6 @@ public class SimplePartyCompat {
         UUID playerUuid,
         LevelServiceImpl levelService,
         Config<GUIConfig> config,
-        Player player,
         PlayerRef playerRef
     ) {
         var party = PartyManager.getInstance().getPartyFromPlayer(playerUuid);

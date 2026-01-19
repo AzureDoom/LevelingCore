@@ -53,36 +53,38 @@ public class LossXPEventSystem extends DeathSystems.OnDeathSystem {
         if (player == null)
             return;
 
-        LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService -> {
-            var playerUuid = player.getUuid();
-            long currentXp = levelService.getXp(playerUuid);
-            int currentLevel = levelService.getLevel(playerUuid);
-            if (this.config.get().isEnableLevelDownOnDeath()) {
-                long xpLoss = (long) (currentXp * this.config.get().getXpLossPercentage());
-                if (xpLoss <= 0)
-                    return;
-                levelService.removeXp(playerUuid, xpLoss);
-                player.sendMessage(CommandLang.XP_LOST.param("xp", xpLoss));
-                int levelAfter = levelService.getLevel(playerUuid);
-                if (levelAfter < currentLevel) {
-                    player.sendMessage(CommandLang.LEVEL_DOWN.param("level", levelAfter));
-                }
-            } else if (this.config.get().isEnableAllLevelsLostOnDeath()) {
-                levelService.setLevel(playerUuid, 1);
-                player.sendMessage(CommandLang.DEATH_ALL_LEVELS);
-            } else if (this.config.get().getMinLevelForLevelDown() <= currentLevel) {
-                long levelFloorXp = levelService.getXpForLevel(currentLevel);
-                long xpLoss = (long) (currentXp * this.config.get().getXpLossPercentage());
-                long newXp = Math.max(levelFloorXp, currentXp - xpLoss);
-                long actualLoss = currentXp - newXp;
+        player.getWorld().execute(() -> {
+            LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService -> {
+                var playerUuid = player.getUuid();
+                var currentXp = levelService.getXp(playerUuid);
+                var currentLevel = levelService.getLevel(playerUuid);
+                if (this.config.get().isEnableLevelDownOnDeath()) {
+                    var xpLoss = (long) (currentXp * this.config.get().getXpLossPercentage());
+                    if (xpLoss <= 0)
+                        return;
+                    levelService.removeXp(playerUuid, xpLoss);
+                    player.sendMessage(CommandLang.XP_LOST.param("xp", xpLoss));
+                    var levelAfter = levelService.getLevel(playerUuid);
+                    if (levelAfter < currentLevel) {
+                        player.sendMessage(CommandLang.LEVEL_DOWN.param("level", levelAfter));
+                    }
+                } else if (this.config.get().isEnableAllLevelsLostOnDeath()) {
+                    levelService.setLevel(playerUuid, 1);
+                    player.sendMessage(CommandLang.DEATH_ALL_LEVELS);
+                } else if (this.config.get().getMinLevelForLevelDown() <= currentLevel) {
+                    var levelFloorXp = levelService.getXpForLevel(currentLevel);
+                    var xpLoss = (long) (currentXp * this.config.get().getXpLossPercentage());
+                    var newXp = Math.max(levelFloorXp, currentXp - xpLoss);
+                    var actualLoss = currentXp - newXp;
 
-                if (actualLoss <= 0) {
-                    player.sendMessage(CommandLang.MIN_LEVEL_DEATH.param("level", currentLevel));
-                    return;
+                    if (actualLoss <= 0) {
+                        player.sendMessage(CommandLang.MIN_LEVEL_DEATH.param("level", currentLevel));
+                        return;
+                    }
+                    levelService.setXp(playerUuid, newXp);
+                    player.sendMessage(CommandLang.XP_LOST.param("xp", actualLoss));
                 }
-                levelService.setXp(playerUuid, newXp);
-                player.sendMessage(CommandLang.XP_LOST.param("xp", actualLoss));
-            }
+            });
         });
     }
 }
