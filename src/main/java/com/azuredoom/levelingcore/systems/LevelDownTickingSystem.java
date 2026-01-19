@@ -20,6 +20,7 @@ import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
+import com.azuredoom.levelingcore.utils.LevelUpRewardsUtil;
 import com.azuredoom.levelingcore.utils.StatsUtils;
 
 public class LevelDownTickingSystem extends EntityTickingSystem<EntityStore> {
@@ -64,6 +65,8 @@ public class LevelDownTickingSystem extends EntityTickingSystem<EntityStore> {
                                 world_store.getStore()
                             );
                         });
+                        // Need to clear out mapping whenever a player levels down as well
+                        LevelUpRewardsUtil.clear(player.getUuid());
                     }));
                 });
             }

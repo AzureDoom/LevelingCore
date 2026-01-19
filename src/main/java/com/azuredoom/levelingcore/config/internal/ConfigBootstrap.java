@@ -1,12 +1,15 @@
 package com.azuredoom.levelingcore.config.internal;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Map;
 
 import com.azuredoom.levelingcore.database.DataSourceFactory;
 import com.azuredoom.levelingcore.database.JdbcLevelRepository;
 import com.azuredoom.levelingcore.exceptions.LevelingCoreException;
 import com.azuredoom.levelingcore.level.LevelServiceImpl;
+import com.azuredoom.levelingcore.level.rewards.LevelRewards;
+import com.azuredoom.levelingcore.level.rewards.RewardEntry;
 import com.azuredoom.levelingcore.level.xp.XPValues;
 
 /**
@@ -28,6 +31,7 @@ public final class ConfigBootstrap {
     public record Bootstrap(
         LevelServiceImpl service,
         Map<String, Integer> xpMapping,
+        Map<Integer, List<RewardEntry>> levelRewardMapping,
         AutoCloseable closeable
     ) {}
 
@@ -59,7 +63,8 @@ public final class ConfigBootstrap {
         }
         var service = new LevelServiceImpl(formula, repo);
         var xpMapping = XPValues.loadOrCreate(dataDir);
+        var levelRewardMapping = LevelRewards.loadOrCreate(dataDir);
 
-        return new Bootstrap(service, xpMapping, repo::close);
+        return new Bootstrap(service, xpMapping, levelRewardMapping, repo::close);
     }
 }

@@ -133,6 +133,12 @@ public class GUIConfig {
             (exConfig, extraInfo) -> exConfig.useConfigXPMappingsInsteadOfHealthDefaults
         )
         .add()
+        .append(
+            new KeyedCodec<Boolean>("EnableLevelUpRewardsConfig", Codec.BOOLEAN),
+            (exConfig, aDouble, extraInfo) -> exConfig.enableLevelUpRewardsConfig = aDouble,
+            (exConfig, extraInfo) -> exConfig.enableLevelUpRewardsConfig
+        )
+        .add()
         .build();
 
     private boolean enableXPLossOnDeath = false;
@@ -174,6 +180,8 @@ public class GUIConfig {
     private String levelDownSound = "SFX_Divine_Respawn";
 
     private boolean useConfigXPMappingsInsteadOfHealthDefaults = true;
+
+    private boolean enableLevelUpRewardsConfig = false;
 
     public GUIConfig() {}
 
@@ -340,5 +348,9 @@ public class GUIConfig {
 
     public boolean isUseConfigXPMappingsInsteadOfHealthDefaults() {
         return useConfigXPMappingsInsteadOfHealthDefaults;
+    }
+
+    public boolean isEnableLevelUpRewardsConfig() {
+        return enableLevelUpRewardsConfig;
     }
 }

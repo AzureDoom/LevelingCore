@@ -1,12 +1,10 @@
 package com.azuredoom.levelingcore.level.xp;
 
-import java.io.BufferedWriter;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.nio.file.StandardOpenOption;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -43,7 +41,7 @@ public class XPValues {
             var mapping = readXpCsv(configPath);
 
             LevelingCore.LOGGER.at(Level.INFO)
-                .log("Loaded XP mapping from " + configPath + " " + mapping.size() +" entries)");
+                .log("Loaded XP mapping from " + configPath + " " + mapping.size() + " entries)");
             return mapping;
 
         } catch (Exception e) {
@@ -91,9 +89,9 @@ public class XPValues {
                     xp = Integer.parseInt(xpStr);
                 } catch (NumberFormatException nfe) {
                     LevelingCore.LOGGER.at(Level.WARNING)
-                            .log(
-                                    "Invalid XP value for " + npcTypeId + ": " + xpStr + " (line: " + line + ")"
-                            );
+                        .log(
+                            "Invalid XP value for " + npcTypeId + ": " + xpStr + " (line: " + line + ")"
+                        );
                     continue;
                 }
 

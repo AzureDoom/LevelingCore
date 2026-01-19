@@ -29,7 +29,7 @@ public class StatsUtils {
     private static @NullableDecl EntityStatMap getStatMap(Player player, PlayerRef playerRef) {
         return player.getReference()
             .getStore()
-            .getComponent(playerRef.getReference(), EntityStatMap.getComponentType());
+            .getComponent(player.getReference(), EntityStatMap.getComponentType());
     }
 
     public static void doHealthIncrease(Player player, PlayerRef playerRef, float healthMultiplier) {
