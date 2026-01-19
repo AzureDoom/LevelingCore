@@ -18,7 +18,6 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 
-import java.util.logging.Level;
 import javax.annotation.Nonnull;
 
 import com.azuredoom.levelingcore.LevelingCore;
@@ -95,7 +94,9 @@ public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
                 var maxHealth = healthStat.getMax();
                 var xpAmountHealth = Math.max(1, (long) (maxHealth * this.config.get().getDefaultXPGainPercentage()));
                 var getXPMapping = xpMap.getOrDefault(entity.getNPCTypeId(), Math.toIntExact(xpAmountHealth));
-                var xpAmount = config.get().isUseConfigXPMappingsInsteadOfHealthDefaults() ? getXPMapping : xpAmountHealth;
+                var xpAmount = config.get().isUseConfigXPMappingsInsteadOfHealthDefaults()
+                    ? getXPMapping
+                    : xpAmountHealth;
                 LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService -> {
                     var levelBefore = levelService.getLevel(player.getUuid());
                     // Checks that the SimpleParty plugin is installed
