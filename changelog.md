@@ -1,3 +1,10 @@
+v0.5.1
+- Added a config option to disable XP Gain Notifications. (Default: false)
+- More Thread safety fixes.
+- Added an icon for Better Modlist mod.
+- Rewrite HUD rendering to long use EntityTickingSystem but instead PlayerReadyEvent
+  - This fixes issues with other HUD mods not rendering correctly.
+
 v0.5.0
 - Hopefully fixed any Thread issues.
 - Fixed Spawn_Void mob not giving XP.
