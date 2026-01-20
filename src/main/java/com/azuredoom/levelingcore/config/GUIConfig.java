@@ -68,6 +68,12 @@ public class GUIConfig {
         )
         .add()
         .append(
+            new KeyedCodec<Boolean>("DisableXPGainNotification", Codec.BOOLEAN),
+            (exConfig, aDouble, extraInfo) -> exConfig.disableXPGainNotification = aDouble,
+            (exConfig, extraInfo) -> exConfig.disableXPGainNotification
+        )
+        .add()
+        .append(
             new KeyedCodec<Boolean>("EnableLevelAndXPTitles", Codec.BOOLEAN),
             (exConfig, aDouble, extraInfo) -> exConfig.enableLevelAndXPTitles = aDouble,
             (exConfig, extraInfo) -> exConfig.enableLevelAndXPTitles
@@ -158,6 +164,8 @@ public class GUIConfig {
     private boolean enableLevelChatMsgs = false;
 
     private boolean enableXPChatMsgs = true;
+
+    private boolean disableXPGainNotification = false;
 
     private boolean enableLevelAndXPTitles = true;
 
@@ -264,6 +272,10 @@ public class GUIConfig {
      */
     public boolean isEnableXPChatMsgs() {
         return enableXPChatMsgs;
+    }
+
+    public boolean isDisableXPGainNotification() {
+        return disableXPGainNotification;
     }
 
     /**

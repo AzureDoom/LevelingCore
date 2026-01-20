@@ -39,11 +39,13 @@ public class SimplePartyCompat {
             Arrays.stream(party.getAllPartyMembers())
                 .distinct()
                 .forEach(uuid -> {
-                    NotificationsUtil.sendNotification(Universe.get().getPlayer(uuid), "Gained " + xp + " XP");
+                    if (!config.get().isDisableXPGainNotification())
+                        NotificationsUtil.sendNotification(Universe.get().getPlayer(uuid), "Gained " + xp + " XP");
                     levelService.addXp(uuid, xp);
                 });
         } else {
-            NotificationsUtil.sendNotification(playerRef, "Gained " + xp + " XP");
+            if (!config.get().isDisableXPGainNotification())
+                NotificationsUtil.sendNotification(playerRef, "Gained " + xp + " XP");
             levelService.addXp(playerUuid, xp);
         }
     }
