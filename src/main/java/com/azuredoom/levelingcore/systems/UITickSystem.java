@@ -56,12 +56,6 @@ public class UITickSystem extends EntityTickingSystem<EntityStore> {
                         return;
                     hud.update(uiCommandBuilder);
                 });
-                levelService.registerXpGainListener((playerId, amount) -> {
-                    hud.update(uiCommandBuilder);
-                });
-                levelService.registerXpLossListener((playerId, amount) -> {
-                    hud.update(uiCommandBuilder);
-                });
             });
         });
     }
