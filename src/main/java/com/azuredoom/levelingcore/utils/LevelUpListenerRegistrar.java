@@ -57,7 +57,7 @@ public final class LevelUpListenerRegistrar {
                         if (player.getReference() == null)
                             return;
                         var transform = worldStore.getStore()
-                            .getComponent(player.getReference(), EntityModule.get().getTransformComponentType());
+                            .getComponent(playerRef.getReference(), EntityModule.get().getTransformComponentType());
                         SoundUtil.playSoundEvent3dToPlayer(
                             player.getReference(),
                             levelupSound,

@@ -163,6 +163,36 @@ public class GUIConfig {
             (exConfig, extraInfo) -> exConfig.useStatsPerLevelMapping
         )
         .add()
+        .append(
+            new KeyedCodec<Float>("StrStatMultiplier", Codec.FLOAT),
+            (exConfig, aDouble, extraInfo) -> exConfig.strStatMultiplier = aDouble,
+            (exConfig, extraInfo) -> exConfig.strStatMultiplier
+        )
+        .add()
+        .append(
+            new KeyedCodec<Float>("PerStatMultiplier", Codec.FLOAT),
+            (exConfig, aDouble, extraInfo) -> exConfig.perStatMultiplier = aDouble,
+            (exConfig, extraInfo) -> exConfig.perStatMultiplier
+        )
+        .add()
+        .append(
+            new KeyedCodec<Float>("VitStatMultiplier", Codec.FLOAT),
+            (exConfig, aDouble, extraInfo) -> exConfig.vitStatMultiplier = aDouble,
+            (exConfig, extraInfo) -> exConfig.vitStatMultiplier
+        )
+        .add()
+        .append(
+            new KeyedCodec<Float>("AgiStatMultiplier", Codec.FLOAT),
+            (exConfig, aDouble, extraInfo) -> exConfig.agiStatMultiplier = aDouble,
+            (exConfig, extraInfo) -> exConfig.agiStatMultiplier
+        )
+        .add()
+        .append(
+            new KeyedCodec<Float>("IntStatMultiplier", Codec.FLOAT),
+            (exConfig, aDouble, extraInfo) -> exConfig.intStatMultiplier = aDouble,
+            (exConfig, extraInfo) -> exConfig.intStatMultiplier
+        )
+        .add()
         .build();
 
     private boolean enableXPLossOnDeath = false;
@@ -214,6 +244,16 @@ public class GUIConfig {
     private int statsPerLevel = 5;
 
     private boolean useStatsPerLevelMapping = false;
+
+    private float strStatMultiplier = 0.1F;
+
+    private float perStatMultiplier = 0.1F;
+
+    private float vitStatMultiplier = 2.0F;
+
+    private float agiStatMultiplier = 0.25F;
+
+    private float intStatMultiplier = 2.0F;
 
     public GUIConfig() {}
 
@@ -400,5 +440,25 @@ public class GUIConfig {
 
     public boolean isUseStatsPerLevelMapping() {
         return useStatsPerLevelMapping;
+    }
+
+    public float getStrStatMultiplier() {
+        return strStatMultiplier;
+    }
+
+    public float getPerStatMultiplier() {
+        return perStatMultiplier;
+    }
+
+    public float getVitStatMultiplier() {
+        return vitStatMultiplier;
+    }
+
+    public float getAgiStatMultiplier() {
+        return agiStatMultiplier;
+    }
+
+    public float getIntStatMultiplier() {
+        return intStatMultiplier;
     }
 }

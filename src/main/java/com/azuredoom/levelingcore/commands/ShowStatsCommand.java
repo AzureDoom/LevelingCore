@@ -60,7 +60,7 @@ public class ShowStatsCommand extends AbstractPlayerCommand {
                 return;
             }
             if (player.getPageManager().getCustomPage() == null) {
-                var page = new StatsScreen(playerRef, CustomPageLifetime.CanDismissOrCloseThroughInteraction);
+                var page = new StatsScreen(playerRef, CustomPageLifetime.CanDismissOrCloseThroughInteraction, config);
                 player.getPageManager().openCustomPage(ref, store, page);
             }
         }, world);

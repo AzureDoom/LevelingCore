@@ -18,16 +18,21 @@ import com.hypixel.hytale.server.core.ui.builder.UICommandBuilder;
 import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
+import com.hypixel.hytale.server.core.util.Config;
 
 import javax.annotation.Nonnull;
 
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
+import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.lang.CommandLang;
 
 public class StatsScreen extends InteractiveCustomUIPage<StatsScreen.BindingData> {
 
-    public StatsScreen(@Nonnull PlayerRef playerRef, @Nonnull CustomPageLifetime lifetime) {
+    private final Config<GUIConfig> config;
+
+    public StatsScreen(@Nonnull PlayerRef playerRef, @Nonnull CustomPageLifetime lifetime, Config<GUIConfig> config) {
         super(playerRef, lifetime, BindingData.CODEC);
+        this.config = config;
     }
 
     @Override
@@ -182,22 +187,22 @@ public class StatsScreen extends InteractiveCustomUIPage<StatsScreen.BindingData
         var healthModifier = new StaticModifier(
             Modifier.ModifierTarget.MAX,
             StaticModifier.CalculationType.ADDITIVE,
-            levelService.getVit(uuid) * 2.0F
+            levelService.getVit(uuid) * config.get().getVitStatMultiplier()
         );
         var staminaModifier = new StaticModifier(
             Modifier.ModifierTarget.MAX,
             StaticModifier.CalculationType.ADDITIVE,
-            levelService.getAgi(uuid) * 2.0F
+            levelService.getAgi(uuid) * config.get().getAgiStatMultiplier()
         );
         var oxygenModifier = new StaticModifier(
             Modifier.ModifierTarget.MAX,
             StaticModifier.CalculationType.ADDITIVE,
-            levelService.getAgi(uuid) * 2.0F
+            levelService.getAgi(uuid) * config.get().getAgiStatMultiplier()
         );
         var manaModifier = new StaticModifier(
             Modifier.ModifierTarget.MAX,
             StaticModifier.CalculationType.ADDITIVE,
-            levelService.getInt(uuid) * 2.0F
+            levelService.getInt(uuid) * config.get().getIntStatMultiplier()
         );
 
         var healthModifierKey = "LevelingCore_health_stat";

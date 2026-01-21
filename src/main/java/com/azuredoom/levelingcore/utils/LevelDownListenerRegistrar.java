@@ -49,7 +49,7 @@ public class LevelDownListenerRegistrar {
                         StatsUtils.applyAllStats(store, player, newLevel, config);
                         world.execute(() -> {
                             var transform = world_store.getStore()
-                                .getComponent(player.getReference(), EntityModule.get().getTransformComponentType());
+                                .getComponent(playerRef.getReference(), EntityModule.get().getTransformComponentType());
                             SoundUtil.playSoundEvent3dToPlayer(
                                 player.getReference(),
                                 leveldown_sound,
