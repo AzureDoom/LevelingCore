@@ -61,10 +61,7 @@ public class XPBarHud extends CustomUIHud {
                 Message.raw("LVL: " + currentLevel)
             );
         }
-        // Only update when MultipleHUD is not installed
-        if (PluginManager.get().getPlugin(new PluginIdentifier("Buuz135", "MultipleHUD")) == null) {
-            update(false, uiCommandBuilder); // false = don't clear existing UI
-        }
+        update(false, uiCommandBuilder); // false = don't clear existing UI
     }
 
     public static void updateHud(@NonNullDecl PlayerRef playerRef) {
