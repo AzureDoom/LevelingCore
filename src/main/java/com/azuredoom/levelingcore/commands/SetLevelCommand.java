@@ -2,6 +2,7 @@ package com.azuredoom.levelingcore.commands;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.protocol.GameMode;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
@@ -36,6 +37,7 @@ public class SetLevelCommand extends AbstractPlayerCommand {
     public SetLevelCommand(Config<GUIConfig> config) {
         super("setlevel", "Set level of player");
         this.requirePermission("levelingcore.setlevel");
+        this.setPermissionGroup(GameMode.Creative);
         this.config = config;
         this.playerArg = this.withRequiredArg(
             "player",

@@ -2,6 +2,7 @@ package com.azuredoom.levelingcore.commands;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.protocol.GameMode;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
@@ -36,6 +37,7 @@ public class RemoveLevelCommand extends AbstractPlayerCommand {
     public RemoveLevelCommand(Config<GUIConfig> config) {
         super("removelevel", "Remove level from player");
         this.requirePermission("levelingcore.removelevel");
+        this.setPermissionGroup(GameMode.Creative);
         this.config = config;
         this.playerArg = this.withRequiredArg(
             "player",
