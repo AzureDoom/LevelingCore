@@ -56,7 +56,7 @@ repositories {
     mavenCentral()
     maven {
         name = "hMReleases"
-        url = uri("https://maven.hytale-modding.info/releases")
+        url = uri("https://maven.hytale-mods.dev/releases")
     }
 }
 
@@ -64,8 +64,8 @@ dependencies {
     // Hytale server
     compileOnly(files("$hytaleHome/install/$patchline/package/game/latest/Server/HytaleServer.jar"))
     runtimeOnly(files("$hytaleHome/install/$patchline/package/game/latest/Server/HytaleServer.jar"))
-    compileOnly("com.buuz135:MultipleHUD:1.0.1")
-    runtimeOnly("com.buuz135:MultipleHUD:1.0.1")
+    compileOnly("com.buuz135:MultipleHUD:1.0.3")
+    runtimeOnly("com.buuz135:MultipleHUD:1.0.3")
     compileOnly fileTree(dir: "$rootDir/libs", include: ["*.jar"])
     runtimeOnly fileTree(dir: "$rootDir/libs", include: ["*.jar"])
     // Needed libs
