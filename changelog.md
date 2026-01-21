@@ -1,3 +1,12 @@
+v0.6.1
+- Tweak to MHud usage with XP Bar Hud UI to hopefully fix some issues with other HUD mods.
+- Fixed showstats command not working.
+- Removed gamemode check from all commands.
+- Added oxygen increases to AGI stat increases.
+- Added a config option to configure the stat points per level per the new config `statsperlevelmapping.csv`. (Default: false)
+
+***Note: STR and PER are currently not implemented due to issues with damage interactions.***
+
 v0.6.0
 - Fixes log for xp mapping skipping empty lines.
 - Fix map not being cleaned when player disconnects
