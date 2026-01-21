@@ -43,10 +43,10 @@ public class AddLevelCommand extends AbstractPlayerCommand {
         this.config = config;
         this.playerArg = this.withRequiredArg(
             "player",
-            "player to add levels to",
+            "Player to add level to.",
             ArgTypes.PLAYER_REF
         );
-        this.levelArg = this.withRequiredArg("level", "amount of levels to add", ArgTypes.INTEGER);
+        this.levelArg = this.withRequiredArg("level", "Amount of levels to add", ArgTypes.INTEGER);
     }
 
     @Override

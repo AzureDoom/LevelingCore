@@ -41,10 +41,10 @@ public class RemoveLevelCommand extends AbstractPlayerCommand {
         this.config = config;
         this.playerArg = this.withRequiredArg(
             "player",
-            "server.commands.levelingcore.addlevel.desc",
+            "Player to remove level from.",
             ArgTypes.PLAYER_REF
         );
-        this.levelArg = this.withRequiredArg("level", "server.commands.levelingcore.addlevel.desc", ArgTypes.INTEGER);
+        this.levelArg = this.withRequiredArg("level", "Amount of levels to remove", ArgTypes.INTEGER);
     }
 
     @Override

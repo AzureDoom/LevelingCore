@@ -43,10 +43,10 @@ public class RemoveXpCommand extends AbstractPlayerCommand {
         this.config = config;
         this.playerArg = this.withRequiredArg(
             "player",
-            "server.commands.levelingcore.addlevel.desc",
+            "Player to remove XP from.",
             ArgTypes.PLAYER_REF
         );
-        this.xpArg = this.withRequiredArg("xpvalue", "server.commands.levelingcore.addlevel.desc", ArgTypes.INTEGER);
+        this.xpArg = this.withRequiredArg("xpvalue", "Amount of XP to remove", ArgTypes.INTEGER);
     }
 
     @Override

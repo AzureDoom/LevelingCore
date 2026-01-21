@@ -41,10 +41,10 @@ public class SetLevelCommand extends AbstractPlayerCommand {
         this.config = config;
         this.playerArg = this.withRequiredArg(
             "player",
-            "server.commands.levelingcore.addlevel.desc",
+            "Name of player to set level of.",
             ArgTypes.PLAYER_REF
         );
-        this.levelArg = this.withRequiredArg("level", "server.commands.levelingcore.addlevel.desc", ArgTypes.INTEGER);
+        this.levelArg = this.withRequiredArg("level", "Level to set player to.", ArgTypes.INTEGER);
     }
 
     @Override
