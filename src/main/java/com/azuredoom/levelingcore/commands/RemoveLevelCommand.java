@@ -6,7 +6,6 @@ import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
-import com.hypixel.hytale.server.core.permissions.HytalePermissions;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -36,7 +35,7 @@ public class RemoveLevelCommand extends AbstractPlayerCommand {
 
     public RemoveLevelCommand(Config<GUIConfig> config) {
         super("removelevel", "Remove level from player");
-        this.requirePermission(HytalePermissions.fromCommand("levelingcore.removelevel"));
+        this.requirePermission("levelingcore.removelevel");
         this.config = config;
         this.playerArg = this.withRequiredArg(
             "player",

@@ -38,7 +38,7 @@ public class AddLevelCommand extends AbstractPlayerCommand {
 
     public AddLevelCommand(Config<GUIConfig> config) {
         super("addlevel", "Add level to player");
-        this.requirePermission(HytalePermissions.fromCommand("levelingcore.addlevel"));
+        this.requirePermission("levelingcore.addlevel");
         this.config = config;
         this.playerArg = this.withRequiredArg(
             "player",

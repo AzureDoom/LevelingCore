@@ -6,7 +6,6 @@ import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
-import com.hypixel.hytale.server.core.permissions.HytalePermissions;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.World;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -38,7 +37,7 @@ public class RemoveXpCommand extends AbstractPlayerCommand {
 
     public RemoveXpCommand(Config<GUIConfig> config) {
         super("removexp", "Remove XP from player");
-        this.requirePermission(HytalePermissions.fromCommand("levelingcore.removexp"));
+        this.requirePermission("levelingcore.removexp");
         this.config = config;
         this.playerArg = this.withRequiredArg(
             "player",
