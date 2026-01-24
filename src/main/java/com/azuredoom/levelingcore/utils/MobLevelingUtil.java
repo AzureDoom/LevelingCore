@@ -71,6 +71,7 @@ public class MobLevelingUtil {
         var modifierKey = "LevelingCore_mob_health";
         stats.putModifier(healthIndex, modifierKey, modifier);
         stats.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getHealth());
+        stats.update();
     }
 
     public static int computeSpawnLevel(NPCEntity npc) {
