@@ -41,12 +41,13 @@ repositories {
 
 dependencies {
     // Hytale server
-    compileOnly("com.hypixel.hytale:2026.01.24-6e2d4fc36")
+    //compileOnly("com.hypixel.hytale:2026.01.24-6e2d4fc36")
     vineflowerTool("org.vineflower:vineflower:1.11.2")
     compileOnly("com.buuz135:MultipleHUD:1.0.3")
     runtimeOnly("com.buuz135:MultipleHUD:1.0.3")
     compileOnly fileTree(dir: "$rootDir/libs", include: ["*.jar"])
-    runtimeOnly fileTree(dir: "$rootDir/libs", include: ["*.jar"])
+    runtimeOnly fileTree(dir: "$rootDir/libs", include: ["partypro-*"])
+    runtimeOnly fileTree(dir: "$rootDir/libs", include: ["Hatsuya_*"])
     // Needed libs
     shadowBundle 'com.h2database:h2:2.4.240'
     shadowBundle 'com.zaxxer:HikariCP:7.0.2'
