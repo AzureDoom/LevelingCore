@@ -1,2 +1,5 @@
 items.Potion_SkillPoint_Reset.name = Skill Point Reset Potion
 items.Potion_SkillPoint_Reset.desc = Resets the players skill points allocated and refunds back to available points
+
+levelingcore.levelrequired = You need level {requiredlevel} to use {itemid}. You are level {level}.
+levelingcore.missingmultiplehud = LevelingCore Error: MultipleHUD not found, XP HUD will not work correctly with other mods adding custom UI

@@ -1,2 +1,5 @@
 items.Potion_SkillPoint_Reset.name = Potion de réinitialisation des points de compétence
 items.Potion_SkillPoint_Reset.desc = Réinitialise les points de compétence attribués du joueur et les rembourse en points disponibles
+
+levelingcore.levelrequired = Vous avez besoin du niveau {requiredlevel} pour utiliser {itemid}. Votre niveau est {level}.
+levelingcore.missingmultiplehud = Erreur LevelingCore : MultipleHUD introuvable, le HUD d’XP ne fonctionnera pas correctement avec d’autres mods ajoutant une interface personnalisée

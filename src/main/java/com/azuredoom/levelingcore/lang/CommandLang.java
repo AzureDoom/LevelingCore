@@ -54,4 +54,8 @@ public class CommandLang {
 
     public static final Message STATS_DISABLED = Message.translation("commands.levelingcore.statsdisabled");
 
+    public static final Message LEVEL_REQUIRED = Message.translation("server.levelingcore.levelrequired");
+
+    public static final Message MISSING_MULTIPLE_HUD = Message.translation("server.levelingcore.missingmultiplehud");
+
 }

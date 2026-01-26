@@ -1,12 +1,10 @@
 package com.azuredoom.levelingcore.systems;
 
-import com.azuredoom.levelingcore.LevelingCore;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.SystemGroup;
 import com.hypixel.hytale.component.query.Query;
-import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.entity.EntityUtils;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.AllLegacyLivingEntityTypesQuery;
@@ -22,8 +20,10 @@ import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
+import com.azuredoom.levelingcore.lang.CommandLang;
 
 public class MobDamageFilter extends DamageEventSystem {
 
@@ -81,9 +81,9 @@ public class MobDamageFilter extends DamageEventSystem {
                 var requiredLevel = LevelingCore.itemLevelMapping.get(itemId);
                 if (requiredLevel != null && level < requiredLevel) {
                     playerRefAttacker.sendMessage(
-                            Message.raw(
-                                    "You need level " + requiredLevel + " to use " + itemId + ". You are level " + level + "."
-                            )
+                        CommandLang.LEVEL_REQUIRED.param("requiredlevel", requiredLevel)
+                            .param("itemid", itemId)
+                            .param("level", level)
                     );
                     damage.setCancelled(true);
                     return;
@@ -121,10 +121,5 @@ public class MobDamageFilter extends DamageEventSystem {
     @Override
     public Query<EntityStore> getQuery() {
         return AllLegacyLivingEntityTypesQuery.INSTANCE;
-    }
-
-    private float conDamageMultiplier(int con) {
-        var reduction = (float) Math.min(config.get().getConStatMultiplier(), Math.max(0.0, con));
-        return 1.0f - reduction;
     }
 }

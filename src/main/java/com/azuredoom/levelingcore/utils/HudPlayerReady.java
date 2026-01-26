@@ -1,7 +1,6 @@
 package com.azuredoom.levelingcore.utils;
 
 import com.hypixel.hytale.common.plugin.PluginIdentifier;
-import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
 import com.hypixel.hytale.server.core.plugin.PluginManager;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -13,6 +12,7 @@ import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.compat.MultipleHudCompat;
 import com.azuredoom.levelingcore.config.GUIConfig;
+import com.azuredoom.levelingcore.lang.CommandLang;
 import com.azuredoom.levelingcore.ui.hud.XPBarHud;
 
 public class HudPlayerReady {
@@ -33,13 +33,8 @@ public class HudPlayerReady {
             if (PluginManager.get().getPlugin(new PluginIdentifier("Buuz135", "MultipleHUD")) != null) {
                 MultipleHudCompat.showHud(player, playerRef, xpHud);
             } else {
-                player.sendMessage(
-                    Message.raw(
-                        "LevelingCore Error: MultipleHUD not found, XP HUD will not work correctly with other mods adding custom UI"
-                    )
-                );
-                LevelingCore.LOGGER.at(Level.WARNING)
-                    .log("MultipleHUD not found, XP HUD will not work correctly with other mods adding custom UI");
+                player.sendMessage(CommandLang.MISSING_MULTIPLE_HUD);
+                LevelingCore.LOGGER.at(Level.WARNING).log(CommandLang.MISSING_MULTIPLE_HUD.getRawText());
                 player.getHudManager().setCustomHud(playerRef, xpHud);
             }
         }));
