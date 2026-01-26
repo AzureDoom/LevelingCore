@@ -15,151 +15,349 @@ $C = "../../Common.ui";
 
 @StatAddButton = TextButton {
   Style: $C.@SecondaryTextButtonStyle;
-  Anchor: (Left: 0, Width: @AddButtonWidth, Height: @AddButtonHeight);
-  Text: "+";
+  Anchor: (Width: @AddButtonWidth, Height: @AddButtonHeight);
+  Text: "+ 1";
 };
 
+@HeaderTitleStyle = LabelStyle(
+  FontSize: 15,
+  RenderUppercase: true,
+  RenderBold: true,
+  VerticalAlignment: Center,
+  TextColor: #b4c8c9,
+  FontName: "Default",
+  LetterSpacing: 0.5
+);
+
 $C.@PageOverlay {
-  $C.@Container {
-    Anchor: (Width: 300, Height: 300);
+  $C.@DecoratedContainer {
+    Anchor: (Width: 900, Height: 700);
     Padding: (Full: 0);
     Background: #737d85;
 
     #Title {
       Group {
-        $C.@Title {
-          @Text = "Status";
+        LayoutMode: Left;
+
+        Group { FlexWeight: 1; }
+
+        Label {
+          Style: @HeaderTitleStyle;
+          Text: "Status";
         }
+
+        Group { FlexWeight: 1; }
       }
     }
 
     #Content {
+      LayoutMode: Top;
+      Padding: (Full: 9);
 
-      Group #StatsContent {
-        LayoutMode: Center;
-        Padding: (Top: -5);
+      Group #ContentArea {
         FlexWeight: 1;
-        Background: #182028;
+        LayoutMode: Top;
+        Padding: (Left: 20, Right: 20, Bottom: 20, Top: 0);
 
-        Group #StatsPanel {
-          Anchor: (Width: 200);
-          LayoutMode: Left;
-          Padding: (Left: 50);
+        Group {
+          LayoutMode: Top;
+          Padding: (Full: 0);
 
-          Group #StatsList {
-            LayoutMode: Top;
+          Group {
+            LayoutMode: Center;
+            Padding: (Top: 10, Bottom: 10);
 
-            Group {
-              LayoutMode: Right;
-              Anchor: (Height: @StatRowHeight, Bottom: 6);
-
-              Label #STR {
-                Style: @StatLabelStyle;
-                Text: "STR: Value";
-                Anchor: (Width: 100);
-              }
-
-              Group { FlexWeight: 1; }
-
-              @StatAddButton #AddStr {}
-            }
-
-            Group {
-              LayoutMode: Right;
-              Anchor: (Height: @StatRowHeight, Bottom: 6);
-
-              Label #AGI {
-                Style: @StatLabelStyle;
-                Text: "AGI: Value";
-                Anchor: (Width: 100);
-              }
-
-              Group { FlexWeight: 1; }
-
-              @StatAddButton #AddAgi {}
-            }
-
-            Group {
-              LayoutMode: Right;
-              Anchor: (Height: @StatRowHeight, Bottom: 6);
-
-              Label #PER {
-                Style: @StatLabelStyle;
-                Text: "PER: Value";
-                Anchor: (Width: 100);
-              }
-
-              Group { FlexWeight: 1; }
-
-              @StatAddButton #AddPer {}
-            }
-
-            Group {
-              LayoutMode: Left;
-              Anchor: (Height: @StatRowHeight, Bottom: 6);
-
-              Label #VIT {
-                Style: @StatLabelStyle;
-                Text: "VIT: Value";
-                Anchor: (Width: 100);
-              }
-
-              Group { FlexWeight: 1; }
-
-              @StatAddButton #AddVit {}
-            }
-
-            Group {
-              LayoutMode: Left;
-              Anchor: (Height: @StatRowHeight, Bottom: 6);
-
-              Label #INT {
-                Style: @StatLabelStyle;
-                Text: "INT: Value";
-                Anchor: (Width: 100);
-              }
-
-              Group { FlexWeight: 1; }
-
-              @StatAddButton #AddInt {}
-            }
-
-            Group {
-              LayoutMode: Left;
-              Anchor: (Height: @StatRowHeight, Bottom: 6);
-
-              Label #CON {
-                Style: @StatLabelStyle;
-                Text: "CON: Value";
-                Anchor: (Width: 100);
-              }
-
-              Group { FlexWeight: 1; }
-
-              @StatAddButton #AddCon {}
+            Label #Level {
+              Style: (
+                FontSize: 20,
+                TextColor: #ffffff,
+                RenderBold: true
+              );
+              Anchor: ();
+              Text: "PlayerName - Level 1";
+              Padding: (Bottom: 5);
             }
           }
-        }
-
-        Group #StatsPanel2 {
-          Anchor: (Width: 150);
-          LayoutMode: Right;
-          Padding: (Right: 20);
-
-          Group #StatsList2 {
+          Group {
             LayoutMode: Top;
+            Padding: (Full: 0);
 
             Group {
-              LayoutMode: Left;
-              Anchor: (Height: @StatRowHeight, Bottom: 6);
+              LayoutMode: Center;
+              Padding: (Top: 10, Bottom: 10);
+
+              Label #XP {
+                Style: (
+                  FontSize: 14,
+                  TextColor: #ffffff,
+                  RenderBold: false
+                );
+                Anchor: ();
+                Text: "0.0 / 0.0 XP (0%)";
+                Padding: (Top: 2, Bottom: 5);
+              }
+            }
+          }
+
+          Group {
+            LayoutMode: Top;
+            Padding: (Full: 0);
+
+            Group {
+              LayoutMode: Center;
+              Padding: (Top: 10, Bottom: 10);
 
               Label #PNTSLabel {
-                Style: (FontSize: 16);
-                Text: "PNTS: Value";
-                Anchor: (Left: -45, Width: 100);
+                Style: (
+                  FontSize: 14,
+                  TextColor: #ffffff,
+                  RenderBold: false
+                );
+                Anchor: ();
+                Text: "0.0 / 0.0 XP";
+                Padding: (Top: 2, Bottom: 5);
               }
             }
           }
+          Group #StatsContent {
+              Anchor: (Width: 720);
+              FlexWeight: 1;
+              LayoutMode: TopScrolling;
+              Padding: (Left: 7, Top: 2, Right: 12, Bottom: 4);
+              ScrollbarStyle: $C.@DefaultScrollbarStyle;
+
+              Group {
+                LayoutMode: Top;
+
+                Group #STRGroup {
+                  Anchor: (Width: 680, Height: 70, Bottom: 3);
+                  LayoutMode: Center;
+                  Background: #1e2d3d(0.5);
+
+                  Group {
+                    LayoutMode: Top;
+                    Padding: (Left: 4, Right: 5);
+
+                    Label #STR {
+                      Style: (
+                        FontSize: 16,
+                        TextColor: #ffffff,
+                        RenderBold: true
+                      );
+                      Anchor: (Width: 240, Height: 20);
+                      Text: "STR: Value";
+                      Padding: (Bottom: 2);
+                    }
+
+                    Label #STRDescription {
+                      Style: (
+                        FontSize: 12,
+                        TextColor: #aaaaaa,
+                        RenderBold: false
+                      );
+                      Anchor: (Width: 240);
+                      Text: "";
+                    }
+                  }
+
+                  Group {
+                    FlexWeight: 1;
+                  }
+
+                  @StatAddButton #AddStr {}
+                }
+
+                Group #AGIGroup {
+                  Anchor: (Width: 680, Height: 70, Bottom: 3);
+                  LayoutMode: Center;
+                  Background: #1e2d3d(0.5);
+
+                  Group {
+                    LayoutMode: Top;
+                    Padding: (Left: 4, Right: 5);
+
+                    Label #AGI {
+                      Style: (
+                        FontSize: 16,
+                        TextColor: #ffffff,
+                        RenderBold: true
+                      );
+                      Anchor: (Width: 240, Height: 20);
+                      Text: "AGI: Value";
+                      Padding: (Bottom: 2);
+                    }
+
+                    Label #AGIDescription {
+                      Style: (
+                        FontSize: 12,
+                        TextColor: #aaaaaa,
+                        RenderBold: false
+                      );
+                      Anchor: (Width: 240);
+                      Text: "";
+                    }
+                  }
+
+                  Group {
+                    FlexWeight: 1;
+                  }
+
+                  @StatAddButton #AddAgi {}
+                }
+
+                Group #PERGroup {
+                  Anchor: (Width: 680, Height: 70, Bottom: 3);
+                  LayoutMode: Center;
+                  Background: #1e2d3d(0.5);
+
+                  Group {
+                    LayoutMode: Top;
+                    Padding: (Left: 4, Right: 5);
+
+                    Label #PER {
+                      Style: (
+                        FontSize: 16,
+                        TextColor: #ffffff,
+                        RenderBold: true
+                      );
+                      Anchor: (Width: 240, Height: 20);
+                      Text: "PER: Value";
+                      Padding: (Bottom: 2);
+                    }
+
+                    Label #PERDescription {
+                      Style: (
+                        FontSize: 12,
+                        TextColor: #aaaaaa,
+                        RenderBold: false
+                      );
+                      Anchor: (Width: 240);
+                      Text: "";
+                    }
+                  }
+
+                  Group {
+                    FlexWeight: 1;
+                  }
+
+                  @StatAddButton #AddPer {}
+                }
+
+                Group #VITGroup {
+                  Anchor: (Width: 680, Height: 70, Bottom: 3);
+                  LayoutMode: Center;
+                  Background: #1e2d3d(0.5);
+
+                  Group {
+                    LayoutMode: Top;
+                    Padding: (Left: 4, Right: 5);
+
+                    Label #VIT {
+                      Style: (
+                        FontSize: 16,
+                        TextColor: #ffffff,
+                        RenderBold: true
+                      );
+                      Anchor: (Width: 240, Height: 20);
+                      Text: "VIT: Value";
+                      Padding: (Bottom: 2);
+                    }
+
+                    Label #VITDescription {
+                      Style: (
+                        FontSize: 12,
+                        TextColor: #aaaaaa,
+                        RenderBold: false
+                      );
+                      Anchor: (Width: 240);
+                      Text: "";
+                    }
+                  }
+
+                  Group {
+                    FlexWeight: 1;
+                  }
+
+                  @StatAddButton #AddVit {}
+                }
+
+                Group #INTGroup {
+                  Anchor: (Width: 680, Height: 70, Bottom: 3);
+                  LayoutMode: Center;
+                  Background: #1e2d3d(0.5);
+
+                  Group {
+                    LayoutMode: Top;
+                    Padding: (Left: 4, Right: 5);
+
+                    Label #INT {
+                      Style: (
+                        FontSize: 16,
+                        TextColor: #ffffff,
+                        RenderBold: true
+                      );
+                      Anchor: (Width: 240, Height: 20);
+                      Text: "INT: Value";
+                      Padding: (Bottom: 2);
+                    }
+
+                    Label #INTDescription {
+                      Style: (
+                        FontSize: 12,
+                        TextColor: #aaaaaa,
+                        RenderBold: false
+                      );
+                      Anchor: (Width: 240);
+                      Text: "";
+                    }
+                  }
+
+                  Group {
+                    FlexWeight: 1;
+                  }
+
+                  @StatAddButton #AddInt {}
+                }
+
+                Group #CONGroup {
+                  Anchor: (Width: 680, Height: 70, Bottom: 3);
+                  LayoutMode: Center;
+                  Background: #1e2d3d(0.5);
+
+                  Group {
+                    LayoutMode: Top;
+                    Padding: (Left: 4, Right: 5);
+
+                    Label #CON {
+                      Style: (
+                        FontSize: 16,
+                        TextColor: #ffffff,
+                        RenderBold: true
+                      );
+                      Anchor: (Width: 240, Height: 20);
+                      Text: "CON: Value";
+                      Padding: (Bottom: 2);
+                    }
+
+                    Label #CONDescription {
+                      Style: (
+                        FontSize: 12,
+                        TextColor: #aaaaaa,
+                        RenderBold: false
+                      );
+                      Anchor: (Width: 240);
+                      Text: "";
+                    }
+                  }
+
+                  Group {
+                    FlexWeight: 1;
+                  }
+
+                  @StatAddButton #AddCon {}
+                }
+              }
+            }
         }
       }
     }
