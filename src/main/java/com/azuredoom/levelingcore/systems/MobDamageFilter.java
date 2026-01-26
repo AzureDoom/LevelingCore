@@ -77,7 +77,7 @@ public class MobDamageFilter extends DamageEventSystem {
 
         if (isProjectile) {
             var per = levelService.getPer(playerAttacker.getUuid());
-            damage.setAmount(Math.round((float) (damage.getAmount() * (1.0 + per * config.get().getStrStatMultiplier()))));
+            damage.setAmount(Math.round((float) (damage.getAmount() * (1.0 + per * config.get().getPerStatMultiplier()))));
         } else {
             var str = levelService.getStr(playerAttacker.getUuid());
             damage.setAmount(Math.round((float) (damage.getAmount() * (1.0 + str * config.get().getStrStatMultiplier()))));
