@@ -95,18 +95,6 @@ public class LevelingCoreCombatSystem extends EntityEventSystem<EntityStore, Dam
                     return;
                 }
             }
-            var world = store.getExternalData().getWorld();
-            world.execute(() -> {
-                if (isProjectile) {
-                    var per = levelService.getPer(uuid);
-                    damage.setAmount((float) (damage.getAmount() * (1.0 + per * config.get().getPerStatMultiplier())));
-                    damage.setCancelled(true);
-                } else {
-                    var str = levelService.getStr(uuid);
-                    damage.setAmount((float) (damage.getAmount() * (1.0 + str * config.get().getStrStatMultiplier())));
-                    damage.setCancelled(true);
-                }
-            });
             return;
         }
 
@@ -130,7 +118,7 @@ public class LevelingCoreCombatSystem extends EntityEventSystem<EntityStore, Dam
     public Set<Dependency<EntityStore>> getDependencies() {
         return Set.of(
             new SystemGroupDependency(Order.AFTER, DamageModule.get().getGatherDamageGroup()),
-            new SystemDependency(Order.BEFORE, DamageSystems.ApplyDamage.class)
+            new SystemDependency(Order.AFTER, DamageSystems.ApplyDamage.class)
         );
     }
 

@@ -140,6 +140,7 @@ public class LevelingCore extends JavaPlugin {
                 })
             );
         this.getEntityStoreRegistry().registerSystem(new DamageFilter(config));
+        this.getEntityStoreRegistry().registerSystem(new MobDamageFilter(config));
         // Cleans up various weak hash maps and UI on player disconnect
         this.getEventRegistry()
             .registerGlobal(PlayerDisconnectEvent.class, (event) -> {
