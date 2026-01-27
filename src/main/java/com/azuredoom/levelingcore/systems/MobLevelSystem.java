@@ -1,6 +1,5 @@
 package com.azuredoom.levelingcore.systems;
 
-import com.azuredoom.levelingcore.level.mobs.CoreLevelMode;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
@@ -20,6 +19,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.level.formulas.loader.LevelTableLoader;
+import com.azuredoom.levelingcore.level.mobs.CoreLevelMode;
 import com.azuredoom.levelingcore.utils.MobLevelingUtil;
 
 @SuppressWarnings("removal")
@@ -110,7 +110,9 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
                 data.lastAppliedLevel = data.level;
             }
 
-            if (config.get().getLevelMode().equalsIgnoreCase(CoreLevelMode.SPAWN_ONLY.name().toLowerCase(Locale.ROOT))) {
+            if (
+                config.get().getLevelMode().equalsIgnoreCase(CoreLevelMode.SPAWN_ONLY.name().toLowerCase(Locale.ROOT))
+            ) {
                 data.locked = true;
             }
         });
