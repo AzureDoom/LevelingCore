@@ -4,7 +4,7 @@ import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
-import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
+import com.hypixel.hytale.server.core.command.system.arguments.system.OptionalArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -25,14 +25,14 @@ import com.azuredoom.levelingcore.ui.page.StatsScreen;
 public class ShowStatsCommand extends AbstractPlayerCommand {
 
     @Nonnull
-    private final RequiredArg<PlayerRef> playerArg;
+    private final OptionalArg<PlayerRef> playerArg;
 
     private final Config<GUIConfig> config;
 
     public ShowStatsCommand(Config<GUIConfig> config) {
         super("showstats", "Shows player stats");
         this.requirePermission("levelingcore.showstats");
-        this.playerArg = this.withRequiredArg(
+        this.playerArg = this.withOptionalArg(
             "player",
             "Player whose statistics are to be viewed",
             ArgTypes.PLAYER_REF
