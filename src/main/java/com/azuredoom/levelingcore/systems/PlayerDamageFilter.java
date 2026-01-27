@@ -24,6 +24,7 @@ import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.utils.MobLevelingUtil;
 
+@SuppressWarnings("removal")
 public class PlayerDamageFilter extends DamageEventSystem {
 
     private Config<GUIConfig> config;
