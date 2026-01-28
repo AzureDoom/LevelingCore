@@ -1,3 +1,9 @@
+v0.9.0
+- Fixes stats screen only showing Str values.
+- Add an optional system to auto-remove dead mobs to avoid the vanilla death animation bug, uses a config option to enable.
+- Add config for disabling XP bar UI
+- Added levels to nameplates of mobs and players, with a config option to enable for players and/or mobs.
+
 v0.8.3
 - Rewrote the stats screen to better show what each stat does.
 - Improved the mob leveling system to queue updates and process them in batches to reduce lag spikes.
