@@ -1,3 +1,11 @@
+v0.9.1
+- Removed the playername from the /showstats command completely. 
+- Mob leveling is no longer applied to mobs with health <= 0, fully fixes death animation bug.
+- Removes nameplate rendering for mobs with health <= 0
+- Fixed level nameplate overwriting other nameplates, it now instead amends any existing nameplates.
+- Fixed level nameplate appearing on dead mobs.
+- Fixed a bug where offline party members would still be triggered for XP gain.
+
 v0.9.0
 - Fixes stats screen only showing Str values.
 - Add an optional system to auto-remove dead mobs to avoid the vanilla death animation bug, uses a config option to enable.
