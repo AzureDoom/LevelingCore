@@ -7,6 +7,8 @@ import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.server.core.entity.EntityUtils;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
+import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
+import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
@@ -64,6 +66,12 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
         final var holder = EntityUtils.toHolder(index, archetypeChunk);
         final var npc = holder.getComponent(NPCEntity.getComponentType());
         if (npc == null)
+            return;
+
+        var entityStatMap = archetypeChunk.getComponent(index, EntityStatMap.getComponentType());
+        var healthStat = DefaultEntityStatTypes.getHealth();
+        var healthValue = entityStatMap.get(healthStat);
+        if (healthValue.get() <= 0)
             return;
 
         final var transform = holder.getComponent(TransformComponent.getComponentType());
@@ -155,6 +163,10 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
     @NullableDecl
     @Override
     public Query<EntityStore> getQuery() {
-        return Query.any();
+        return Query.and(
+                NPCEntity.getComponentType(),
+                TransformComponent.getComponentType(),
+                EntityStatMap.getComponentType()
+        );
     }
 }
