@@ -62,7 +62,7 @@ public class ShowLvlHeadSystem implements Runnable {
                         continue;
 
                     var lvl = levelingService.getLevel(playerRef.getUuid());
-                    upsertNameplate(commandBuffer, ref, formatNameplate(lvl));
+                    insertNameplate(commandBuffer, ref, formatNameplate(lvl));
                 }
             });
         }
@@ -88,13 +88,13 @@ public class ShowLvlHeadSystem implements Runnable {
                         continue;
 
                     var text = formatNameplate(lvl.level);
-                    upsertNameplate(commandBuffer, ref, text);
+                    insertNameplate(commandBuffer, ref, text);
                 }
             });
         }
     }
 
-    private void upsertNameplate(
+    private void insertNameplate(
         CommandBuffer<EntityStore> commandBuffer,
         Ref<EntityStore> ref,
         String desiredText
