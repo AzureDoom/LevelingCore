@@ -12,12 +12,12 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 
+import java.util.regex.Pattern;
+
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.utils.MobLevelingUtil;
-
-import java.util.regex.Pattern;
 
 public class ShowLvlHeadSystem implements Runnable {
 
@@ -109,13 +109,8 @@ public class ShowLvlHeadSystem implements Runnable {
 
         var current = commandBuffer.getComponent(ref, Nameplate.getComponentType());
         if (current != null) {
-            if (healthValue.get() <= 0) {
-                commandBuffer.removeComponent(ref, Nameplate.getComponentType());
-                return;
-            }
             var old = current.getText();
-            final Pattern LEVEL_PATTERN = Pattern.compile("\\s*\\[Lvl \\d+]\\s*$");
-            var base = LEVEL_PATTERN.matcher(old).replaceAll("");
+            var base = Pattern.compile("\\s*\\[Lvl \\d+]\\s*$").matcher(old).replaceAll("");
             var newText = base + " " + desiredText;
             if (newText.equals(old)) {
                 return;
