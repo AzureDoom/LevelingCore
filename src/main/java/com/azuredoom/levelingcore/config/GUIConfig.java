@@ -277,6 +277,12 @@ public class GUIConfig {
             (exConfig, extraInfo) -> exConfig.showMobLvls
         )
         .add()
+        .append(
+            new KeyedCodec<Double>("MobLevelMultiplier", Codec.DOUBLE),
+            (exConfig, aDouble, extraInfo) -> exConfig.mobLevelMultiplier = aDouble,
+            (exConfig, extraInfo) -> exConfig.mobLevelMultiplier
+        )
+        .add()
         .build();
 
     private boolean enableXPLossOnDeath = false;
@@ -366,6 +372,8 @@ public class GUIConfig {
     private boolean showPlayerLvls = true;
 
     private boolean showMobLvls = true;
+
+    private double mobLevelMultiplier = 0.35;
 
     public GUIConfig() {}
 
@@ -618,5 +626,9 @@ public class GUIConfig {
 
     public boolean isShowMobLvls() {
         return showMobLvls;
+    }
+
+    public double getMobLevelMultiplier() {
+        return mobLevelMultiplier;
     }
 }

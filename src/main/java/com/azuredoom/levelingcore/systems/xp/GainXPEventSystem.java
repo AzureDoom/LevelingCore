@@ -109,20 +109,12 @@ public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
                     return;
                 var xpAmountHealth = Math.max(1, (long) (maxHealth * this.config.get().getDefaultXPGainPercentage()));
                 var getXPMapping = xpMap.getOrDefault(entity.getNPCTypeId(), Math.toIntExact(xpAmountHealth));
-                var xpAmount = config.get().isUseConfigXPMappingsInsteadOfHealthDefaults()
-                    ? getXPMapping
+                double levelScale = Math.pow(mobLevel.level, config.get().getMobLevelMultiplier());
+                long base = config.get().isUseConfigXPMappingsInsteadOfHealthDefaults()
+                    ? (long) (getXPMapping)
                     : xpAmountHealth;
-                final var levelWindow = 5;
-                final var maxBonusMult = 1.25;
-
-                int diff = Math.abs(playerLevel - mobLevel.level);
-                if (diff <= levelWindow) {
-                    var t = 1.0 - (diff / (double) levelWindow);
-                    var mult = 1.0 + (maxBonusMult - 1.0) * t;
-                    xpAmount = Math.max(1L, Math.round(xpAmount * mult));
-                }
-                long finalXpAmount = xpAmount;
-                if (finalXpAmount <= 0)
+                long xpAmount = Math.round(base * levelScale);
+                if (xpAmount <= 0)
                     return;
                 store.getExternalData().getWorld().execute(() -> {
                     LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService -> {
@@ -131,13 +123,13 @@ public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
                             PluginManager.get()
                                 .getPlugin(new PluginIdentifier("tsumori", "partypro")) != null
                         ) {
-                            PartyProCompat.onXPGain(finalXpAmount, player.getUuid(), levelService, config, playerRef);
+                            PartyProCompat.onXPGain(xpAmount, player.getUuid(), levelService, config, playerRef);
                         } else if (
                             PluginManager.get()
                                 .getPlugin(new PluginIdentifier("com.carsonk", "Party Plugin")) != null
                         ) {
                             PartyPluginCompat.onXPGain(
-                                finalXpAmount,
+                                xpAmount,
                                 player.getUuid(),
                                 levelService,
                                 config,
@@ -148,9 +140,9 @@ public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
                             if (!config.get().isDisableXPGainNotification())
                                 NotificationsUtil.sendNotification(
                                     playerRef,
-                                    CommandLang.GAINED.param("xp", finalXpAmount)
+                                    CommandLang.GAINED.param("xp", xpAmount)
                                 );
-                            levelService.addXp(player.getUuid(), finalXpAmount);
+                            levelService.addXp(player.getUuid(), xpAmount);
                             XPBarHud.updateHud(playerRef);
                         }
                         LevelingCore.mobLevelRegistry.remove(entity.getUuid());
