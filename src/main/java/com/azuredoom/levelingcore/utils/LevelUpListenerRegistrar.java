@@ -83,7 +83,10 @@ public final class LevelUpListenerRegistrar {
                         levelService.setAbilityPoints(playerId, totalFromLeveling);
 
                         playerRef.sendMessage(
-                            CommandLang.ABILITY_POINTS.param("ability_points", levelService.getAvailableAbilityPoints(playerId))
+                            CommandLang.ABILITY_POINTS.param(
+                                "ability_points",
+                                levelService.getAvailableAbilityPoints(playerId)
+                            )
                                 .param("player_name", playerRef.getUsername())
                         );
                     }
