@@ -200,6 +200,36 @@ public class GUIConfig {
         )
         .add()
         .append(
+            new KeyedCodec<Boolean>("EnablePartyXPSplit", Codec.BOOLEAN),
+            (exConfig, aBoolean, extraInfo) -> exConfig.enablePartyXPSplit = aBoolean,
+            (exConfig, extraInfo) -> exConfig.enablePartyXPSplit
+        )
+        .add()
+        .append(
+            new KeyedCodec<Double>("PartyGroupXPMultiplier", Codec.DOUBLE),
+            (exConfig, aDouble, extraInfo) -> exConfig.partyGroupXPMultiplier = aDouble,
+            (exConfig, extraInfo) -> exConfig.partyGroupXPMultiplier
+        )
+        .add()
+        .append(
+            new KeyedCodec<Boolean>("KillerGetsFullXp", Codec.BOOLEAN),
+            (exConfig, aBoolean, extraInfo) -> exConfig.killerGetsFullXp = aBoolean,
+            (exConfig, extraInfo) -> exConfig.killerGetsFullXp
+        )
+        .add()
+        .append(
+            new KeyedCodec<Boolean>("EnablePartyXPDistanceCheck", Codec.BOOLEAN),
+            (exConfig, aBoolean, extraInfo) -> exConfig.enablePartyXPDistanceCheck = aBoolean,
+            (exConfig, extraInfo) -> exConfig.enablePartyXPDistanceCheck
+        )
+        .add()
+        .append(
+            new KeyedCodec<Double>("PartyXPDistanceBlocks", Codec.DOUBLE),
+            (exConfig, aDouble, extraInfo) -> exConfig.partyXPDistanceBlocks = aDouble,
+            (exConfig, extraInfo) -> exConfig.partyXPDistanceBlocks
+        )
+        .add()
+        .append(
             new KeyedCodec<String>("LevelMode", Codec.STRING),
             (exConfig, aDouble, extraInfo) -> exConfig.levelMode = aDouble,
             (exConfig, extraInfo) -> exConfig.levelMode
@@ -272,6 +302,16 @@ public class GUIConfig {
     private boolean enablePartyProXPShareCompat = true;
 
     private boolean enablePartyPluginXPShareCompat = true;
+
+    private boolean enablePartyXPSplit = false;
+
+    private double partyGroupXPMultiplier = 0.5;
+
+    private boolean killerGetsFullXp = true;
+
+    private boolean enablePartyXPDistanceCheck = false;
+
+    private double partyXPDistanceBlocks = -1;
 
     private boolean showXPAmountInHUD = false;
 
@@ -420,6 +460,26 @@ public class GUIConfig {
 
     public boolean isEnablePartyPluginXPShareCompat() {
         return enablePartyPluginXPShareCompat;
+    }
+
+    public boolean isEnablePartyXPSplit() {
+        return enablePartyXPSplit;
+    }
+
+    public double getPartyGroupXPMultiplier() {
+        return partyGroupXPMultiplier;
+    }
+
+    public boolean isKillerGetsFullXp() {
+        return killerGetsFullXp;
+    }
+
+    public boolean isEnablePartyXPDistanceCheck() {
+        return enablePartyXPDistanceCheck;
+    }
+
+    public double getPartyXPDistanceBlocks() {
+        return partyXPDistanceBlocks;
     }
 
     /**
