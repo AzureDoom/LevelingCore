@@ -62,12 +62,6 @@ public class GUIConfig {
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("EnableXPChatMsgs", Codec.BOOLEAN),
-            (exConfig, aDouble, extraInfo) -> exConfig.enableXPChatMsgs = aDouble,
-            (exConfig, extraInfo) -> exConfig.enableXPChatMsgs
-        )
-        .add()
-        .append(
             new KeyedCodec<Boolean>("DisableXPGainNotification", Codec.BOOLEAN),
             (exConfig, aDouble, extraInfo) -> exConfig.disableXPGainNotification = aDouble,
             (exConfig, extraInfo) -> exConfig.disableXPGainNotification
@@ -77,12 +71,6 @@ public class GUIConfig {
             new KeyedCodec<Boolean>("EnableLevelAndXPTitles", Codec.BOOLEAN),
             (exConfig, aDouble, extraInfo) -> exConfig.enableLevelAndXPTitles = aDouble,
             (exConfig, extraInfo) -> exConfig.enableLevelAndXPTitles
-        )
-        .add()
-        .append(
-            new KeyedCodec<Boolean>("EnableSimplePartyXPShareCompat", Codec.BOOLEAN),
-            (exConfig, aDouble, extraInfo) -> exConfig.enableSimplePartyXPShareCompat = aDouble,
-            (exConfig, extraInfo) -> exConfig.enableSimplePartyXPShareCompat
         )
         .add()
         .append(
@@ -242,12 +230,6 @@ public class GUIConfig {
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("EnableDeathRemovalNoAnimations", Codec.BOOLEAN),
-            (exConfig, aBoolean, extraInfo) -> exConfig.enableDeathRemovalNoAnimations = aBoolean,
-            (exConfig, extraInfo) -> exConfig.enableDeathRemovalNoAnimations
-        )
-        .add()
-        .append(
             new KeyedCodec<Boolean>("EnableXPBarUI", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.enableXPBarUI = aBoolean,
             (exConfig, extraInfo) -> exConfig.enableXPBarUI
@@ -283,13 +265,9 @@ public class GUIConfig {
 
     private boolean enableLevelChatMsgs = false;
 
-    private boolean enableXPChatMsgs = true;
-
     private boolean disableXPGainNotification = false;
 
     private boolean enableLevelAndXPTitles = true;
-
-    private boolean enableSimplePartyXPShareCompat = true;
 
     private boolean enablePartyProXPShareCompat = true;
 
@@ -342,8 +320,6 @@ public class GUIConfig {
     private float mobRangeDamageMultiplier = 0.3F;
 
     private boolean enableItemLevelRestriction = false;
-
-    private boolean enableDeathRemovalNoAnimations = false;
 
     private boolean enableXPBarUI = true;
 
@@ -425,15 +401,6 @@ public class GUIConfig {
         return enableLevelChatMsgs;
     }
 
-    /**
-     * Determines whether the experience points (XP) related chat messages are enabled in the configuration.
-     *
-     * @return {@code true} if XP chat messages are enabled, otherwise {@code false}.
-     */
-    public boolean isEnableXPChatMsgs() {
-        return enableXPChatMsgs;
-    }
-
     public boolean isDisableXPGainNotification() {
         return disableXPGainNotification;
     }
@@ -445,15 +412,6 @@ public class GUIConfig {
      */
     public boolean isEnableLevelAndXPTitles() {
         return enableLevelAndXPTitles;
-    }
-
-    /**
-     * Determines whether the simple party experience points (XP) share compatibility is enabled in the configuration.
-     *
-     * @return {@code true} if simple party XP share compatibility is enabled, otherwise {@code false}.
-     */
-    public boolean isEnableSimplePartyXPShareCompat() {
-        return enableSimplePartyXPShareCompat;
     }
 
     public boolean isEnablePartyProXPShareCompat() {
@@ -588,10 +546,6 @@ public class GUIConfig {
 
     public boolean isEnableItemLevelRestriction() {
         return enableItemLevelRestriction;
-    }
-
-    public boolean isEnableDeathRemovalNoAnimations() {
-        return enableDeathRemovalNoAnimations;
     }
 
     public boolean isEnableXPBarUI() {
