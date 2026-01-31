@@ -143,7 +143,7 @@ public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
                                 playerRef
                             );
                         } else {
-                            // Fallback to default XP gain if SimpleParty is not installed
+                            // Fallback to default XP gain if supported Party mods are not installed
                             if (!config.get().isDisableXPGainNotification())
                                 NotificationsUtil.sendNotification(
                                     playerRef,
