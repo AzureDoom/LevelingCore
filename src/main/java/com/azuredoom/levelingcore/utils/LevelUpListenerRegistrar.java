@@ -11,6 +11,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -56,7 +57,12 @@ public final class LevelUpListenerRegistrar {
                         if (player.getReference() == null)
                             return;
                         var transform = worldStore.getStore()
-                            .getComponent(playerRef.getReference(), EntityModule.get().getTransformComponentType());
+                            .getComponent(
+                                Objects.requireNonNull(
+                                    store.getExternalData().getWorld().getEntityRef(player.getUuid())
+                                ),
+                                EntityModule.get().getTransformComponentType()
+                            );
                         SoundUtil.playSoundEvent3dToPlayer(
                             player.getReference(),
                             levelupSound,

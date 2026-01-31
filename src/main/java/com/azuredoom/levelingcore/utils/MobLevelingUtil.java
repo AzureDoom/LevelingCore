@@ -59,19 +59,23 @@ public class MobLevelingUtil {
     }
 
     public static void applyMobScaling(Config<GUIConfig> config, NPCEntity npc, int level, Store<EntityStore> store) {
-        var healthMult = 1F + ((float) level - 1F) * config.get().getMobHealthMultiplier();
+        store.getExternalData().getWorld().execute(() -> {
+            var healthMult = 1F + ((float) level - 1F) * config.get().getMobHealthMultiplier();
 
-        var stats = store.getComponent(npc.getReference(), EntityStatMap.getComponentType());
-        var healthIndex = DefaultEntityStatTypes.getHealth();
-        var modifier = new StaticModifier(
-            Modifier.ModifierTarget.MAX,
-            StaticModifier.CalculationType.ADDITIVE,
-            healthMult
-        );
-        var modifierKey = "LevelingCore_mob_health";
-        stats.putModifier(healthIndex, modifierKey, modifier);
-        stats.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getHealth());
-        stats.update();
+            if (npc.getReference() == null)
+                return;
+            var stats = store.getComponent(npc.getReference(), EntityStatMap.getComponentType());
+            var healthIndex = DefaultEntityStatTypes.getHealth();
+            var modifier = new StaticModifier(
+                Modifier.ModifierTarget.MAX,
+                StaticModifier.CalculationType.ADDITIVE,
+                healthMult
+            );
+            var modifierKey = "LevelingCore_mob_health";
+            stats.putModifier(healthIndex, modifierKey, modifier);
+            stats.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getHealth());
+            stats.update();
+        });
     }
 
     public static int computeSpawnLevel(NPCEntity npc) {

@@ -103,44 +103,46 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
     }
 
     private void drainPending(@NonNullDecl Store<EntityStore> store) {
-        try {
-            var mobMaxLevel = computeMobMaxLevel();
+        store.getExternalData().getWorld().execute(() -> {
+            try {
+                var mobMaxLevel = computeMobMaxLevel();
 
-            var processed = 0;
-            PendingUpdate u;
+                var processed = 0;
+                PendingUpdate u;
 
-            while (processed < MAX_UPDATES_PER_DRAIN && (u = pending.poll()) != null) {
-                var npc = u.npc();
-                var transform = u.transform();
-                var store1 = u.store();
-                var data = u.data();
+                while (processed < MAX_UPDATES_PER_DRAIN && (u = pending.poll()) != null) {
+                    var npc = u.npc();
+                    var transform = u.transform();
+                    var store1 = u.store();
+                    var data = u.data();
 
-                if (data.locked)
-                    continue;
+                    if (data.locked)
+                        continue;
 
-                var newLevel = Math.max(
-                    1,
-                    Math.min(mobMaxLevel, MobLevelingUtil.computeDynamicLevel(config, npc, transform, store1))
-                );
+                    var newLevel = Math.max(
+                        1,
+                        Math.min(mobMaxLevel, MobLevelingUtil.computeDynamicLevel(config, npc, transform, store1))
+                    );
 
-                if (newLevel != data.level) {
-                    data.level = newLevel;
+                    if (newLevel != data.level) {
+                        data.level = newLevel;
+                    }
+
+                    if (data.level != data.lastAppliedLevel) {
+                        MobLevelingUtil.applyMobScaling(config, npc, data.level, store1);
+                        data.lastAppliedLevel = data.level;
+                    }
+
+                    processed++;
                 }
+            } finally {
+                drainScheduled.set(false);
 
-                if (data.level != data.lastAppliedLevel) {
-                    MobLevelingUtil.applyMobScaling(config, npc, data.level, store1);
-                    data.lastAppliedLevel = data.level;
+                if (!pending.isEmpty() && drainScheduled.compareAndSet(false, true)) {
+                    store.getExternalData().getWorld().execute(() -> drainPending(store));
                 }
-
-                processed++;
             }
-        } finally {
-            drainScheduled.set(false);
-
-            if (!pending.isEmpty() && drainScheduled.compareAndSet(false, true)) {
-                store.getExternalData().getWorld().execute(() -> drainPending(store));
-            }
-        }
+        });
     }
 
     private int computeMobMaxLevel() {
