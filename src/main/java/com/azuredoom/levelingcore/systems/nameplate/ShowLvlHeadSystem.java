@@ -83,7 +83,7 @@ public class ShowLvlHeadSystem implements Runnable {
                 if (lvl == null)
                     continue;
 
-                String text = formatNameplate(config.get().isShowPlayerLvls() ? lvl.level : 0);
+                String text = formatNameplate(config.get().isShowMobLvls() ? lvl.level : 0);
                 insertNameplate(commandBuffer, ref, text);
             }
         });
