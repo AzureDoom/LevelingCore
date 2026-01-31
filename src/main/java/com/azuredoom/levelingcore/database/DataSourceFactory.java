@@ -208,17 +208,37 @@ public final class DataSourceFactory {
     private static String driverClassNameFor(String jdbcUrl) {
         String url = jdbcUrl.toLowerCase();
 
-        if (url.startsWith("jdbc:mysql:"))
+        if (url.startsWith("jdbc:mysql:")) {
+            if (classExists("com.azuredoom.levelingcore.libs.mysql.cj.jdbc.Driver"))
+                return "com.azuredoom.levelingcore.libs.mysql.cj.jdbc.Driver";
             return "com.mysql.cj.jdbc.Driver";
-        if (url.startsWith("jdbc:mariadb:"))
+        }
+        if (url.startsWith("jdbc:mariadb:")) {
+            if (classExists("com.azuredoom.levelingcore.libs.mariadb.jdbc.Driver"))
+                return "com.azuredoom.levelingcore.libs.mariadb.jdbc.Driver";
             return "org.mariadb.jdbc.Driver";
-        if (url.startsWith("jdbc:postgresql:"))
+        }
+        if (url.startsWith("jdbc:postgresql:")) {
+            if (classExists("com.azuredoom.levelingcore.libs.postgresql.Driver"))
+                return "com.azuredoom.levelingcore.libs.postgresql.Driver";
             return "org.postgresql.Driver";
-        if (url.startsWith("jdbc:h2:"))
+        }
+        if (url.startsWith("jdbc:h2:")) {
+            if (classExists("com.azuredoom.levelingcore.libs.h2.Driver"))
+                return "com.azuredoom.levelingcore.libs.h2.Driver";
             return "org.h2.Driver";
-
+        }
         throw new IllegalArgumentException(
             "Unsupported jdbcUrl scheme. Supported: mysql, mariadb, postgresql, h2. Got: " + jdbcUrl
         );
+    }
+
+    private static boolean classExists(String name) {
+        try {
+            Class.forName(name, false, DataSourceFactory.class.getClassLoader());
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 }

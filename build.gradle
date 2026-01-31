@@ -52,8 +52,10 @@ dependencies {
     runtimeOnly fileTree(dir: "$rootDir/libs", include: ["partypro-*"])
     // Needed libs
     shadowBundle 'com.h2database:h2:2.4.240'
-    shadowBundle 'com.zaxxer:HikariCP:7.0.2'
-    shadowBundle 'org.slf4j:slf4j-simple:2.0.17'
+    shadowBundle('com.zaxxer:HikariCP:7.0.2') {
+        exclude group: 'org.slf4j', module: 'slf4j-simple'
+    }
+    shadowBundle 'org.slf4j:slf4j-api:2.0.17'
     shadowBundle 'org.yaml:snakeyaml:2.5'
     shadowBundle 'net.objecthunter:exp4j:0.4.8'
     // Drivers
@@ -138,6 +140,11 @@ shadowJar {
     mergeServiceFiles()
 
     configurations = [project.configurations.shadowBundle]
+
+    relocate 'com.zaxxer.hikari', 'com.azuredoom.levelingcore.libs.hikari'
+    relocate 'org.yaml.snakeyaml', 'com.azuredoom.levelingcore.libs.snakeyaml'
+    relocate 'net.objecthunter.exp4j', 'com.azuredoom.levelingcore.libs.exp4j'
+    relocate 'org.h2', 'com.azuredoom.levelingcore.libs.h2'
 
     manifest {
         attributes(
