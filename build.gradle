@@ -44,8 +44,8 @@ repositories {
 
 dependencies {
     vineflowerTool("org.vineflower:vineflower:1.11.2")
-    compileOnly("com.buuz135:MultipleHUD:1.0.3")
-    runtimeOnly("com.buuz135:MultipleHUD:1.0.3")
+    compileOnly("com.buuz135:MultipleHUD:1.0.4")
+    runtimeOnly("com.buuz135:MultipleHUD:1.0.4")
     compileOnly 'curse.maven:partyinfo-1429469:7526614'
     compileOnly 'curse.maven:partypro-1438292:7529599'
     runtimeOnly 'curse.maven:partypro-1438292:7529599'
