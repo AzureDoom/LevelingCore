@@ -95,7 +95,9 @@ public class StatsScreen extends InteractiveCustomUIPage<StatsScreen.BindingData
         );
         uiCommandBuilder.set(
             "#XP.TextSpans",
-            CommandLang.XP_NEEDED.param("currentXp", currentXp).param("xpForNextLevel", xpForNextLevel).param("percentage", percentage)
+            CommandLang.XP_NEEDED.param("currentXp", currentXp)
+                .param("xpForNextLevel", xpForNextLevel)
+                .param("percentage", String.format("%.1f", percentage))
         );
         uiCommandBuilder.set("#AddStr" + ".HitTestVisible", hasAbilityPoints);
         uiCommandBuilder.set("#AddAgi" + ".HitTestVisible", hasAbilityPoints);

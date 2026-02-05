@@ -5,7 +5,7 @@ levelingcore.levelrequired = You need level {requiredlevel} to use {itemid}. You
 levelingcore.missingmultiplehud = LevelingCore Error: MultipleHUD not found, XP HUD will not work correctly with other mods adding custom UI
 
 levelingcore.showlevel = Level {level}
-levelingcore.xpneeded = XP: {currentXp} / {xpForNextLevel} ({percentage})
+levelingcore.xpneeded = XP: {currentXp} / {xpForNextLevel} ({percentage}%)
 levelingcore.str = STR: {points}
 levelingcore.str.desc = Increases melee damage
 levelingcore.agi = AGI: {points}

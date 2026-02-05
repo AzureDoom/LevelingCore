@@ -5,7 +5,7 @@ levelingcore.levelrequired = Du benötigst Level {requiredlevel}, um {itemid} zu
 levelingcore.missingmultiplehud = LevelingCore-Fehler: MultipleHUD nicht gefunden, das XP-HUD funktioniert nicht korrekt mit anderen Mods, die eine benutzerdefinierte UI hinzufügen
 
 levelingcore.showlevel = Stufe {level}
-levelingcore.xpneeded = Ervaring: {currentXp} / {xpForNextLevel} ({percentage})
+levelingcore.xpneeded = Ervaring: {currentXp} / {xpForNextLevel} ({percentage}%)
 levelingcore.str = STR: {points}
 levelingcore.str.desc = Erhöht den Nahkampfschaden
 levelingcore.agi = AGI: {points}

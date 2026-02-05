@@ -5,7 +5,7 @@ levelingcore.levelrequired = Вам нужен уровень {requiredlevel}, �
 levelingcore.missingmultiplehud = Ошибка LevelingCore: MultipleHUD не найден, HUD опыта не будет корректно работать с другими модами, добавляющими пользовательский интерфейс
 
 levelingcore.showlevel = Уровень {level}
-levelingcore.xpneeded = Опыт: {currentXp} / {xpForNextLevel} ({percentage})
+levelingcore.xpneeded = Опыт: {currentXp} / {xpForNextLevel} ({percentage}%)
 levelingcore.str = STR: {points}
 levelingcore.str.desc = Увеличивает урон в ближнем бою
 levelingcore.agi = AGI: {points}

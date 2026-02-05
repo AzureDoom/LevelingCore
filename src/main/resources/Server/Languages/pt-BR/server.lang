@@ -5,7 +5,7 @@ levelingcore.levelrequired = Você precisa do nível {requiredlevel} para usar {
 levelingcore.missingmultiplehud = Erro do LevelingCore: MultipleHUD não encontrado, o HUD de XP não funcionará corretamente com outros mods que adicionam uma interface personalizada
 
 levelingcore.showlevel = Nível {level}
-levelingcore.xpneeded = XP: {currentXp} / {xpForNextLevel} ({percentage})
+levelingcore.xpneeded = XP: {currentXp} / {xpForNextLevel} ({percentage}%)
 levelingcore.str = STR: {points}
 levelingcore.str.desc = Aumenta o dano corpo a corpo
 levelingcore.agi = AGI: {points}
