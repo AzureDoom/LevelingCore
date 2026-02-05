@@ -19,7 +19,7 @@ public class XPBarHud extends CustomUIHud {
 
     public static final WeakHashMap<PlayerRef, XPBarHud> hudMap = new WeakHashMap<>();
 
-    private LevelServiceImpl levelServiceImpl;
+    private final LevelServiceImpl levelServiceImpl;
 
     private final Config<GUIConfig> config;
 
@@ -36,8 +36,8 @@ public class XPBarHud extends CustomUIHud {
 
     @Override
     protected void build(@NonNullDecl UICommandBuilder uiCommandBuilder) {
-        //update(uiCommandBuilder);
         uiCommandBuilder.append("Huds/LevelingCore/xpbar.ui");
+        // update(uiCommandBuilder);
     }
 
     public void update(UICommandBuilder uiCommandBuilder) {
