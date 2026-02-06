@@ -28,6 +28,26 @@
                     <p id="playerXP" style="color: #FFD700; font-weight: bold; padding-left: 2;">{{$currentXp}}</p>
                     <p id="ability_points" style="color: #FFD700; font-weight: bold; padding-left: 2;">Available Stat Points: {{$ability_points}}</p>
                 </div>
+                <div style="layout-mode: top">
+                    <div style="layout-mode: left">
+                        <div>
+                            <img src="Pages/LevelingCore/health@2x.png" width="20" height="20" style="padding-left: 40"/>
+                        </div>
+                        <p id="health" style="font-weight: bold;horizontal-align: center;padding-left: 2;">Health: {{$playerHealth}}/{{$playerHealthMax}}</p>
+                    </div>
+                    <div style="layout-mode: left">
+                        <div>
+                            <img src="Pages/LevelingCore/stamina@2x.png" width="20" height="20" style="padding-left: 40"/>
+                        </div>
+                        <p id="mana" style="font-weight: bold;horizontal-align: center;padding-left: 2;">Stamina: {{$playerStamina}}/{{$playerStaminaMax}}</p>
+                    </div>
+                    <div style="layout-mode: left">
+                        <div>
+                            <img src="Pages/LevelingCore/mana@2x.png" width="20" height="20" style="padding-left: 40"/>
+                        </div>
+                        <p id="stamina" style="font-weight: bold;horizontal-align: center;padding-left: 2;">Mana: {{$playerMana}}/{{$playerManaMax}}</p>
+                    </div>
+                </div>
             </div>
             <div class="box">
                 <div style="layout-mode: left">

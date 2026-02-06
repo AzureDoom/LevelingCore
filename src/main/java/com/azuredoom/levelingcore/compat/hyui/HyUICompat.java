@@ -15,6 +15,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.lang.CommandLang;
+import com.azuredoom.levelingcore.utils.StatsUtils;
 
 public class HyUICompat {
 
@@ -41,44 +42,71 @@ public class HyUICompat {
         var manaModifierKey = "LevelingCore_mana_stat";
 
         var template = new TemplateProcessor()
+            .setVariable(
+                "playerHealth",
+                String.format("%.0f", StatsUtils.formatXp(playerStatMap.get(healthIndex).get()))
+            )
+            .setVariable(
+                "playerHealthMax",
+                String.format("%.0f", StatsUtils.formatXp(playerStatMap.get(healthIndex).getMax()))
+            )
+            .setVariable(
+                "playerStamina",
+                String.format("%.0f", StatsUtils.formatXp(playerStatMap.get(staminaIndex).get()))
+            )
+            .setVariable(
+                "playerStaminaMax",
+                String.format("%.0f", StatsUtils.formatXp(playerStatMap.get(staminaIndex).getMax()))
+            )
+            .setVariable("playerMana", String.format("%.0f", StatsUtils.formatXp(playerStatMap.get(manaIndex).get())))
+            .setVariable(
+                "playerManaMax",
+                String.format("%.0f", StatsUtils.formatXp(playerStatMap.get(manaIndex).getMax()))
+            )
             .setVariable("playerName", playerRef.getUsername())
             .setVariable("playerLevel", CommandLang.SHOW_LEVEL.param("level", currentLevel).getAnsiMessage())
             .setVariable(
                 "currentXp",
-                CommandLang.XP_NEEDED.param("currentXp", currentXp)
-                    .param("xpForNextLevel", xpForNextLevel)
+                CommandLang.XP_NEEDED.param("currentXp", StatsUtils.formatXp(currentXp))
+                    .param("xpForNextLevel", StatsUtils.formatXp(xpForNextLevel))
                     .param("percentage", String.format("%.1f", percentage))
                     .getAnsiMessage()
             )
-            .setVariable("ability_points", levelService.getAvailableAbilityPoints(uuid))
+            .setVariable("ability_points", StatsUtils.formatXp(levelService.getAvailableAbilityPoints(uuid)))
             .setVariable(
                 "strength",
-                CommandLang.STR.param("points", levelService.getStr(playerRef.getUuid())).getAnsiMessage()
+                CommandLang.STR.param("points", StatsUtils.formatXp(levelService.getStr(playerRef.getUuid())))
+                    .getAnsiMessage()
             )
             .setVariable("strength_desc", CommandLang.STR_DESC.getAnsiMessage())
             .setVariable(
                 "agility",
-                CommandLang.AGI.param("points", levelService.getAgi(playerRef.getUuid())).getAnsiMessage()
+                CommandLang.AGI.param("points", StatsUtils.formatXp(levelService.getAgi(playerRef.getUuid())))
+                    .getAnsiMessage()
             )
             .setVariable("agility_desc", CommandLang.AGI_DESC.getAnsiMessage())
             .setVariable(
                 "perception",
-                CommandLang.PER.param("points", levelService.getPer(playerRef.getUuid())).getAnsiMessage()
+                CommandLang.PER.param("points", StatsUtils.formatXp(levelService.getPer(playerRef.getUuid())))
+                    .getAnsiMessage()
             )
             .setVariable("perception_desc", CommandLang.PER_DESC.getAnsiMessage())
             .setVariable(
                 "vitality",
-                CommandLang.VIT.param("points", levelService.getVit(playerRef.getUuid())).getAnsiMessage()
+                CommandLang.VIT.param("points", StatsUtils.formatXp(levelService.getVit(playerRef.getUuid())))
+                    .getAnsiMessage()
             )
             .setVariable("vitality_desc", CommandLang.VIT_DESC.getAnsiMessage())
             .setVariable(
                 "intelligence",
-                CommandLang.INT.param("points", levelService.getInt(playerRef.getUuid())).getAnsiMessage()
+                CommandLang.INT.param("points", StatsUtils.formatXp(levelService.getInt(playerRef.getUuid())))
+                    .getAnsiMessage()
             )
             .setVariable("intelligence_desc", CommandLang.INT_DESC.getAnsiMessage())
             .setVariable(
                 "constitution",
-                CommandLang.CON.param("points", levelService.getCon(playerRef.getUuid())).getAnsiMessage()
+                CommandLang.CON.param("points", StatsUtils.formatXp(levelService.getCon(playerRef.getUuid())))
+                    .getAnsiMessage()
             )
             .setVariable("constitution_desc", CommandLang.CON_DESC.getAnsiMessage());
         PageBuilder.pageForPlayer(playerRef)
