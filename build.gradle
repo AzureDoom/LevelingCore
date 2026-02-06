@@ -52,8 +52,8 @@ dependencies {
     compileOnly 'curse.maven:partyinfo-1429469:7526614'
     compileOnly 'curse.maven:partypro-1438292:7529599'
     runtimeOnly 'curse.maven:partypro-1438292:7529599'
-    compileOnly "curse.maven:hyui-1431415:7567866"
-    runtimeOnly "curse.maven:hyui-1431415:7567866"
+    compileOnly "curse.maven:hyui-1431415:7581227"
+    runtimeOnly "curse.maven:hyui-1431415:7581227"
     compileOnly "curse.maven:automultihud-1451807:7579370"
     runtimeOnly "curse.maven:automultihud-1451807:7579370"
     compileOnly "curse.maven:placeholderlib-1438208:7540696"
