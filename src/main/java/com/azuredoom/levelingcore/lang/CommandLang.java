@@ -90,4 +90,8 @@ public class CommandLang {
         "commands.levelingcore.addlevel.maxlevelreached"
     );
 
+    public static final Message CANNOT_REMOVE_LEVEL_BELOW_ONE = Message.translation(
+        "commands.levelingcore.removelevel.canremovelevelzero"
+    );
+
 }
