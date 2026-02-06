@@ -87,7 +87,8 @@ public class StatsScreen extends InteractiveCustomUIPage<StatsScreen.BindingData
         var hasAbilityPoints = levelService.getAvailableAbilityPoints(playerUUID) > 0;
         var currentLevel = levelService.getLevel(playerUUID);
         var currentXp = levelService.getXp(playerUUID) - levelService.getXpForLevel(currentLevel);
-        var xpForNextLevel = levelService.getXpForLevel(levelService.getLevel(playerUUID) + 1) - levelService.getXpForLevel(currentLevel);
+        var xpForNextLevel = levelService.getXpForLevel(levelService.getLevel(playerUUID) + 1) - levelService
+            .getXpForLevel(currentLevel);
         var percentage = (float) currentXp / xpForNextLevel * 100;
 
         uiCommandBuilder.set(
