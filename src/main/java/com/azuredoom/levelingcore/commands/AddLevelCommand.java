@@ -1,6 +1,5 @@
 package com.azuredoom.levelingcore.commands;
 
-import com.azuredoom.levelingcore.utils.LevelingUtil;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
@@ -19,6 +18,7 @@ import javax.annotation.Nonnull;
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.lang.CommandLang;
+import com.azuredoom.levelingcore.utils.LevelingUtil;
 
 /**
  * The AddLevelCommand class is responsible for handling the command logic to add levels to a player's progress using

@@ -17,14 +17,18 @@ import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.lang.CommandLang;
 import com.azuredoom.levelingcore.utils.StatsUtils;
 
+import java.util.logging.Level;
+
 public class HyUICompat {
 
     private HyUICompat() {}
 
     public static void showStats(PlayerRef playerRef, Store<EntityStore> store, Ref<EntityStore> ref) {
         var levelService = LevelingCoreApi.getLevelServiceIfPresent().orElse(null);
-        if (levelService == null)
+        if (levelService == null) {
+            LevelingCore.LOGGER.at(Level.INFO).log("Opened stats page for player");
             return;
+        }
         var uuid = playerRef.getUuid();
         var currentLevel = levelService.getLevel(uuid);
         var config = LevelingCore.getConfig();

@@ -64,8 +64,10 @@ public class RemoveLevelCommand extends AbstractPlayerCommand {
         var currentLevel = levelService.getLevel(playerUUID);
 
         if (currentLevel - levelRef <= 0) {
-            commandContext.sendMessage(CommandLang.CANNOT_REMOVE_LEVEL_BELOW_ONE
-                    .param("player", playerRef.getUsername()));
+            commandContext.sendMessage(
+                CommandLang.CANNOT_REMOVE_LEVEL_BELOW_ONE
+                    .param("player", playerRef.getUsername())
+            );
             return;
         }
         levelService.removeLevel(playerUUID, levelRef);

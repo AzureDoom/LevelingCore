@@ -67,13 +67,17 @@ public class RemoveXpCommand extends AbstractPlayerCommand {
         var totalXp = levelService.getXp(playerUUID);
         var minXpForLevelOne = levelService.getXpForLevel(1);
         if (totalXp - xpRef < minXpForLevelOne) {
-            commandContext.sendMessage(CommandLang.CANNOT_REMOVE_LEVEL_BELOW_ONE
-                    .param("player", playerRef.getUsername()));
+            commandContext.sendMessage(
+                CommandLang.CANNOT_REMOVE_LEVEL_BELOW_ONE
+                    .param("player", playerRef.getUsername())
+            );
             return;
         }
         if (currentXp - xpRef < 0) {
-            commandContext.sendMessage(CommandLang.CANNOT_REMOVE_LEVEL_BELOW_ONE
-                    .param("player", playerRef.getUsername()));
+            commandContext.sendMessage(
+                CommandLang.CANNOT_REMOVE_LEVEL_BELOW_ONE
+                    .param("player", playerRef.getUsername())
+            );
             return;
         }
         levelService.removeXp(playerUUID, xpRef);

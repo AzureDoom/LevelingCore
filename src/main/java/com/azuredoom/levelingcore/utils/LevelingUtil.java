@@ -1,9 +1,9 @@
 package com.azuredoom.levelingcore.utils;
 
+import java.util.Locale;
+
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.level.formulas.loader.LevelTableLoader;
-
-import java.util.Locale;
 
 public class LevelingUtil {
 

@@ -1,6 +1,5 @@
 package com.azuredoom.levelingcore.commands;
 
-import com.azuredoom.levelingcore.utils.LevelingUtil;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
@@ -14,14 +13,12 @@ import com.hypixel.hytale.server.core.util.Config;
 import com.hypixel.hytale.server.core.util.EventTitleUtil;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
-import java.util.Locale;
 import javax.annotation.Nonnull;
 
-import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.lang.CommandLang;
-import com.azuredoom.levelingcore.level.formulas.loader.LevelTableLoader;
+import com.azuredoom.levelingcore.utils.LevelingUtil;
 
 /**
  * This class represents a command that allows adjusting the level of a player within the context of the leveling

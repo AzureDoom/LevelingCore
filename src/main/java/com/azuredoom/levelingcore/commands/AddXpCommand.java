@@ -1,6 +1,5 @@
 package com.azuredoom.levelingcore.commands;
 
-import com.azuredoom.levelingcore.utils.LevelingUtil;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
@@ -19,6 +18,7 @@ import javax.annotation.Nonnull;
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.lang.CommandLang;
+import com.azuredoom.levelingcore.utils.LevelingUtil;
 
 /**
  * The AddXpCommand class is responsible for handling the logic to add experience points (XP) to a player's progress
@@ -67,8 +67,10 @@ public class AddXpCommand extends AbstractPlayerCommand {
         int maxLevel = LevelingUtil.computeMaxLevel();
         int currentLevel = levelService.getLevel(playerUUID);
         if (currentLevel >= maxLevel) {
-            commandContext.sendMessage(CommandLang.ADD_LEVEL_MAX_LEVEL_REACHED
-                    .param("player", playerRef.getUsername()));
+            commandContext.sendMessage(
+                CommandLang.ADD_LEVEL_MAX_LEVEL_REACHED
+                    .param("player", playerRef.getUsername())
+            );
             return;
         }
         levelService.addXp(playerUUID, xpRef);
