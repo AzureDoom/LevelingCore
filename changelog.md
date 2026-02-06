@@ -1,5 +1,7 @@
 v0.9.4 
 - Fixed a bug where the new HyUI stats menu would not properly apply stat increases for health, stamina, oxygen, and mana.
+- Added optional support for AutoMultiHud to not show the MultipleHud missing message.
+- Started basic support for PlaceholderLib and PlaceholderAPI but not release ready yet.
 
 v0.9.3
 - Fixed a bug where the StatsPerLevel config option could be lower than 5
