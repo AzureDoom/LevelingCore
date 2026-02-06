@@ -321,7 +321,8 @@ if (keyPropsFile.exists()) {
                     "party-info",
                     "better-modlist",
                     "update-checker",
-                    "automultihud"
+                    "automultihud",
+                    "placeholder-api"
             ]
 
             def dependencies = []

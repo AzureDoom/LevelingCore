@@ -20,7 +20,8 @@
         "com.carsonk:Party Plugin": "*",
         "tsumori:partypro": "*",
         "Ellie:HyUI": "*",
-        "AutoMultiHud:AutoMultiHud": "*"
+        "AutoMultiHud:AutoMultiHud": "*",
+        "HelpChat:PlaceholderAPI": ">= 1.0.4"
     },
     "DisabledByDefault": false,
     "Main": "com.azuredoom.levelingcore.LevelingCore",
