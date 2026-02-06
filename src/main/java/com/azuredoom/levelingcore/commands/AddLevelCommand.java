@@ -1,5 +1,6 @@
 package com.azuredoom.levelingcore.commands;
 
+import com.azuredoom.levelingcore.utils.LevelingUtil;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
@@ -62,6 +63,10 @@ public class AddLevelCommand extends AbstractPlayerCommand {
         }
         playerRef = this.playerArg.get(commandContext);
         var levelRef = this.levelArg.get(commandContext);
+        if (levelRef > LevelingUtil.computeMaxLevel()) {
+            commandContext.sendMessage(CommandLang.ADD_LEVEL_MAX_LEVEL_REACHED);
+            return;
+        }
         var playerUUID = playerRef.getUuid();
         levelService.addLevel(playerUUID, levelRef);
         var level = levelService.getLevel(playerUUID);
