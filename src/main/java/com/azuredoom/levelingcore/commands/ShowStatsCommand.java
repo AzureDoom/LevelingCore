@@ -16,8 +16,6 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
-import java.util.concurrent.CompletableFuture;
-
 import com.azuredoom.levelingcore.compat.hyui.HyUICompat;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.lang.CommandLang;
@@ -44,28 +42,26 @@ public class ShowStatsCommand extends AbstractPlayerCommand {
     ) {
         var player = commandContext.senderAs(Player.class);
 
-        CompletableFuture.runAsync(() -> {
-            if (config.get().isDisableStatPointGainOnLevelUp()) {
-                playerRef.sendMessage(CommandLang.STATS_DISABLED);
-                return;
+        if (config.get().isDisableStatPointGainOnLevelUp()) {
+            playerRef.sendMessage(CommandLang.STATS_DISABLED);
+            return;
+        }
+        if (player.getPageManager().getCustomPage() == null) {
+            if (PluginManager.get().getPlugin(new PluginIdentifier("Ellie", "HyUI")) != null) {
+                HyUICompat.showStats(playerRef, store, ref);
+            } else {
+                var page = new StatsScreen(
+                    playerRef,
+                    CustomPageLifetime.CanDismissOrCloseThroughInteraction,
+                    config
+                );
+                player.getPageManager().openCustomPage(ref, store, page);
+                player.sendMessage(
+                    Message.raw(
+                        "Missing HyUI plugin, stats will be shown in old screen. Please install HyUI to use the new screen."
+                    )
+                );
             }
-            if (player.getPageManager().getCustomPage() == null) {
-                if (PluginManager.get().getPlugin(new PluginIdentifier("Ellie", "HyUI")) != null) {
-                    HyUICompat.showStats(playerRef, store, ref);
-                } else {
-                    var page = new StatsScreen(
-                        playerRef,
-                        CustomPageLifetime.CanDismissOrCloseThroughInteraction,
-                        config
-                    );
-                    player.getPageManager().openCustomPage(ref, store, page);
-                    player.sendMessage(
-                        Message.raw(
-                            "Missing HyUI plugin, stats will be shown in old screen. Please install HyUI to use the new screen."
-                        )
-                    );
-                }
-            }
-        }, world);
+        }
     }
 }
