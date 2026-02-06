@@ -125,6 +125,8 @@ public class StatsUtils {
             return String.format("%.2fB", value / 1_000_000_000);
         if (value >= 1_000_000)
             return String.format("%.2fM", value / 1_000_000);
+        if (value >= 500_000)
+            return String.format("%.2fk", value / 1_000);
         return String.format("%.0f", value);
     }
 }
