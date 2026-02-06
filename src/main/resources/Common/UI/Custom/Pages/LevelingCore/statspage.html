@@ -13,6 +13,9 @@
     @MyButtonBg {
         background-color: rgba(68, 118, 167);
     }
+    @MyButtonBg5 {
+        background-color: rgba(68, 118, 167, 0.85);
+    }
 </style>
 <div class="page-overlay">
     <div class="decorated-container status-window" data-hyui-title="" style="anchor-width: 600; anchor-height: 630;">
@@ -60,7 +63,19 @@
                     </div>
                 </div>
                 <div style="layout-mode: right">
-                    <button id="AddStr" class="custom-button" data-hyui-default-bg="@MyButtonBg" style="anchor-width: 44; anchor-height: 44; padding-right: 10">
+                    <button id="AddStr5"
+                            class="custom-button"
+                            data-hyui-default-bg="@MyButtonBg5"
+                            style="anchor-width: 44; anchor-height: 44; padding-right: 6; {{#if available_points < 5}}visibility: hidden;{{/if}}">
+                        <div style="layout-mode: top; horizontal-align: center; vertical-align: center;">
+                            <p style="horizontal-align: center; font-size: 22; padding-top: 6; padding-left: -10;font-weight: bold;">+</p>
+                            <p style="horizontal-align: center; font-size: 16; padding-top: -25; padding-left: 15;font-weight: bold;">5</p>
+                        </div>
+                    </button>
+                    <button id="AddStr"
+                            class="custom-button"
+                            data-hyui-default-bg="@MyButtonBg"
+                            style="anchor-width: 44; anchor-height: 44; padding-right: 10; {{#if available_points <= 0}}visibility: hidden;{{/if}}">
                         <p style="horizontal-align: center; font-size: 30">+</p>
                     </button>
                 </div>
@@ -76,7 +91,19 @@
                     </div>
                 </div>
                 <div style="layout-mode: right">
-                    <button id="AddAgi" class="custom-button" data-hyui-default-bg="@MyButtonBg" style="anchor-width: 44; anchor-height: 44; padding-right: 10">
+                    <button id="AddAgi5"
+                            class="custom-button"
+                            data-hyui-default-bg="@MyButtonBg5"
+                            style="anchor-width: 44; anchor-height: 44; padding-right: 6; {{#if available_points < 5}}visibility: hidden;{{/if}}">
+                        <div style="layout-mode: top; horizontal-align: center; vertical-align: center;">
+                            <p style="horizontal-align: center; font-size: 22; padding-top: 6; padding-left: -10;font-weight: bold;">+</p>
+                            <p style="horizontal-align: center; font-size: 16; padding-top: -25; padding-left: 15;font-weight: bold;">5</p>
+                        </div>
+                    </button>
+                    <button id="AddAgi"
+                            class="custom-button"
+                            data-hyui-default-bg="@MyButtonBg"
+                            style="anchor-width: 44; anchor-height: 44; padding-right: 10; {{#if available_points <= 0}}visibility: hidden;{{/if}}">
                         <p style="horizontal-align: center; font-size: 30">+</p>
                     </button>
                 </div>
@@ -92,7 +119,19 @@
                     </div>
                 </div>
                 <div style="layout-mode: right">
-                    <button id="AddPer" class="custom-button" data-hyui-default-bg="@MyButtonBg" style="anchor-width: 44; anchor-height: 44; padding-right: 10">
+                    <button id="AddPer5"
+                            class="custom-button"
+                            data-hyui-default-bg="@MyButtonBg5"
+                            style="anchor-width: 44; anchor-height: 44; padding-right: 6; {{#if available_points < 5}}visibility: hidden;{{/if}}">
+                        <div style="layout-mode: top; horizontal-align: center; vertical-align: center;">
+                            <p style="horizontal-align: center; font-size: 22; padding-top: 6; padding-left: -10;font-weight: bold;">+</p>
+                            <p style="horizontal-align: center; font-size: 16; padding-top: -25; padding-left: 15;font-weight: bold;">5</p>
+                        </div>
+                    </button>
+                    <button id="AddPer"
+                            class="custom-button"
+                            data-hyui-default-bg="@MyButtonBg"
+                            style="anchor-width: 44; anchor-height: 44; padding-right: 10; {{#if available_points <= 0}}visibility: hidden;{{/if}}">
                         <p style="horizontal-align: center; font-size: 30">+</p>
                     </button>
                 </div>
@@ -108,7 +147,19 @@
                     </div>
                 </div>
                 <div style="layout-mode: right">
-                    <button id="AddVit" class="custom-button" data-hyui-default-bg="@MyButtonBg" style="anchor-width: 44; anchor-height: 44; padding-right: 10">
+                    <button id="AddVit5"
+                            class="custom-button"
+                            data-hyui-default-bg="@MyButtonBg5"
+                            style="anchor-width: 44; anchor-height: 44; padding-right: 6; {{#if available_points < 5}}visibility: hidden;{{/if}}">
+                        <div style="layout-mode: top; horizontal-align: center; vertical-align: center;">
+                            <p style="horizontal-align: center; font-size: 22; padding-top: 6; padding-left: -10;font-weight: bold;">+</p>
+                            <p style="horizontal-align: center; font-size: 16; padding-top: -25; padding-left: 15;font-weight: bold;">5</p>
+                        </div>
+                    </button>
+                    <button id="AddVit"
+                            class="custom-button"
+                            data-hyui-default-bg="@MyButtonBg"
+                            style="anchor-width: 44; anchor-height: 44; padding-right: 10; {{#if available_points <= 0}}visibility: hidden;{{/if}}">
                         <p style="horizontal-align: center; font-size: 30">+</p>
                     </button>
                 </div>
@@ -124,7 +175,19 @@
                     </div>
                 </div>
                 <div style="layout-mode: right">
-                    <button id="AddInt" class="custom-button" data-hyui-default-bg="@MyButtonBg" style="anchor-width: 44; anchor-height: 44; padding-right: 10">
+                    <button id="AddInt5"
+                            class="custom-button"
+                            data-hyui-default-bg="@MyButtonBg5"
+                            style="anchor-width: 44; anchor-height: 44; padding-right: 6; {{#if available_points < 5}}visibility: hidden;{{/if}}">
+                        <div style="layout-mode: top; horizontal-align: center; vertical-align: center;">
+                            <p style="horizontal-align: center; font-size: 22; padding-top: 6; padding-left: -10;font-weight: bold;">+</p>
+                            <p style="horizontal-align: center; font-size: 16; padding-top: -25; padding-left: 15;font-weight: bold;">5</p>
+                        </div>
+                    </button>
+                    <button id="AddInt"
+                            class="custom-button"
+                            data-hyui-default-bg="@MyButtonBg"
+                            style="anchor-width: 44; anchor-height: 44; padding-right: 10; {{#if available_points <= 0}}visibility: hidden;{{/if}}">
                         <p style="horizontal-align: center; font-size: 30">+</p>
                     </button>
                 </div>
@@ -140,7 +203,19 @@
                     </div>
                 </div>
                 <div style="layout-mode: right">
-                    <button id="AddCon" class="custom-button" data-hyui-default-bg="@MyButtonBg" style="anchor-width: 44; anchor-height: 44; padding-right: 10">
+                    <button id="AddCon5"
+                            class="custom-button"
+                            data-hyui-default-bg="@MyButtonBg5"
+                            style="anchor-width: 44; anchor-height: 44; padding-right: 6; {{#if available_points < 5}}visibility: hidden;{{/if}}">
+                        <div style="layout-mode: top; horizontal-align: center; vertical-align: center;">
+                            <p style="horizontal-align: center; font-size: 22; padding-top: 6; padding-left: -10;font-weight: bold;">+</p>
+                            <p style="horizontal-align: center; font-size: 16; padding-top: -25; padding-left: 15;font-weight: bold;">5</p>
+                        </div>
+                    </button>
+                    <button id="AddCon"
+                            class="custom-button"
+                            data-hyui-default-bg="@MyButtonBg"
+                            style="anchor-width: 44; anchor-height: 44; padding-right: 10; {{#if available_points <= 0}}visibility: hidden;{{/if}}">
                         <p style="horizontal-align: center; font-size: 30">+</p>
                     </button>
                 </div>

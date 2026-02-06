@@ -77,6 +77,7 @@ public class HyUICompat {
                     .getAnsiMessage()
             )
             .setVariable("ability_points", StatsUtils.formatXp(levelService.getAvailableAbilityPoints(uuid)))
+            .setVariable("available_points", levelService.getAvailableAbilityPoints(uuid))
             .setVariable(
                 "strength",
                 CommandLang.STR.param("points", StatsUtils.formatXp(levelService.getStr(playerRef.getUuid())))
@@ -121,10 +122,31 @@ public class HyUICompat {
                 levelService.setStr(uuid, levelService.getStr(uuid) + 1);
                 levelService.useAbilityPoints(uuid, 1);
                 template.setVariable("ability_points", levelService.getAvailableAbilityPoints(uuid));
+                template.setVariable("available_points", levelService.getAvailableAbilityPoints(uuid));
                 template.setVariable(
                     "strength",
                     CommandLang.STR.param("points", levelService.getStr(uuid)).getAnsiMessage()
                 );
+                ctx.updatePage(false);
+            })
+            .addEventListener("AddStr5", CustomUIEventBindingType.Activating, (data, ctx) -> {
+                int points = levelService.getAvailableAbilityPoints(uuid);
+                if (points < 5)
+                    return;
+
+                levelService.setStr(uuid, levelService.getStr(uuid) + 5);
+                levelService.useAbilityPoints(uuid, 5);
+
+                int newPoints = levelService.getAvailableAbilityPoints(uuid);
+
+                template.setVariable("available_points", newPoints);
+                template.setVariable("ability_points", StatsUtils.formatXp(newPoints));
+
+                template.setVariable(
+                    "strength",
+                    CommandLang.STR.param("points", StatsUtils.formatXp(levelService.getStr(uuid))).getAnsiMessage()
+                );
+
                 ctx.updatePage(false);
             })
             .addEventListener("AddAgi", CustomUIEventBindingType.Activating, (data, ctx) -> {
@@ -147,10 +169,45 @@ public class HyUICompat {
                 playerStatMap.putModifier(oxygenIndex, oxygenModifierKey, oxygenModifier);
                 playerStatMap.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getStamina());
                 template.setVariable("ability_points", levelService.getAvailableAbilityPoints(uuid));
+                template.setVariable("available_points", levelService.getAvailableAbilityPoints(uuid));
                 template.setVariable(
                     "agility",
                     CommandLang.AGI.param("points", levelService.getAgi(uuid)).getAnsiMessage()
                 );
+                ctx.updatePage(false);
+            })
+            .addEventListener("AddAgi5", CustomUIEventBindingType.Activating, (data, ctx) -> {
+                int points = levelService.getAvailableAbilityPoints(uuid);
+                if (points < 5)
+                    return;
+
+                levelService.setAgi(uuid, levelService.getAgi(uuid) + 5);
+                levelService.useAbilityPoints(uuid, 5);
+
+                var staminaModifier = new StaticModifier(
+                    Modifier.ModifierTarget.MAX,
+                    StaticModifier.CalculationType.ADDITIVE,
+                    levelService.getAgi(uuid) * config.get().getAgiStatMultiplier()
+                );
+                var oxygenModifier = new StaticModifier(
+                    Modifier.ModifierTarget.MAX,
+                    StaticModifier.CalculationType.ADDITIVE,
+                    levelService.getAgi(uuid) * config.get().getAgiStatMultiplier()
+                );
+                playerStatMap.putModifier(staminaIndex, staminaModifierKey, staminaModifier);
+                playerStatMap.putModifier(oxygenIndex, oxygenModifierKey, oxygenModifier);
+                playerStatMap.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getStamina());
+
+                int newPoints = levelService.getAvailableAbilityPoints(uuid);
+
+                template.setVariable("available_points", newPoints);
+                template.setVariable("ability_points", StatsUtils.formatXp(newPoints));
+
+                template.setVariable(
+                    "agility",
+                    CommandLang.AGI.param("points", StatsUtils.formatXp(levelService.getAgi(uuid))).getAnsiMessage()
+                );
+
                 ctx.updatePage(false);
             })
             .addEventListener("AddPer", CustomUIEventBindingType.Activating, (data, ctx) -> {
@@ -159,10 +216,31 @@ public class HyUICompat {
                 levelService.setPer(uuid, levelService.getPer(uuid) + 1);
                 levelService.useAbilityPoints(uuid, 1);
                 template.setVariable("ability_points", levelService.getAvailableAbilityPoints(uuid));
+                template.setVariable("available_points", levelService.getAvailableAbilityPoints(uuid));
                 template.setVariable(
                     "perception",
                     CommandLang.PER.param("points", levelService.getPer(uuid)).getAnsiMessage()
                 );
+                ctx.updatePage(false);
+            })
+            .addEventListener("AddPer5", CustomUIEventBindingType.Activating, (data, ctx) -> {
+                int points = levelService.getAvailableAbilityPoints(uuid);
+                if (points < 5)
+                    return;
+
+                levelService.setPer(uuid, levelService.getPer(uuid) + 5);
+                levelService.useAbilityPoints(uuid, 5);
+
+                int newPoints = levelService.getAvailableAbilityPoints(uuid);
+
+                template.setVariable("available_points", newPoints);
+                template.setVariable("ability_points", StatsUtils.formatXp(newPoints));
+
+                template.setVariable(
+                    "perception",
+                    CommandLang.PER.param("points", StatsUtils.formatXp(levelService.getPer(uuid))).getAnsiMessage()
+                );
+
                 ctx.updatePage(false);
             })
             .addEventListener("AddVit", CustomUIEventBindingType.Activating, (data, ctx) -> {
@@ -178,10 +256,38 @@ public class HyUICompat {
                 playerStatMap.putModifier(healthIndex, healthModifierKey, healthModifier);
                 playerStatMap.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getHealth());
                 template.setVariable("ability_points", levelService.getAvailableAbilityPoints(uuid));
+                template.setVariable("available_points", levelService.getAvailableAbilityPoints(uuid));
                 template.setVariable(
                     "vitality",
                     CommandLang.VIT.param("points", levelService.getVit(uuid)).getAnsiMessage()
                 );
+                ctx.updatePage(false);
+            })
+            .addEventListener("AddVit5", CustomUIEventBindingType.Activating, (data, ctx) -> {
+                int points = levelService.getAvailableAbilityPoints(uuid);
+                if (points < 5)
+                    return;
+
+                levelService.setVit(uuid, levelService.getVit(uuid) + 5);
+                levelService.useAbilityPoints(uuid, 5);
+                var healthModifier = new StaticModifier(
+                    Modifier.ModifierTarget.MAX,
+                    StaticModifier.CalculationType.ADDITIVE,
+                    levelService.getVit(uuid) * config.get().getVitStatMultiplier()
+                );
+                playerStatMap.putModifier(healthIndex, healthModifierKey, healthModifier);
+                playerStatMap.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getHealth());
+
+                int newPoints = levelService.getAvailableAbilityPoints(uuid);
+
+                template.setVariable("available_points", newPoints);
+                template.setVariable("ability_points", StatsUtils.formatXp(newPoints));
+
+                template.setVariable(
+                    "vitality",
+                    CommandLang.VIT.param("points", StatsUtils.formatXp(levelService.getVit(uuid))).getAnsiMessage()
+                );
+
                 ctx.updatePage(false);
             })
             .addEventListener("AddInt", CustomUIEventBindingType.Activating, (data, ctx) -> {
@@ -199,10 +305,40 @@ public class HyUICompat {
                 playerStatMap.addStatValue(manaIndex, manaRegen);
                 playerStatMap.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getMana());
                 template.setVariable("ability_points", levelService.getAvailableAbilityPoints(uuid));
+                template.setVariable("available_points", levelService.getAvailableAbilityPoints(uuid));
                 template.setVariable(
                     "intelligence",
                     CommandLang.INT.param("points", levelService.getInt(uuid)).getAnsiMessage()
                 );
+                ctx.updatePage(false);
+            })
+            .addEventListener("AddInt5", CustomUIEventBindingType.Activating, (data, ctx) -> {
+                int points = levelService.getAvailableAbilityPoints(uuid);
+                if (points < 5)
+                    return;
+
+                levelService.setInt(uuid, levelService.getInt(uuid) + 5);
+                levelService.useAbilityPoints(uuid, 5);
+                var manaModifier = new StaticModifier(
+                    Modifier.ModifierTarget.MAX,
+                    StaticModifier.CalculationType.ADDITIVE,
+                    levelService.getInt(uuid) * config.get().getIntStatMultiplier()
+                );
+                playerStatMap.putModifier(manaIndex, manaModifierKey, manaModifier);
+                var manaRegen = (int) Math.max(1, Math.floor(1 + (levelService.getInt(uuid) * 0.25)));
+                playerStatMap.addStatValue(manaIndex, manaRegen);
+                playerStatMap.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getMana());
+
+                int newPoints = levelService.getAvailableAbilityPoints(uuid);
+
+                template.setVariable("available_points", newPoints);
+                template.setVariable("ability_points", StatsUtils.formatXp(newPoints));
+
+                template.setVariable(
+                    "intelligence",
+                    CommandLang.INT.param("points", levelService.getInt(uuid)).getAnsiMessage()
+                );
+
                 ctx.updatePage(false);
             })
             .addEventListener("AddCon", CustomUIEventBindingType.Activating, (data, ctx) -> {
@@ -211,10 +347,31 @@ public class HyUICompat {
                 levelService.setCon(uuid, levelService.getCon(uuid) + 1);
                 levelService.useAbilityPoints(uuid, 1);
                 template.setVariable("ability_points", levelService.getAvailableAbilityPoints(uuid));
+                template.setVariable("available_points", levelService.getAvailableAbilityPoints(uuid));
                 template.setVariable(
                     "constitution",
                     CommandLang.CON.param("points", levelService.getCon(uuid)).getAnsiMessage()
                 );
+                ctx.updatePage(false);
+            })
+            .addEventListener("AddCon5", CustomUIEventBindingType.Activating, (data, ctx) -> {
+                int points = levelService.getAvailableAbilityPoints(uuid);
+                if (points < 5)
+                    return;
+
+                levelService.setCon(uuid, levelService.getCon(uuid) + 5);
+                levelService.useAbilityPoints(uuid, 5);
+
+                int newPoints = levelService.getAvailableAbilityPoints(uuid);
+
+                template.setVariable("available_points", newPoints);
+                template.setVariable("ability_points", StatsUtils.formatXp(newPoints));
+
+                template.setVariable(
+                    "constitution",
+                    CommandLang.CON.param("points", StatsUtils.formatXp(levelService.getCon(uuid))).getAnsiMessage()
+                );
+
                 ctx.updatePage(false);
             })
             .enableAsyncImageLoading(true)
