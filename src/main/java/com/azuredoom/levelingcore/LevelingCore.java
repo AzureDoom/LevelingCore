@@ -66,7 +66,7 @@ public class LevelingCore extends JavaPlugin {
 
     private static LevelingCore INSTANCE;
 
-    private final Config<GUIConfig> config;
+    private static Config<GUIConfig> config = null;
 
     public static final LevelingCoreConfig levelingCoreConfig = ConfigManager.loadOrCreate(LevelingCore.configPath);
 
@@ -222,6 +222,10 @@ public class LevelingCore extends JavaPlugin {
      */
     public static LevelingCore getInstance() {
         return INSTANCE;
+    }
+
+    public static Config<GUIConfig> getConfig() {
+        return config;
     }
 
     public void registerAllCommands() {

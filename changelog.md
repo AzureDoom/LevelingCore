@@ -1,3 +1,6 @@
+v0.9.4 
+- Fixed a bug where the new HyUI stats menu would not properly apply stat increases for health, stamina, oxygen, and mana.
+
 v0.9.3
 - Fixed a bug where the StatsPerLevel config option could be lower than 5
 - Fixed issues with MultipleHUD 1.0.4 compatibility

@@ -2,11 +2,17 @@ package com.azuredoom.levelingcore.compat.hyui;
 
 import au.ellie.hyui.builders.PageBuilder;
 import au.ellie.hyui.html.TemplateProcessor;
+import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
+import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
+import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
+import com.hypixel.hytale.server.core.modules.entitystats.modifier.Modifier;
+import com.hypixel.hytale.server.core.modules.entitystats.modifier.StaticModifier;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 
+import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.lang.CommandLang;
 
@@ -14,15 +20,25 @@ public class HyUICompat {
 
     private HyUICompat() {}
 
-    public static void showStats(PlayerRef playerRef, Store<EntityStore> store) {
+    public static void showStats(PlayerRef playerRef, Store<EntityStore> store, Ref<EntityStore> ref) {
         var levelService = LevelingCoreApi.getLevelServiceIfPresent().orElse(null);
         if (levelService == null)
             return;
         var uuid = playerRef.getUuid();
         var currentLevel = levelService.getLevel(uuid);
+        var config = LevelingCore.getConfig();
         var currentXp = levelService.getXp(uuid);
         var xpForNextLevel = levelService.getXpForLevel(levelService.getLevel(uuid) + 1);
         var percentage = (float) currentXp / xpForNextLevel * 100;
+        var playerStatMap = store.ensureAndGetComponent(playerRef.getReference(), EntityStatMap.getComponentType());
+        var healthIndex = DefaultEntityStatTypes.getHealth();
+        var staminaIndex = DefaultEntityStatTypes.getStamina();
+        var oxygenIndex = DefaultEntityStatTypes.getOxygen();
+        var manaIndex = DefaultEntityStatTypes.getMana();
+        var healthModifierKey = "LevelingCore_health_stat";
+        var staminaModifierKey = "LevelingCore_stamina_stat";
+        var oxygenModifierKey = "LevelingCore_oxygen_stat";
+        var manaModifierKey = "LevelingCore_mana_stat";
 
         var template = new TemplateProcessor()
             .setVariable("playerName", playerRef.getUsername())
@@ -84,6 +100,20 @@ public class HyUICompat {
                     return;
                 levelService.setAgi(uuid, levelService.getAgi(uuid) + 1);
                 levelService.useAbilityPoints(uuid, 1);
+
+                var staminaModifier = new StaticModifier(
+                    Modifier.ModifierTarget.MAX,
+                    StaticModifier.CalculationType.ADDITIVE,
+                    levelService.getAgi(uuid) * config.get().getAgiStatMultiplier()
+                );
+                var oxygenModifier = new StaticModifier(
+                    Modifier.ModifierTarget.MAX,
+                    StaticModifier.CalculationType.ADDITIVE,
+                    levelService.getAgi(uuid) * config.get().getAgiStatMultiplier()
+                );
+                playerStatMap.putModifier(staminaIndex, staminaModifierKey, staminaModifier);
+                playerStatMap.putModifier(oxygenIndex, oxygenModifierKey, oxygenModifier);
+                playerStatMap.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getStamina());
                 template.setVariable("ability_points", levelService.getAvailableAbilityPoints(uuid));
                 template.setVariable(
                     "agility",
@@ -108,6 +138,13 @@ public class HyUICompat {
                     return;
                 levelService.setVit(uuid, levelService.getVit(uuid) + 1);
                 levelService.useAbilityPoints(uuid, 1);
+                var healthModifier = new StaticModifier(
+                    Modifier.ModifierTarget.MAX,
+                    StaticModifier.CalculationType.ADDITIVE,
+                    levelService.getVit(uuid) * config.get().getVitStatMultiplier()
+                );
+                playerStatMap.putModifier(healthIndex, healthModifierKey, healthModifier);
+                playerStatMap.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getHealth());
                 template.setVariable("ability_points", levelService.getAvailableAbilityPoints(uuid));
                 template.setVariable(
                     "vitality",
@@ -120,6 +157,15 @@ public class HyUICompat {
                     return;
                 levelService.setInt(uuid, levelService.getInt(uuid) + 1);
                 levelService.useAbilityPoints(uuid, 1);
+                var manaModifier = new StaticModifier(
+                    Modifier.ModifierTarget.MAX,
+                    StaticModifier.CalculationType.ADDITIVE,
+                    levelService.getInt(uuid) * config.get().getIntStatMultiplier()
+                );
+                playerStatMap.putModifier(manaIndex, manaModifierKey, manaModifier);
+                var manaRegen = (int) Math.max(1, Math.floor(1 + (levelService.getInt(uuid) * 0.25)));
+                playerStatMap.addStatValue(manaIndex, manaRegen);
+                playerStatMap.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getMana());
                 template.setVariable("ability_points", levelService.getAvailableAbilityPoints(uuid));
                 template.setVariable(
                     "intelligence",

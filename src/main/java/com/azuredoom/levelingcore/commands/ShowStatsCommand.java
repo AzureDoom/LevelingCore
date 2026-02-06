@@ -56,7 +56,7 @@ public class ShowStatsCommand extends AbstractPlayerCommand {
             }
             if (player.getPageManager().getCustomPage() == null) {
                 if (PluginManager.get().getPlugin(new PluginIdentifier("Ellie", "HyUI")) != null) {
-                    HyUICompat.showStats(playerRef, store);
+                    HyUICompat.showStats(playerRef, store, ref);
                 } else {
                     var page = new StatsScreen(
                         playerRef,
