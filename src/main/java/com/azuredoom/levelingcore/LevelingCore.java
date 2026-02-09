@@ -150,19 +150,18 @@ public class LevelingCore extends JavaPlugin {
                         LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService -> {
                             var uuid = player.getUuid();
                             var level = levelService.getLevel(uuid);
-                            int expectedTotal;
+                            int targetTotal;
                             if (config.get().isUseStatsPerLevelMapping()) {
                                 var mapping = LevelingCore.apMap;
-                                expectedTotal = mapping.getOrDefault(level, 5);
+                                targetTotal = mapping.getOrDefault(level, level * config.get().getStatsPerLevel());
                             } else {
-                                expectedTotal = config.get().getStatsPerLevel();
+                                targetTotal = level * config.get().getStatsPerLevel();
                             }
                             var used = levelService.getUsedAbilityPoints(uuid);
                             var currentTotal = levelService.getAvailableAbilityPoints(uuid) + used;
-                            var targetTotal = Math.max(0, level * expectedTotal);
 
                             if (currentTotal != targetTotal) {
-                                levelService.setAbilityPoints(uuid, targetTotal);
+                                levelService.setAbilityPoints(uuid, Math.max(0, targetTotal));
                             }
                         });
                     }

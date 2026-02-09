@@ -54,6 +54,7 @@ public class StatsPerLevelMapping {
     private static Map<Integer, Integer> readXpCsv(Path csvPath) throws Exception {
         Map<Integer, Integer> out = new LinkedHashMap<>();
 
+        var total = 0;
         try (var reader = Files.newBufferedReader(csvPath, StandardCharsets.UTF_8)) {
             String line;
             var firstNonEmptyLine = true;
@@ -101,7 +102,8 @@ public class StatsPerLevelMapping {
                     continue;
                 }
 
-                out.put(stats, lvl);
+                total += stats;
+                out.put(lvl, total);
             }
         }
 
