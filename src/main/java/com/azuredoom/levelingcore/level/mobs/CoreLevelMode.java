@@ -8,6 +8,7 @@ public enum CoreLevelMode implements LevelMode {
     BIOME,
     ZONE,
     NEARBY_PLAYERS_MEAN,
+    ENVIRONMENT,
     INSTANCE;
 
     @Override

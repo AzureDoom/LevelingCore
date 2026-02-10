@@ -1,6 +1,8 @@
 package com.azuredoom.levelingcore.utils;
 
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.math.util.ChunkUtil;
+import com.hypixel.hytale.server.core.asset.type.environment.config.Environment;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
@@ -48,6 +50,8 @@ public class MobLevelingUtil {
                     computeBiomeLevel(store);
                 case ZONE ->
                     computeZoneLevel(store);
+                case ENVIRONMENT ->
+                    computeEnvironmentLevel(transform, store);
                 case INSTANCE ->
                     computeInstanceLevel(store);
             })
@@ -128,6 +132,36 @@ public class MobLevelingUtil {
         var biomeMapping = LevelingCore.mobBiomeMapping;
 
         return biomeMapping.getOrDefault(currentBiome.toLowerCase(), 1);
+    }
+
+    public static int computeEnvironmentLevel(TransformComponent transform, Store<EntityStore> store) {
+        var world = store.getExternalData().getWorld();
+        var mobPos = transform.getPosition();
+        var chunk = world.getChunk(ChunkUtil.indexChunkFromBlock((int) mobPos.x, (int) mobPos.z));
+
+        if (chunk == null) {
+            LevelingCore.LOGGER.at(Level.WARNING)
+                .log(
+                    "Chunk does not exist; defaulting to 1"
+                );
+            return 1;
+        }
+
+        int envID = chunk.getBlockChunk().getEnvironment(mobPos);
+        var envAsset = Environment.getAssetMap().getAsset(envID);
+        var envName = envAsset.getId();
+
+        if (envName == null) {
+            LevelingCore.LOGGER.at(Level.WARNING)
+                .log(
+                    "Environment " + envName + " does not exist in asset registry; defaulting to 1"
+                );
+            return 1;
+        }
+
+        var environmentMapping = LevelingCore.mobEnvironmentMapping;
+
+        return environmentMapping.getOrDefault(envName.toLowerCase(), 1);
     }
 
     public static int computeNearbyPlayersMeanLevel(TransformComponent transform, Store<EntityStore> store) {
