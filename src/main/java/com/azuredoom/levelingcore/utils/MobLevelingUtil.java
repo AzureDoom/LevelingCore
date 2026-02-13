@@ -42,22 +42,22 @@ public class MobLevelingUtil {
         }
 
         if (modeStr == null) {
-            return computeNearbyPlayersMeanLevel(transform, store);
+            return computeNearbyPlayersMeanLevel(transform, store, npc);
         }
 
         return CoreLevelMode.fromString(modeStr)
             .map(mode -> switch (mode) {
                 case SPAWN_ONLY -> computeSpawnLevel(npc);
-                case NEARBY_PLAYERS_MEAN -> computeNearbyPlayersMeanLevel(transform, store);
-                case BIOME -> computeBiomeLevel(store);
-                case ZONE -> computeZoneLevel(store);
+                case NEARBY_PLAYERS_MEAN -> computeNearbyPlayersMeanLevel(transform, store, npc);
+                case BIOME -> computeBiomeLevel(store, npc);
+                case ZONE -> computeZoneLevel(store, npc);
                 case ENVIRONMENT -> computeEnvironmentLevel(transform, store, npc);
-                case INSTANCE -> computeInstanceLevel(store);
+                case INSTANCE -> computeInstanceLevel(store, npc);
             })
             .orElseGet(() -> {
                 LevelingCore.LOGGER.at(Level.INFO)
                     .log("Unknown level mode " + modeStr + " defaulting to NEARBY_PLAYERS_MEAN");
-                return computeNearbyPlayersMeanLevel(transform, store);
+                return computeNearbyPlayersMeanLevel(transform, store, npc);
             });
     }
 
@@ -96,7 +96,7 @@ public class MobLevelingUtil {
         return spawnMin + rng.nextInt((spawnMax - spawnMin) + 1);
     }
 
-    public static int computeInstanceLevel(Store<EntityStore> store) {
+    public static int computeInstanceLevel(Store<EntityStore> store, NPCEntity npc) {
         var world = store.getExternalData().getWorld();
         var instanceName = world.getName();
         var instanceMapping = LevelingCore.mobInstanceMapping;
@@ -106,10 +106,11 @@ public class MobLevelingUtil {
             return 0;
         }
 
-        return instanceMapping.getOrDefault(instanceName.toLowerCase(), 1);
+        var baseLevel = instanceMapping.getOrDefault(instanceName.toLowerCase(), 1);
+        return randomizeLevel(baseLevel, npc);
     }
 
-    public static int computeZoneLevel(Store<EntityStore> store) {
+    public static int computeZoneLevel(Store<EntityStore> store, NPCEntity npc) {
         var world = store.getExternalData().getWorld();
         var worldMapTracker = world.getPlayers().getFirst().getWorldMapTracker();
         var currentZone = worldMapTracker.getCurrentZone();
@@ -117,10 +118,11 @@ public class MobLevelingUtil {
             return 0;
         var zoneMapping = LevelingCore.mobZoneMapping;
 
-        return zoneMapping.getOrDefault(currentZone.zoneName().toLowerCase(), 1);
+        var baseLevel = zoneMapping.getOrDefault(currentZone.zoneName().toLowerCase(), 1);
+        return randomizeLevel(baseLevel, npc);
     }
 
-    public static int computeBiomeLevel(Store<EntityStore> store) {
+    public static int computeBiomeLevel(Store<EntityStore> store, NPCEntity npc) {
         var world = store.getExternalData().getWorld();
         var worldMapTracker = world.getPlayers().getFirst().getWorldMapTracker();
         var currentBiome = worldMapTracker.getCurrentBiomeName();
@@ -129,8 +131,8 @@ public class MobLevelingUtil {
             return 6;
 
         var biomeMapping = LevelingCore.mobBiomeMapping;
-
-        return biomeMapping.getOrDefault(currentBiome.toLowerCase(), 1);
+        var baseLevel = biomeMapping.getOrDefault(currentBiome.toLowerCase(), 1);
+        return randomizeLevel(baseLevel, npc);
     }
 
     public static int computeEnvironmentLevel(TransformComponent transform, Store<EntityStore> store, NPCEntity npc) {
@@ -159,15 +161,11 @@ public class MobLevelingUtil {
         }
 
         var environmentMapping = LevelingCore.mobEnvironmentMapping;
-        var seed = npc.getUuid().getMostSignificantBits() ^ npc.getUuid().getLeastSignificantBits();
-        var rng = new Random(seed);
-        final var baseLevel = environmentMapping.getOrDefault(envName.toLowerCase(), 1);
-        final var range = baseLevel + 10;
-
-        return baseLevel + rng.nextInt((range - baseLevel) + 1);
+        var baseLevel = environmentMapping.getOrDefault(envName.toLowerCase(), 1);
+        return randomizeLevel(baseLevel, npc);
     }
 
-    public static int computeNearbyPlayersMeanLevel(TransformComponent transform, Store<EntityStore> store) {
+    public static int computeNearbyPlayersMeanLevel(TransformComponent transform, Store<EntityStore> store, NPCEntity npc) {
         var world = store.getExternalData().getWorld();
         var mobPos = transform.getPosition();
         var players = world.getPlayers();
@@ -194,7 +192,8 @@ public class MobLevelingUtil {
             return 5;
 
         var mean = (double) sum / (double) count;
-        return (int) Math.round(mean);
+        var baseLevel = (int) Math.round(mean);
+        return randomizeLevel(baseLevel, npc);
     }
 
     public static int computeNPCOverrideLevel(NPCEntity npc) {
@@ -202,5 +201,15 @@ public class MobLevelingUtil {
         var overrideMapping = LevelingCore.mobOverrideMapping;
 
         return overrideMapping.getOrDefault(npcTypeID.toLowerCase(), 0);
+    }
+
+    public static int randomizeLevel(int baseLevel, NPCEntity npc) {
+        var variance = LevelingCore.getConfig().get().getLevelVariance();
+        if(variance <= 0){ return baseLevel; }
+        var seed = npc.getUuid().getMostSignificantBits() ^ npc.getUuid().getLeastSignificantBits();
+        var rng = new Random(seed);
+
+        var range = baseLevel + variance;
+        return baseLevel + rng.nextInt(range - baseLevel);
     }
 }
