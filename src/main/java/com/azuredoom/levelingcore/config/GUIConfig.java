@@ -631,6 +631,7 @@ public class GUIConfig {
     public String getLevelMode() {
         return levelMode;
     }
+
     /**
      * Retrieves the configured level variance used by the leveling system.
      *

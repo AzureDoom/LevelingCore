@@ -165,7 +165,11 @@ public class MobLevelingUtil {
         return randomizeLevel(baseLevel, npc);
     }
 
-    public static int computeNearbyPlayersMeanLevel(TransformComponent transform, Store<EntityStore> store, NPCEntity npc) {
+    public static int computeNearbyPlayersMeanLevel(
+        TransformComponent transform,
+        Store<EntityStore> store,
+        NPCEntity npc
+    ) {
         var world = store.getExternalData().getWorld();
         var mobPos = transform.getPosition();
         var players = world.getPlayers();
@@ -205,7 +209,9 @@ public class MobLevelingUtil {
 
     public static int randomizeLevel(int baseLevel, NPCEntity npc) {
         var variance = LevelingCore.getConfig().get().getLevelVariance();
-        if(variance <= 0){ return baseLevel; }
+        if (variance <= 0) {
+            return baseLevel;
+        }
         var seed = npc.getUuid().getMostSignificantBits() ^ npc.getUuid().getLeastSignificantBits();
         var rng = new Random(seed);
 
