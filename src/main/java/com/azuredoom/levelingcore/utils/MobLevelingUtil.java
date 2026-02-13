@@ -35,6 +35,11 @@ public class MobLevelingUtil {
         Store<EntityStore> store
     ) {
         var modeStr = config.get().getLevelMode();
+        var overrideLevel = computeNPCOverrideLevel(npc);
+
+        if (overrideLevel != 0) {
+            return overrideLevel;
+        }
 
         if (modeStr == null) {
             return computeNearbyPlayersMeanLevel(transform, store);
@@ -42,18 +47,12 @@ public class MobLevelingUtil {
 
         return CoreLevelMode.fromString(modeStr)
             .map(mode -> switch (mode) {
-                case SPAWN_ONLY ->
-                    computeSpawnLevel(npc);
-                case NEARBY_PLAYERS_MEAN ->
-                    computeNearbyPlayersMeanLevel(transform, store);
-                case BIOME ->
-                    computeBiomeLevel(store);
-                case ZONE ->
-                    computeZoneLevel(store);
-                case ENVIRONMENT ->
-                    computeEnvironmentLevel(transform, store, npc);
-                case INSTANCE ->
-                    computeInstanceLevel(store);
+                case SPAWN_ONLY -> computeSpawnLevel(npc);
+                case NEARBY_PLAYERS_MEAN -> computeNearbyPlayersMeanLevel(transform, store);
+                case BIOME -> computeBiomeLevel(store);
+                case ZONE -> computeZoneLevel(store);
+                case ENVIRONMENT -> computeEnvironmentLevel(transform, store, npc);
+                case INSTANCE -> computeInstanceLevel(store);
             })
             .orElseGet(() -> {
                 LevelingCore.LOGGER.at(Level.INFO)
@@ -196,5 +195,12 @@ public class MobLevelingUtil {
 
         var mean = (double) sum / (double) count;
         return (int) Math.round(mean);
+    }
+
+    public static int computeNPCOverrideLevel(NPCEntity npc) {
+        var npcTypeID = npc.getNPCTypeId();
+        var overrideMapping = LevelingCore.mobOverrideMapping;
+
+        return overrideMapping.getOrDefault(npcTypeID.toLowerCase(), 0);
     }
 }
