@@ -236,6 +236,12 @@ public class GUIConfig {
         )
         .add()
         .append(
+            new KeyedCodec<Integer>("LevelVariance", Codec.INTEGER),
+            (exConfig, anInteger, extraInfo) -> exConfig.levelVariance = anInteger,
+            (exConfig, extraInfo) -> exConfig.levelVariance
+        )
+        .add()
+        .append(
             new KeyedCodec<Float>("MobHealthMultiplier", Codec.FLOAT),
             (exConfig, aFloat, extraInfo) -> exConfig.mobHealthMultiplier = aFloat,
             (exConfig, extraInfo) -> exConfig.mobHealthMultiplier
@@ -376,6 +382,8 @@ public class GUIConfig {
     private float conStatMultiplier = 0.80F;
 
     private String levelMode = "NEARBY_PLAYERS_MEAN";
+
+    private int levelVariance = 0;
 
     private float mobHealthMultiplier = 2.10F;
 
@@ -622,6 +630,14 @@ public class GUIConfig {
 
     public String getLevelMode() {
         return levelMode;
+    }
+    /**
+     * Retrieves the configured level variance used by the leveling system.
+     *
+     * @return the level variance as an integer.
+     */
+    public int getLevelVariance() {
+        return levelVariance;
     }
 
     public float getMobHealthMultiplier() {
