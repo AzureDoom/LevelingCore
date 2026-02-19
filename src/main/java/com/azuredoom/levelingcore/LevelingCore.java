@@ -38,6 +38,7 @@ import com.azuredoom.levelingcore.level.mobs.MobLevelRegistry;
 import com.azuredoom.levelingcore.level.mobs.mapping.MobBiomeMapping;
 import com.azuredoom.levelingcore.level.mobs.mapping.MobEnvironmentMapping;
 import com.azuredoom.levelingcore.level.mobs.mapping.MobInstanceMapping;
+import com.azuredoom.levelingcore.level.mobs.mapping.MobOverrideMapping;
 import com.azuredoom.levelingcore.level.mobs.mapping.MobZoneMapping;
 import com.azuredoom.levelingcore.level.rewards.LevelRewards;
 import com.azuredoom.levelingcore.level.rewards.RewardEntry;
@@ -96,6 +97,10 @@ public class LevelingCore extends JavaPlugin {
     public static final Map<String, Integer> mobBiomeMapping = MobBiomeMapping.loadOrCreate(LevelingCore.configPath);
 
     public static final Map<String, Integer> mobEnvironmentMapping = MobEnvironmentMapping.loadOrCreate(
+        LevelingCore.configPath
+    );
+
+    public static final Map<String, Integer> mobOverrideMapping = MobOverrideMapping.loadOrCreate(
         LevelingCore.configPath
     );
 
