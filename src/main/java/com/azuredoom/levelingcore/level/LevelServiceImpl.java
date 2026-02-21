@@ -7,6 +7,7 @@ import com.azuredoom.levelingcore.database.JdbcLevelRepository;
 import com.azuredoom.levelingcore.level.formulas.LevelFormula;
 import com.azuredoom.levelingcore.listeners.*;
 import com.azuredoom.levelingcore.playerdata.PlayerLevelData;
+import com.azuredoom.levelingcore.utils.LevelingUtil;
 
 /**
  * Used for managing player levels and experience points (XP). This class provides methods to retrieve, modify, and
@@ -185,6 +186,11 @@ public class LevelServiceImpl {
     public void addXp(UUID id, long amount) {
         var data = get(id);
         var oldLevel = getLevel(id);
+
+        if (oldLevel == LevelingUtil.computeMaxLevel()) {
+            setDataXP(data, formula.getXpForLevel(oldLevel));
+            return;
+        }
 
         setDataXP(data, data.getXp() + amount);
 
