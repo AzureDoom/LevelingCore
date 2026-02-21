@@ -13,7 +13,8 @@
     "Dependencies": {
         "Hytale:EntityModule": "*",
         "Hytale:InteractionModule": "*",
-        "Hytale:DamageModule": "*"
+        "Hytale:DamageModule": "*",
+        "Hytale:AssetModule": "*"
     },
     "OptionalDependencies": {
         "Buuz135:MultipleHUD": "*",
