@@ -1,3 +1,8 @@
+v0.9.7 
+- Added a mob leveling override mapping support for fixed mob levels. — Huge thanks to GlobalHive for this feature!
+- Added a level variance config option to allow for mob leveling to be more random. — Huge thanks to GlobalHive for this feature!
+- More edge case crash fixes improving stability. — Huge thanks to KabanFriends for this fix!
+
 v0.9.6 
 - Fixed stat points CSV mapping not working properly. – Huge thanks to KabanFriends for this fix!
 - Fixed a bug where mob scaling would happen if the entity ref is invalid. — Huge thanks to KabanFriends for this fix!
