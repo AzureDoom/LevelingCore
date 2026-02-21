@@ -138,7 +138,11 @@ public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
                             );
                         } else {
                             // Fallback to default XP gain if supported Party mods are not installed
-                            if (!config.get().isDisableXPGainNotification() && !levelService.isMaxLevel(player.getUuid()))
+                            if (
+                                !config.get().isDisableXPGainNotification() && !levelService.isMaxLevel(
+                                    player.getUuid()
+                                )
+                            )
                                 NotificationsUtil.sendXPGainNotification(
                                     playerRef,
                                     xpAmount
