@@ -71,7 +71,7 @@ public class MobLevelingUtil {
             return false;
 
         store.getExternalData().getWorld().execute(() -> {
-            var healthMult = 1F + ((float) level - 1F) * config.get().getMobHealthMultiplier();
+            var healthMult = Math.max(1f, (float) level * config.get().getMobHealthMultiplier());
             var stats = store.getComponent(npc.getReference(), EntityStatMap.getComponentType());
             var healthIndex = DefaultEntityStatTypes.getHealth();
             var modifier = new StaticModifier(
@@ -138,18 +138,25 @@ public class MobLevelingUtil {
     public static int computeEnvironmentLevel(TransformComponent transform, Store<EntityStore> store, NPCEntity npc) {
         var world = store.getExternalData().getWorld();
         var mobPos = transform.getPosition();
-        var chunk = world.getChunk(ChunkUtil.indexChunkFromBlock((int) mobPos.x, (int) mobPos.z));
+        var chunk = world.getChunkIfInMemory(ChunkUtil.indexChunkFromBlock((int) mobPos.x, (int) mobPos.z));
 
         if (chunk == null) {
             LevelingCore.LOGGER.at(Level.WARNING)
                 .log(
-                    "Chunk does not exist; defaulting to 1"
+                    "Chunk not in memory; defaulting to 1"
                 );
             return 1;
         }
 
         int envID = chunk.getBlockChunk().getEnvironment(mobPos);
         var envAsset = Environment.getAssetMap().getAsset(envID);
+        if (envAsset == null) {
+            LevelingCore.LOGGER.at(Level.WARNING)
+                .log(
+                    "Environment id " + envID + " does not exist in asset registry; defaulting to 1"
+                );
+            return 1;
+        }
         var envName = envAsset.getId();
 
         if (envName == null) {
