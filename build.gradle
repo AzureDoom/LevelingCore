@@ -11,6 +11,21 @@ configurations {
     shadowBundle
     implementation.extendsFrom(shadowBundle)
     vineflowerTool
+    vineImplementation {
+        canBeResolved = false
+        canBeConsumed = false
+    }
+    vineCompileOnly {
+        canBeResolved = false
+        canBeConsumed = false
+    }
+    vineDecompileClasspath {
+        canBeResolved = true
+        canBeConsumed = false
+        extendsFrom(vineImplementation, vineCompileOnly)
+    }
+    implementation.extendsFrom(vineImplementation)
+    compileOnly.extendsFrom(vineCompileOnly)
 }
 
 javadoc {
@@ -47,16 +62,13 @@ repositories {
 
 dependencies {
     vineflowerTool 'org.vineflower:vineflower:1.11.2'
-    compileOnly 'com.buuz135:MultipleHUD:1.0.6'
-    runtimeOnly 'com.buuz135:MultipleHUD:1.0.6'
-    compileOnly 'curse.maven:partyinfo-1429469:7526614'
-    compileOnly 'curse.maven:partypro-1438292:7639178'
-    runtimeOnly 'curse.maven:partypro-1438292:7639178'
-    compileOnly "curse.maven:hyui-1431415:7645550"
-    runtimeOnly "curse.maven:hyui-1431415:7645550"
-    compileOnly "curse.maven:automultihud-1451807:7650909"
-    compileOnly "curse.maven:placeholderlib-1438208:7540696"
-    compileOnly 'at.helpch:placeholderapi-hytale:1.0.7'
+    vineImplementation 'com.buuz135:MultipleHUD:1.0.6'
+    vineCompileOnly 'curse.maven:partyinfo-1429469:7526614'
+    vineImplementation 'curse.maven:partypro-1438292:7639178'
+    vineImplementation 'curse.maven:hyui-1431415:7645550'
+    vineCompileOnly 'curse.maven:automultihud-1451807:7650909'
+    vineCompileOnly 'curse.maven:placeholderlib-1438208:7540696'
+    vineCompileOnly 'at.helpch:placeholderapi-hytale:1.0.7'
     //compileOnly fileTree(dir: "$rootDir/libs", include: ["*.jar"])
     //runtimeOnly fileTree(dir: "$rootDir/libs", include: ["*.jar"])
     // Needed libs
@@ -193,20 +205,18 @@ publishing {
 
 tasks.register("decompileLibsWithVineflower") {
     group = "decompilation"
-    description = "Decompile every .jar in /libs using Vineflower into build/vineflower/<jarName>/"
+    description = "Decompile /libs jars + implementation/compileOnly deps (compileClasspath) into build/vineflower/<jarName>/"
 
     def libsDir = file("$rootDir/libs")
     def outDir = file("$buildDir/vineflower")
 
+    def depConfig = configurations.vineDecompileClasspath
+
+    inputs.files(depConfig)
     inputs.dir(libsDir)
     outputs.dir(outDir)
 
     doLast {
-        if (!libsDir.exists()) {
-            logger.lifecycle("No /libs directory found at: ${libsDir}")
-            return
-        }
-
         outDir.mkdirs()
 
         def vineflowerJar = configurations.vineflowerTool.singleFile
@@ -215,9 +225,19 @@ tasks.register("decompileLibsWithVineflower") {
             languageVersion = JavaLanguageVersion.of(java_version)
         }.get().executablePath.asFile.absolutePath
 
-        def jars = fileTree(dir: libsDir, include: ["*.jar"]).files.toList()
+
+        def localJars = libsDir.exists()
+                ? fileTree(dir: libsDir, include: ["*.jar"]).files
+                : [] as Set<File>
+
+        def depJars = depConfig.incoming.artifactView { it.lenient(true) }
+                .files.files
+                .findAll { it.name.endsWith(".jar") } as Set<File>
+
+        def jars = (localJars + depJars).toList().unique()
+
         if (jars.isEmpty()) {
-            logger.lifecycle("No .jar files found in ${libsDir}")
+            logger.lifecycle("No .jar files found in /libs or on compileClasspath.")
             return
         }
 
@@ -226,7 +246,8 @@ tasks.register("decompileLibsWithVineflower") {
             def jarOut = new File(outDir, jarBase)
             jarOut.mkdirs()
 
-            def externals = jars.findAll { it != jarFile }.collectMany { ["-e", it.absolutePath] }
+            def externals = jars.findAll { it != jarFile }
+                    .collectMany { ["-e", it.absolutePath] }
 
             def cmd = [
                     javaExe,
@@ -247,7 +268,12 @@ tasks.register("decompileLibsWithVineflower") {
                 r.eachLine { line -> logger.lifecycle(line) }
             }
 
-            logger.lifecycle("Decompiled ${jarFile.name} -> ${jarOut}")
+            def exit = proc.waitFor()
+            if (exit != 0) {
+                logger.lifecycle("Vineflower failed for ${jarFile.name} (exit ${exit})")
+            } else {
+                logger.lifecycle("Decompiled ${jarFile.name} -> ${jarOut}")
+            }
         }
     }
 }
