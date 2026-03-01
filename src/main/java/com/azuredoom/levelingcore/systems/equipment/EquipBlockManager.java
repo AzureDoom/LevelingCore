@@ -98,6 +98,15 @@ public class EquipBlockManager {
         }
     }
 
+    /**
+     * Handles inventory change events specifically related to armor slots for players.
+     * This method ensures that any unauthorized changes to the armor slots, such as equipping items
+     * without meeting level restrictions, are rolled back and appropriate actions are taken.
+     * The method temporarily ignores specific players or states to avoid cyclic event handling.
+     *
+     * @param event the inventory change event that contains context about the entity, transaction,
+     *              and the affected inventory container
+     */
     private void onInventoryChange(@Nonnull LivingEntityInventoryChangeEvent event) {
         if (!(event.getEntity() instanceof Player player)) {
             return;
@@ -135,6 +144,17 @@ public class EquipBlockManager {
         }
     }
 
+    /**
+     * Rolls back the player's armor transaction in the event of a failed or invalid transaction, ensuring
+     * that unauthorized or restricted items are removed and returned to the player or dropped into the world.
+     * This method is recursively called for nested transactions and handles various transaction types, including
+     * move transactions, list transactions, item stack transactions, and slot transactions.
+     *
+     * @param player        the player whose armor transaction is being rolled back; must not be null
+     * @param armorContainer the container representing the player's current armor; must not be null
+     * @param transaction   the transaction object representing the changes to the armor; may be null
+     * @param refundedKeys  a set of keys used to track already refunded or processed slots and avoid duplicates; must not be null
+     */
     private void rollbackArmorTransaction(
         @Nonnull Player player,
         @Nonnull ItemContainer armorContainer,
@@ -202,6 +222,15 @@ public class EquipBlockManager {
         }
     }
 
+    /**
+     * Compares two {@link ItemStack} objects and determines if they are considered equivalent.
+     * Two stacks are considered equivalent if they have the same item ID, quantity, and metadata.
+     * Empty stacks are treated specially and considered equivalent if both are empty.
+     *
+     * @param a the first {@link ItemStack} to compare, or {@code null}
+     * @param b the second {@link ItemStack} to compare, or {@code null}
+     * @return {@code true} if the two stacks are considered equivalent; {@code false} otherwise
+     */
     private static boolean sameStack(@Nullable ItemStack a, @Nullable ItemStack b) {
         if (a == b) return true;
         if (a == null || b == null) return false;
@@ -213,10 +242,27 @@ public class EquipBlockManager {
         return Objects.equals(a.getMetadata(), b.getMetadata());
     }
 
+    /**
+     * Creates a new {@link ItemStack} with a quantity of 1, based on the given {@code stack}.
+     * This method retains the item ID and metadata of the provided stack but modifies the quantity
+     * to ensure that only a single item is represented.
+     *
+     * @param stack the {@link ItemStack} to be used as the base for creating the new stack; must not be null
+     * @return a new {@link ItemStack} with the same item ID and metadata as the input stack, but with a quantity of 1
+     */
     private static ItemStack oneOf(@Nonnull ItemStack stack) {
         return new ItemStack(stack.getItemId(), 1, stack.getMetadata());
     }
 
+    /**
+     * Attempts to add the specified item stack to the player's inventory. If the item stack
+     * cannot be fully added to the inventory (e.g., due to lack of space), the remaining
+     * items are dropped in the game world at the player's location.
+     *
+     * @param player the player to whom the item stack will be given or near whom the items
+     *               will be dropped if there is not enough inventory space; must not be null
+     * @param stack  the item stack to be given to the player or partially dropped; must not be null
+     */
     private static void giveOrDrop(@Nonnull Player player, @Nonnull ItemStack stack) {
         if (ItemStack.isEmpty(stack)) return;
 
@@ -226,13 +272,9 @@ public class EquipBlockManager {
         var remainder = tx.getRemainder();
 
         if (remainder != null && !ItemStack.isEmpty(remainder)) {
-            dropItem(player, remainder);
+            var ref = player.getReference();
+            if (ref != null)
+                ItemUtils.dropItem(ref, stack, ref.getStore());
         }
-    }
-
-    private static void dropItem(@Nonnull Player player, @Nonnull ItemStack stack) {
-        var ref = player.getReference();
-        if (ref == null) return;
-        ItemUtils.dropItem(player.getReference(), stack, player.getReference().getStore());
     }
 }
