@@ -179,6 +179,8 @@ public class LevelingCore extends JavaPlugin {
                                 levelService.setAbilityPoints(uuid, Math.max(0, targetTotal));
                             }
                         });
+                        if (LevelingCore.getConfig().get().isEnableItemLevelRestriction())
+                            LevelingCore.equipBlockManager.validateArmorOnReady(player);
                     }
                     HudPlayerReady.ready(playerReadyEvent, config);
                 })

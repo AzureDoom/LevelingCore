@@ -87,6 +87,7 @@ public class LevelDownListenerRegistrar {
                         // Need to clear out mapping whenever a player levels down as well
                         LevelUpListenerRegistrar.clear(player.getUuid());
                         XPBarHud.updateHud(playerRef);
+                        LevelingCore.equipBlockManager.validateArmorOnReady(player);
                     })));
             }
         });
