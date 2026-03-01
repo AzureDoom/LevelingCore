@@ -94,4 +94,8 @@ public class CommandLang {
         "commands.levelingcore.removelevel.canremovelevelzero"
     );
 
+    public static final Message REQUIRED_LEVEL = Message.translation(
+        "server.levelingcore.requiredlevel"
+    );
+
 }

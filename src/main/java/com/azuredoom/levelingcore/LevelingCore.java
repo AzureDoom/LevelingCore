@@ -1,5 +1,6 @@
 package com.azuredoom.levelingcore;
 
+import com.azuredoom.levelingcore.compat.DynamicTooltipsLibCompat;
 import com.hypixel.hytale.common.plugin.PluginIdentifier;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.HytaleServer;
@@ -215,6 +216,9 @@ public class LevelingCore extends JavaPlugin {
         LevelingCore.mobLevelPersistence.load();
         if (LevelingCore.getConfig().get().isEnableItemLevelRestriction())
             LevelingCore.equipBlockManager.start();
+        if (PluginManager.get().getPlugin(new PluginIdentifier("org.herolias", "DynamicTooltipsLib")) != null) {
+            DynamicTooltipsLibCompat.register();
+        }
     }
 
     /**

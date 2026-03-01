@@ -21,3 +21,5 @@ levelingcore.int = INT: {points}
 levelingcore.int.desc = Aumenta el maná máximo y la regeneración de maná
 levelingcore.con = CON: {points}
 levelingcore.con.desc = Reduce el daño recibido
+
+levelingcore.requiredlevel = Nivel requerido: {level}

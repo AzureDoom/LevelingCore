@@ -21,3 +21,5 @@ levelingcore.int = INT: {points}
 levelingcore.int.desc = Увеличивает максимальную ману и регенерацию маны
 levelingcore.con = CON: {points}
 levelingcore.con.desc = Снижает получаемый урон
+
+levelingcore.requiredlevel = Требуемый уровень: {level}

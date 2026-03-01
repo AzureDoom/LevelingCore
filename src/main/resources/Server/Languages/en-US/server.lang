@@ -21,3 +21,5 @@ levelingcore.int = INT: {points}
 levelingcore.int.desc = Increases maximum mana and mana regeneration
 levelingcore.con = CON: {points}
 levelingcore.con.desc = Reduces incoming damage
+
+levelingcore.requiredlevel = Required Level: {level}
