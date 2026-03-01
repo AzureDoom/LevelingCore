@@ -1,6 +1,5 @@
 package com.azuredoom.levelingcore;
 
-import com.azuredoom.levelingcore.compat.DynamicTooltipsLibCompat;
 import com.hypixel.hytale.common.plugin.PluginIdentifier;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.HytaleServer;
@@ -23,6 +22,7 @@ import javax.annotation.Nonnull;
 
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.commands.*;
+import com.azuredoom.levelingcore.compat.DynamicTooltipsLibCompat;
 import com.azuredoom.levelingcore.compat.placeholderapi.PlaceholderAPICompat;
 import com.azuredoom.levelingcore.compat.placeholderlib.PlaceholderLibCompat;
 import com.azuredoom.levelingcore.config.GUIConfig;
