@@ -46,6 +46,7 @@ import com.azuredoom.levelingcore.level.stats.StatsPerLevelMapping;
 import com.azuredoom.levelingcore.level.xp.XPValues;
 import com.azuredoom.levelingcore.systems.damage.MobDamageFilter;
 import com.azuredoom.levelingcore.systems.damage.PlayerDamageFilter;
+import com.azuredoom.levelingcore.systems.equipment.EquipBlockManager;
 import com.azuredoom.levelingcore.systems.level.LevelDownTickingSystem;
 import com.azuredoom.levelingcore.systems.level.LevelUpTickingSystem;
 import com.azuredoom.levelingcore.systems.level.MobLevelSystem;
@@ -107,6 +108,8 @@ public class LevelingCore extends JavaPlugin {
     public static final MobLevelRegistry mobLevelRegistry = new MobLevelRegistry();
 
     public static final MobLevelPersistence mobLevelPersistence = new MobLevelPersistence();
+
+    public static final EquipBlockManager equipBlockManager = new EquipBlockManager();
 
     /**
      * Constructs a new {@code LevelingCore} instance and initializes the core components of the leveling system. This
@@ -208,6 +211,8 @@ public class LevelingCore extends JavaPlugin {
         };
         this.getTaskRegistry().registerTask(task);
         LevelingCore.mobLevelPersistence.load();
+        if (LevelingCore.getConfig().get().isEnableItemLevelRestriction())
+            LevelingCore.equipBlockManager.start();
     }
 
     /**
@@ -220,6 +225,8 @@ public class LevelingCore extends JavaPlugin {
     @Override
     protected void shutdown() {
         LevelingCore.mobLevelPersistence.save();
+        if (LevelingCore.getConfig().get().isEnableItemLevelRestriction())
+            LevelingCore.equipBlockManager.shutdown();
         super.shutdown();
         LOGGER.at(Level.INFO).log("Leveling Core shutting down");
         try {
