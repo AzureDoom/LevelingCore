@@ -64,8 +64,8 @@ dependencies {
     vineflowerTool 'org.vineflower:vineflower:1.11.2'
     vineImplementation 'com.buuz135:MultipleHUD:1.0.6'
     vineCompileOnly 'curse.maven:partyinfo-1429469:7526614'
-    vineImplementation 'curse.maven:partypro-1438292:7639178'
-    vineImplementation 'curse.maven:hyui-1431415:7645550'
+    vineImplementation 'curse.maven:partypro-1438292:7676014'
+    vineImplementation 'curse.maven:hyui-1431415:7693755'
     vineCompileOnly 'curse.maven:automultihud-1451807:7650909'
     vineCompileOnly 'curse.maven:placeholderlib-1438208:7540696'
     vineCompileOnly 'at.helpch:placeholderapi-hytale:1.0.7'
@@ -347,7 +347,9 @@ if (keyPropsFile.exists()) {
                     "update-checker",
                     "automultihud",
                     "placeholder-api",
-                    "placeholderlib"
+                    "placeholderlib",
+                    "dynamictooltipslib",
+                    "docs"
             ]
 
             def dependencies = []

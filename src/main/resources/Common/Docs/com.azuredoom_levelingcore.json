@@ -1,0 +1,27 @@
+{
+  "documentations": [
+    {
+      "group": "com.azuredoom",
+      "id": "levelingcore",
+      "name": "LevelingCore",
+      "enabled": true,
+      "sortIndex": 300,
+      "topics": [
+        {
+          "file": "index.md"
+        },
+        {
+          "file": "configuration.md",
+          "subTopics": [
+            {
+              "file": "configuration/internal_configuration.md"
+            },
+            {
+              "file": "configuration/normal_configuration.md"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

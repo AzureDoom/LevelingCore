@@ -24,7 +24,8 @@
         "AutoMultiHud:AutoMultiHud": "*",
         "HelpChat:PlaceholderAPI": ">= 1.0.4",
         "PlaceholderLib:PlaceholderLib": "*",
-        "org.herolias:DynamicTooltipsLib": "*"
+        "org.herolias:DynamicTooltipsLib": "*",
+        "IwakuraEnterprises:Voile": "*"
     },
     "DisabledByDefault": false,
     "Main": "com.azuredoom.levelingcore.LevelingCore",
