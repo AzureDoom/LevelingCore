@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.commands.*;
-import com.azuredoom.levelingcore.compat.DynamicTooltipsLibCompat;
+import com.azuredoom.levelingcore.compat.dynamictooltips.DynamicTooltipsLibCompat;
 import com.azuredoom.levelingcore.compat.placeholderapi.PlaceholderAPICompat;
 import com.azuredoom.levelingcore.compat.placeholderlib.PlaceholderLibCompat;
 import com.azuredoom.levelingcore.config.GUIConfig;
@@ -214,8 +214,9 @@ public class LevelingCore extends JavaPlugin {
         };
         this.getTaskRegistry().registerTask(task);
         LevelingCore.mobLevelPersistence.load();
-        if (LevelingCore.getConfig().get().isEnableItemLevelRestriction())
+        if (LevelingCore.getConfig().get().isEnableItemLevelRestriction()) {
             LevelingCore.equipBlockManager.start();
+        }
         if (PluginManager.get().getPlugin(new PluginIdentifier("org.herolias", "DynamicTooltipsLib")) != null) {
             DynamicTooltipsLibCompat.register();
         }
@@ -231,8 +232,9 @@ public class LevelingCore extends JavaPlugin {
     @Override
     protected void shutdown() {
         LevelingCore.mobLevelPersistence.save();
-        if (LevelingCore.getConfig().get().isEnableItemLevelRestriction())
+        if (LevelingCore.getConfig().get().isEnableItemLevelRestriction()) {
             LevelingCore.equipBlockManager.shutdown();
+        }
         super.shutdown();
         LOGGER.at(Level.INFO).log("Leveling Core shutting down");
         try {

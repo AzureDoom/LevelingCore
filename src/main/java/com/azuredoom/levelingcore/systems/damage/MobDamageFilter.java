@@ -1,5 +1,6 @@
 package com.azuredoom.levelingcore.systems.damage;
 
+import com.azuredoom.levelingcore.utils.NotificationsUtil;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.server.core.entity.EntityUtils;
@@ -9,7 +10,6 @@ import com.hypixel.hytale.server.core.modules.entity.EntityModule;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageEventSystem;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageModule;
-import com.hypixel.hytale.server.core.modules.i18n.I18nModule;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
@@ -21,7 +21,6 @@ import javax.annotation.Nullable;
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
-import com.azuredoom.levelingcore.lang.CommandLang;
 
 public class MobDamageFilter extends DamageEventSystem {
 
@@ -78,16 +77,7 @@ public class MobDamageFilter extends DamageEventSystem {
             if (itemId != null && !itemId.isBlank()) {
                 var requiredLevel = LevelingCore.itemLevelMapping.get(itemId);
                 if (requiredLevel != null && level < requiredLevel) {
-                    var itemTranslatedName = I18nModule.get()
-                        .getMessage(
-                            playerRefAttacker.getLanguage(),
-                            itemHand.getItem().getTranslationKey()
-                        );
-                    playerRefAttacker.sendMessage(
-                        CommandLang.LEVEL_REQUIRED.param("requiredlevel", requiredLevel)
-                            .param("itemid", itemTranslatedName != null ? itemTranslatedName : itemId)
-                            .param("level", level)
-                    );
+                    NotificationsUtil.sendLevelRequirementNotification(playerRefAttacker, requiredLevel, itemHand, level);
                     damage.setCancelled(true);
                     return;
                 }

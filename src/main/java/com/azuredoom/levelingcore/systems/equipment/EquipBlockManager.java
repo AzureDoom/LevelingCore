@@ -1,5 +1,6 @@
 package com.azuredoom.levelingcore.systems.equipment;
 
+import com.azuredoom.levelingcore.utils.NotificationsUtil;
 import com.hypixel.hytale.event.EventRegistration;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.entity.ItemUtils;
@@ -86,12 +87,7 @@ public class EquipBlockManager {
                 if (playerLevel >= req)
                     continue;
 
-                player.sendMessage(
-                    CommandLang.LEVEL_REQUIRED
-                        .param("requiredlevel", req)
-                        .param("itemid", itemId)
-                        .param("level", playerLevel)
-                );
+                NotificationsUtil.sendLevelRequirementNotification(player.getPlayerRef(), req, stack, playerLevel);
 
                 armor.setItemStackForSlot(slot, null, true);
                 giveOrDrop(player, stack);
@@ -204,12 +200,7 @@ public class EquipBlockManager {
                 if (playerLevel >= levelRestriction)
                     return;
 
-                player.sendMessage(
-                    CommandLang.LEVEL_REQUIRED
-                        .param("requiredlevel", levelRestriction)
-                        .param("itemid", itemId)
-                        .param("level", playerLevel)
-                );
+                NotificationsUtil.sendLevelRequirementNotification(player.getPlayerRef(), levelRestriction, after, playerLevel);
 
                 var swapping = (before != null && !ItemStack.isEmpty(before));
 

@@ -1,4 +1,4 @@
-package com.azuredoom.levelingcore.compat;
+package com.azuredoom.levelingcore.compat.dynamictooltips;
 
 import org.herolias.tooltips.api.DynamicTooltipsApiProvider;
 
