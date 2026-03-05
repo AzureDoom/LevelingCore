@@ -18,6 +18,7 @@ import javax.annotation.Nonnull;
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.lang.CommandLang;
+import com.azuredoom.levelingcore.ui.hud.XPBarHud;
 
 /**
  * The RemoveXpCommand class is responsible for handling the logic to remove experience points (XP) from a player's
@@ -81,6 +82,7 @@ public class RemoveXpCommand extends AbstractPlayerCommand {
             return;
         }
         levelService.removeXp(playerUUID, xpRef);
+        XPBarHud.updateHud(playerRef);
         var level = levelService.getLevel(playerUUID);
         var removedXPMsg = CommandLang.REMOVE_XP_1.param("xp", xpRef).param("player", playerRef.getUsername());
         var levelTotalMsg = CommandLang.REMOVE_XP_2.param("player", playerRef.getUsername()).param("level", level);

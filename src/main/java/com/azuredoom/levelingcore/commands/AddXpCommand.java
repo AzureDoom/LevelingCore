@@ -18,6 +18,7 @@ import javax.annotation.Nonnull;
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.lang.CommandLang;
+import com.azuredoom.levelingcore.ui.hud.XPBarHud;
 import com.azuredoom.levelingcore.utils.LevelingUtil;
 
 /**
@@ -74,6 +75,7 @@ public class AddXpCommand extends AbstractPlayerCommand {
             return;
         }
         levelService.addXp(playerUUID, xpRef);
+        XPBarHud.updateHud(playerRef);
         int newLevel = levelService.getLevel(playerUUID);
         if (newLevel > maxLevel) {
             levelService.removeLevel(playerUUID, newLevel - maxLevel);
