@@ -383,7 +383,7 @@ public class GUIConfig {
 
     private String levelMode = "NEARBY_PLAYERS_MEAN";
 
-    private int levelVariance = 0;
+    private int levelVariance = 5;
 
     private float mobHealthMultiplier = 2.10F;
 
