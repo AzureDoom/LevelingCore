@@ -3,7 +3,6 @@ package com.azuredoom.levelingcore.systems.damage;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.server.core.entity.EntityUtils;
-import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.AllLegacyLivingEntityTypesQuery;
 import com.hypixel.hytale.server.core.modules.entity.EntityModule;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
@@ -17,14 +16,12 @@ import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
-import com.azuredoom.levelingcore.utils.NotificationsUtil;
 
 public class MobDamageFilter extends DamageEventSystem {
 
-    private Config<GUIConfig> config;
+    private final Config<GUIConfig> config;
 
     public MobDamageFilter(Config<GUIConfig> config) {
         this.config = config;
@@ -64,30 +61,6 @@ public class MobDamageFilter extends DamageEventSystem {
         var incoming = damage.getAmount();
         if (incoming <= 0f)
             return;
-        if (config.get().isEnableItemLevelRestriction()) {
-            var playerAttacker = store.getComponent(attackerRef, Player.getComponentType());
-            if (playerAttacker == null)
-                return;
-
-            var level = levelService.getLevel(playerRefAttacker.getUuid());
-            var itemHand = playerAttacker.getInventory().getItemInHand();
-            if (itemHand == null)
-                return;
-            var itemId = itemHand.getItemId();
-            if (itemId != null && !itemId.isBlank()) {
-                var requiredLevel = LevelingCore.itemLevelMapping.get(itemId);
-                if (requiredLevel != null && level < requiredLevel) {
-                    NotificationsUtil.sendLevelRequirementNotification(
-                        playerRefAttacker,
-                        requiredLevel,
-                        itemHand,
-                        level
-                    );
-                    damage.setCancelled(true);
-                    return;
-                }
-            }
-        }
         var cause = damage.getCause();
         if (cause == null)
             return;

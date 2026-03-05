@@ -48,6 +48,8 @@ import com.azuredoom.levelingcore.level.xp.XPValues;
 import com.azuredoom.levelingcore.systems.damage.MobDamageFilter;
 import com.azuredoom.levelingcore.systems.damage.PlayerDamageFilter;
 import com.azuredoom.levelingcore.systems.equipment.EquipBlockManager;
+import com.azuredoom.levelingcore.systems.items.HandGateTickingSystem;
+import com.azuredoom.levelingcore.systems.items.ItemBlockPacketManager;
 import com.azuredoom.levelingcore.systems.level.LevelDownTickingSystem;
 import com.azuredoom.levelingcore.systems.level.LevelUpTickingSystem;
 import com.azuredoom.levelingcore.systems.level.MobLevelSystem;
@@ -111,6 +113,8 @@ public class LevelingCore extends JavaPlugin {
     public static final MobLevelPersistence mobLevelPersistence = new MobLevelPersistence();
 
     public static final EquipBlockManager equipBlockManager = new EquipBlockManager();
+
+    public static final ItemBlockPacketManager itemBlockPacketManager = new ItemBlockPacketManager();
 
     /**
      * Constructs a new {@code LevelingCore} instance and initializes the core components of the leveling system. This
@@ -216,6 +220,7 @@ public class LevelingCore extends JavaPlugin {
         LevelingCore.mobLevelPersistence.load();
         if (LevelingCore.getConfig().get().isEnableItemLevelRestriction()) {
             LevelingCore.equipBlockManager.start();
+            LevelingCore.itemBlockPacketManager.start();
         }
         if (PluginManager.get().getPlugin(new PluginIdentifier("org.herolias", "DynamicTooltipsLib")) != null) {
             DynamicTooltipsLibCompat.register();
@@ -234,6 +239,7 @@ public class LevelingCore extends JavaPlugin {
         LevelingCore.mobLevelPersistence.save();
         if (LevelingCore.getConfig().get().isEnableItemLevelRestriction()) {
             LevelingCore.equipBlockManager.shutdown();
+            LevelingCore.itemBlockPacketManager.shutdown();
         }
         super.shutdown();
         LOGGER.at(Level.INFO).log("Leveling Core shutting down");
@@ -279,6 +285,9 @@ public class LevelingCore extends JavaPlugin {
     }
 
     public void registerAllSystems() {
+        getEntityStoreRegistry().registerSystem(
+            new HandGateTickingSystem(LevelingCore.itemBlockPacketManager.getHandGate())
+        );
         getEntityStoreRegistry().registerSystem(new MobLevelSystem(config));
         getEntityStoreRegistry().registerSystem(new LevelUpTickingSystem(config));
         getEntityStoreRegistry().registerSystem(new LevelDownTickingSystem(config));
