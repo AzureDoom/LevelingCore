@@ -1,3 +1,13 @@
+v0.9.10
+- Implemented full level gating support for any item.
+- Fixed addxp and removexp commands not updating the player's HUD properly. 
+- Fixed the percentage value on the HUD not showing the correct value.
+- Changed the default level variance config option from 0 to 5.
+- Updated compat with DynamicTooltips mod to 1.5.1, which is required now due to langed tooltips.
+
+TODO:
+- Add support for stopping item animations when an items level is gated.
+
 v0.9.9
 - Implemented a system where level can gate armor now. — Huge thanks to GlobalHive for this feature!
   - This blocks armor from being worn until the player reaches the required level.
