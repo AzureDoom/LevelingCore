@@ -1,6 +1,5 @@
 package com.azuredoom.levelingcore.systems.equipment;
 
-import com.azuredoom.levelingcore.utils.NotificationsUtil;
 import com.hypixel.hytale.event.EventRegistration;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.entity.ItemUtils;
@@ -22,7 +21,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.azuredoom.levelingcore.LevelingCore;
-import com.azuredoom.levelingcore.lang.CommandLang;
+import com.azuredoom.levelingcore.utils.NotificationsUtil;
 
 @SuppressWarnings("removal")
 public class EquipBlockManager {
@@ -200,7 +199,12 @@ public class EquipBlockManager {
                 if (playerLevel >= levelRestriction)
                     return;
 
-                NotificationsUtil.sendLevelRequirementNotification(player.getPlayerRef(), levelRestriction, after, playerLevel);
+                NotificationsUtil.sendLevelRequirementNotification(
+                    player.getPlayerRef(),
+                    levelRestriction,
+                    after,
+                    playerLevel
+                );
 
                 var swapping = (before != null && !ItemStack.isEmpty(before));
 

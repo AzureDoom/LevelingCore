@@ -38,19 +38,24 @@ public class NotificationsUtil {
         );
     }
 
-    public static void sendLevelRequirementNotification(PlayerRef playerRef, int requiredLevel, ItemStack item, int playerLevel) {
+    public static void sendLevelRequirementNotification(
+        PlayerRef playerRef,
+        int requiredLevel,
+        ItemStack item,
+        int playerLevel
+    ) {
         var itemTranslatedName = I18nModule.get()
-                .getMessage(
-                        playerRef.getLanguage(),
-                        item.getItem().getTranslationKey()
-                );
+            .getMessage(
+                playerRef.getLanguage(),
+                item.getItem().getTranslationKey()
+            );
         NotificationUtil.sendNotification(
-                playerRef.getPacketHandler(),
-                CommandLang.LEVEL_REQUIRED
-                        .param("requiredlevel", requiredLevel)
-                        .param("itemid", itemTranslatedName != null ? itemTranslatedName : item.getItemId())
-                        .param("level", playerLevel),
-                NotificationStyle.Danger
+            playerRef.getPacketHandler(),
+            CommandLang.LEVEL_REQUIRED
+                .param("requiredlevel", requiredLevel)
+                .param("itemid", itemTranslatedName != null ? itemTranslatedName : item.getItemId())
+                .param("level", playerLevel),
+            NotificationStyle.Danger
         );
     }
 }

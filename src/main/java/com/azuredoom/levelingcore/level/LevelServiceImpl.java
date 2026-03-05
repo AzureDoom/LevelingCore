@@ -95,14 +95,12 @@ public class LevelServiceImpl {
     }
 
     /**
-     * Adjusts the level of a specified entity by adding a given level change value.
-     * Positive values increase the level, while negative values decrease it.
-     * Ensures the resulting level is within valid bounds and triggers level-up
-     * or level-down listeners as appropriate.
+     * Adjusts the level of a specified entity by adding a given level change value. Positive values increase the level,
+     * while negative values decrease it. Ensures the resulting level is within valid bounds and triggers level-up or
+     * level-down listeners as appropriate.
      *
-     * @param id the unique identifier of the entity whose level is being modified
-     * @param level the amount by which to adjust the entity's level;
-     *              positive to increase, negative to decrease
+     * @param id    the unique identifier of the entity whose level is being modified
+     * @param level the amount by which to adjust the entity's level; positive to increase, negative to decrease
      */
     public void addLevel(UUID id, int level) {
         if (level == 0) {
@@ -130,12 +128,10 @@ public class LevelServiceImpl {
     }
 
     /**
-     * Reduces the level of an entity identified by its unique ID.
-     * If the level reduction results in a level less than 1,
-     * the level will be set to the minimum of 1. The method also
-     * notifies level-down listeners if the level changes.
+     * Reduces the level of an entity identified by its unique ID. If the level reduction results in a level less than
+     * 1, the level will be set to the minimum of 1. The method also notifies level-down listeners if the level changes.
      *
-     * @param id the unique identifier of the entity whose level is to be reduced
+     * @param id    the unique identifier of the entity whose level is to be reduced
      * @param level the number of levels to remove; must be greater than 0
      * @throws IllegalArgumentException if the level is not greater than 0
      */
@@ -275,8 +271,8 @@ public class LevelServiceImpl {
     }
 
     /**
-     * Updates the Strength value for the entity identified by the given UUID and
-     * notifies all registered listeners about the change.
+     * Updates the Strength value for the entity identified by the given UUID and notifies all registered listeners
+     * about the change.
      *
      * @param id  the unique identifier of the entity whose Strength value is to be updated
      * @param str the new Strength value to set for the entity
@@ -300,8 +296,8 @@ public class LevelServiceImpl {
     }
 
     /**
-     * Updates the Agility value for the entity identified by the given UUID and
-     * notifies all registered listeners about the change.
+     * Updates the Agility value for the entity identified by the given UUID and notifies all registered listeners about
+     * the change.
      *
      * @param id  the unique identifier of the entity whose Agility value is to be updated
      * @param agi the new Agility value to set for the entity
@@ -325,8 +321,8 @@ public class LevelServiceImpl {
     }
 
     /**
-     * Updates the Perception value for the entity identified by the given UUID and
-     * notifies all registered listeners about the change.
+     * Updates the Perception value for the entity identified by the given UUID and notifies all registered listeners
+     * about the change.
      *
      * @param id  the unique identifier of the entity whose Perception value is to be updated
      * @param per the new Perception value to set for the entity
@@ -350,8 +346,8 @@ public class LevelServiceImpl {
     }
 
     /**
-     * Updates the Vitality value for the entity identified by the given UUID and
-     * notifies all registered listeners about the change.
+     * Updates the Vitality value for the entity identified by the given UUID and notifies all registered listeners
+     * about the change.
      *
      * @param id  the unique identifier of the entity whose Vitality value is to be updated
      * @param vit the new Vitality value to set for the entity
@@ -375,10 +371,10 @@ public class LevelServiceImpl {
     }
 
     /**
-     * Updates the Intelligence value for the entity identified by the given UUID and
-     * notifies all registered listeners about the change.
+     * Updates the Intelligence value for the entity identified by the given UUID and notifies all registered listeners
+     * about the change.
      *
-     * @param id  the unique identifier of the entity whose Intelligence value is to be updated
+     * @param id           the unique identifier of the entity whose Intelligence value is to be updated
      * @param intelligence the new Intelligence value to set for the entity
      */
     public void setInt(UUID id, int intelligence) {
@@ -400,8 +396,8 @@ public class LevelServiceImpl {
     }
 
     /**
-     * Updates the Constitution value for the entity identified by the given UUID and
-     * notifies all registered listeners about the change.
+     * Updates the Constitution value for the entity identified by the given UUID and notifies all registered listeners
+     * about the change.
      *
      * @param id  the unique identifier of the entity whose Constitution value is to be updated
      * @param con the new Constitution value to set for the entity
@@ -464,10 +460,10 @@ public class LevelServiceImpl {
     }
 
     /**
-     * Adds the specified number of ability points to the entity identified by the given UUID.
-     * If the number of points to add is less than or equal to zero, the method will return without making any changes.
+     * Adds the specified number of ability points to the entity identified by the given UUID. If the number of points
+     * to add is less than or equal to zero, the method will return without making any changes.
      *
-     * @param id the unique identifier of the entity to which ability points will be added
+     * @param id          the unique identifier of the entity to which ability points will be added
      * @param pointsToAdd the number of ability points to add; must be a positive integer
      */
     public void addAbilityPoints(UUID id, int pointsToAdd) {
@@ -484,10 +480,10 @@ public class LevelServiceImpl {
     }
 
     /**
-     * Sets the number of ability points used for the entity identified by the given UUID
-     * and notifies all registered listeners about the change.
+     * Sets the number of ability points used for the entity identified by the given UUID and notifies all registered
+     * listeners about the change.
      *
-     * @param id The unique identifier of the entity whose used ability points are being set.
+     * @param id     The unique identifier of the entity whose used ability points are being set.
      * @param points The number of ability points to mark as used for the specified entity.
      */
     public void setUsedAbilityPoints(UUID id, int points) {
@@ -501,11 +497,10 @@ public class LevelServiceImpl {
     }
 
     /**
-     * Deducts the specified number of ability points from the available points
-     * of the entity identified by the given UUID. If the requested amount exceeds
-     * the available points or if the amount is invalid, the operation will fail.
+     * Deducts the specified number of ability points from the available points of the entity identified by the given
+     * UUID. If the requested amount exceeds the available points or if the amount is invalid, the operation will fail.
      *
-     * @param id the unique identifier of the entity whose ability points are being modified
+     * @param id     the unique identifier of the entity whose ability points are being modified
      * @param amount the number of ability points to deduct
      * @return true if the ability points were successfully deducted, false otherwise
      */

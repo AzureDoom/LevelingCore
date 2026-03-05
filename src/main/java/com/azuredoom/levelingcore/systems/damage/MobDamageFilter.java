@@ -1,6 +1,5 @@
 package com.azuredoom.levelingcore.systems.damage;
 
-import com.azuredoom.levelingcore.utils.NotificationsUtil;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.server.core.entity.EntityUtils;
@@ -21,6 +20,7 @@ import javax.annotation.Nullable;
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
+import com.azuredoom.levelingcore.utils.NotificationsUtil;
 
 public class MobDamageFilter extends DamageEventSystem {
 
@@ -77,7 +77,12 @@ public class MobDamageFilter extends DamageEventSystem {
             if (itemId != null && !itemId.isBlank()) {
                 var requiredLevel = LevelingCore.itemLevelMapping.get(itemId);
                 if (requiredLevel != null && level < requiredLevel) {
-                    NotificationsUtil.sendLevelRequirementNotification(playerRefAttacker, requiredLevel, itemHand, level);
+                    NotificationsUtil.sendLevelRequirementNotification(
+                        playerRefAttacker,
+                        requiredLevel,
+                        itemHand,
+                        level
+                    );
                     damage.setCancelled(true);
                     return;
                 }
