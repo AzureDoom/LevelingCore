@@ -45,6 +45,9 @@ public class LevelUpTickingSystem extends EntityTickingSystem<EntityStore> {
     @NullableDecl
     @Override
     public Query<EntityStore> getQuery() {
-        return Query.any();
+        return Query.and(
+            Player.getComponentType(),
+            PlayerRef.getComponentType()
+        );
     }
 }
