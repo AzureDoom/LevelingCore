@@ -1,9 +1,9 @@
 package com.azuredoom.levelingcore.compat.dynamictooltips;
 
-import com.azuredoom.levelingcore.lang.CommandLang;
 import org.herolias.tooltips.api.DynamicTooltipsApiProvider;
 
 import com.azuredoom.levelingcore.LevelingCore;
+import com.azuredoom.levelingcore.lang.CommandLang;
 
 public class DynamicTooltipsLibCompat {
 
