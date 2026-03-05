@@ -1,3 +1,14 @@
+v0.9.9
+- Implemented a system where level can gate armor now. — Huge thanks to GlobalHive for this feature!
+  - This blocks armor from being worn until the player reaches the required level.
+  - This removes armor from the player's armor slots if they are below the required level and were wearing it before the change.
+  - This removes armor on level down if the players' level falls below the required level.
+- Updated icon used by Better Modlist mod to new icon.
+- Added optional support for showing level requirements on items tooltips if the DynamicTooltips mod is installed.
+
+TODO: 
+- Add support for level gating any item. This is still under investigation on the best way to implement this. PRs welcome!
+
 v0.9.8
 - Added max level check on base xp gain logic from commands. — Huge thanks to GlobalHive for this feature!
 - Fixed a crash on chunk access. — Huge thanks to GlobalHive for this fix!
