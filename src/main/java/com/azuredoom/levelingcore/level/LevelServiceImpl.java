@@ -94,6 +94,16 @@ public class LevelServiceImpl {
         return getLevel(id) >= LevelingUtil.computeMaxLevel();
     }
 
+    /**
+     * Adjusts the level of a specified entity by adding a given level change value.
+     * Positive values increase the level, while negative values decrease it.
+     * Ensures the resulting level is within valid bounds and triggers level-up
+     * or level-down listeners as appropriate.
+     *
+     * @param id the unique identifier of the entity whose level is being modified
+     * @param level the amount by which to adjust the entity's level;
+     *              positive to increase, negative to decrease
+     */
     public void addLevel(UUID id, int level) {
         if (level == 0) {
             return;
@@ -119,6 +129,16 @@ public class LevelServiceImpl {
         }
     }
 
+    /**
+     * Reduces the level of an entity identified by its unique ID.
+     * If the level reduction results in a level less than 1,
+     * the level will be set to the minimum of 1. The method also
+     * notifies level-down listeners if the level changes.
+     *
+     * @param id the unique identifier of the entity whose level is to be reduced
+     * @param level the number of levels to remove; must be greater than 0
+     * @throws IllegalArgumentException if the level is not greater than 0
+     */
     public void removeLevel(UUID id, int level) {
         if (level <= 0) {
             throw new IllegalArgumentException("level must be greater than 0");
@@ -254,6 +274,13 @@ public class LevelServiceImpl {
         }
     }
 
+    /**
+     * Updates the Strength value for the entity identified by the given UUID and
+     * notifies all registered listeners about the change.
+     *
+     * @param id  the unique identifier of the entity whose Strength value is to be updated
+     * @param str the new Strength value to set for the entity
+     */
     public void setStr(UUID id, int str) {
         var data = get(id);
         data.setStr(str);
@@ -262,10 +289,23 @@ public class LevelServiceImpl {
         strListeners.forEach(l -> l.onStrengthGain(id, str));
     }
 
+    /**
+     * Retrieves the Strength value associated with the given UUID.
+     *
+     * @param id the unique identifier used to locate the target object
+     * @return an integer representation of the Strength value.
+     */
     public int getStr(UUID id) {
         return get(id).getStr();
     }
 
+    /**
+     * Updates the Agility value for the entity identified by the given UUID and
+     * notifies all registered listeners about the change.
+     *
+     * @param id  the unique identifier of the entity whose Agility value is to be updated
+     * @param agi the new Agility value to set for the entity
+     */
     public void setAgi(UUID id, int agi) {
         var data = get(id);
         data.setAgi(agi);
@@ -274,10 +314,23 @@ public class LevelServiceImpl {
         agiListeners.forEach(l -> l.onAgilityGain(id, agi));
     }
 
+    /**
+     * Retrieves the Agility value associated with the given UUID.
+     *
+     * @param id the unique identifier used to locate the target object
+     * @return an integer representation of the Agility value.
+     */
     public int getAgi(UUID id) {
         return get(id).getAgi();
     }
 
+    /**
+     * Updates the Perception value for the entity identified by the given UUID and
+     * notifies all registered listeners about the change.
+     *
+     * @param id  the unique identifier of the entity whose Perception value is to be updated
+     * @param per the new Perception value to set for the entity
+     */
     public void setPer(UUID id, int per) {
         var data = get(id);
         data.setPer(per);
@@ -286,10 +339,23 @@ public class LevelServiceImpl {
         perListeners.forEach(l -> l.onPerceptionGain(id, per));
     }
 
+    /**
+     * Retrieves the Perception value associated with the given UUID.
+     *
+     * @param id the unique identifier used to locate the target object
+     * @return an integer representation of the Perception value.
+     */
     public int getPer(UUID id) {
         return get(id).getPer();
     }
 
+    /**
+     * Updates the Vitality value for the entity identified by the given UUID and
+     * notifies all registered listeners about the change.
+     *
+     * @param id  the unique identifier of the entity whose Vitality value is to be updated
+     * @param vit the new Vitality value to set for the entity
+     */
     public void setVit(UUID id, int vit) {
         var data = get(id);
         data.setVit(vit);
@@ -298,10 +364,23 @@ public class LevelServiceImpl {
         vitListeners.forEach(l -> l.onVitalityGain(id, vit));
     }
 
+    /**
+     * Retrieves the Vitality value associated with the given UUID.
+     *
+     * @param id the unique identifier used to locate the target object
+     * @return an integer representation of the Vitality value.
+     */
     public int getVit(UUID id) {
         return get(id).getVit();
     }
 
+    /**
+     * Updates the Intelligence value for the entity identified by the given UUID and
+     * notifies all registered listeners about the change.
+     *
+     * @param id  the unique identifier of the entity whose Intelligence value is to be updated
+     * @param intelligence the new Intelligence value to set for the entity
+     */
     public void setInt(UUID id, int intelligence) {
         var data = get(id);
         data.setIntelligence(intelligence);
@@ -310,10 +389,23 @@ public class LevelServiceImpl {
         intListeners.forEach(l -> l.onIntelligenceGain(id, intelligence));
     }
 
+    /**
+     * Retrieves the Intelligence value associated with the given UUID.
+     *
+     * @param id the unique identifier used to locate the target object
+     * @return an integer representation of the Intelligence value.
+     */
     public int getInt(UUID id) {
         return get(id).getIntelligence();
     }
 
+    /**
+     * Updates the Constitution value for the entity identified by the given UUID and
+     * notifies all registered listeners about the change.
+     *
+     * @param id  the unique identifier of the entity whose Constitution value is to be updated
+     * @param con the new Constitution value to set for the entity
+     */
     public void setCon(UUID id, int con) {
         var data = get(id);
         data.setCon(con);
@@ -322,6 +414,12 @@ public class LevelServiceImpl {
         conListeners.forEach(l -> l.onConstitutionGain(id, con));
     }
 
+    /**
+     * Retrieves the Constitution value associated with the given UUID.
+     *
+     * @param id the unique identifier used to locate the target object
+     * @return an integer representation of the Constitution value.
+     */
     public int getCon(UUID id) {
         return get(id).getCon();
     }
@@ -334,19 +432,44 @@ public class LevelServiceImpl {
         abilityPointsListeners.forEach(l -> l.onAbilityPointGain(id, abilityPoints));
     }
 
+    /**
+     * Retrieves the Ability Points value associated with the given UUID.
+     *
+     * @param id the unique identifier used to locate the target object
+     * @return an integer representation of the Ability Points value.
+     */
     public int getAbilityPoints(UUID id) {
         return get(id).getAbilityPoints();
     }
 
+    /**
+     * Retrieves the Available Ability Points value associated with the given UUID.
+     *
+     * @param id the unique identifier used to locate the target object
+     * @return an integer representation of the Available Ability Points value.
+     */
     public int getAvailableAbilityPoints(UUID id) {
         var data = get(id);
         return Math.max(0, data.getAbilityPoints() - data.getUsedAbilityPoints());
     }
 
+    /**
+     * Retrieves the number of ability points used by the entity associated with the given identifier.
+     *
+     * @param id the unique identifier of the entity for which the used ability points are being retrieved
+     * @return the number of ability points used by the entity
+     */
     public int getUsedAbilityPoints(UUID id) {
         return get(id).getUsedAbilityPoints();
     }
 
+    /**
+     * Adds the specified number of ability points to the entity identified by the given UUID.
+     * If the number of points to add is less than or equal to zero, the method will return without making any changes.
+     *
+     * @param id the unique identifier of the entity to which ability points will be added
+     * @param pointsToAdd the number of ability points to add; must be a positive integer
+     */
     public void addAbilityPoints(UUID id, int pointsToAdd) {
         if (pointsToAdd <= 0)
             return;
@@ -360,6 +483,13 @@ public class LevelServiceImpl {
         );
     }
 
+    /**
+     * Sets the number of ability points used for the entity identified by the given UUID
+     * and notifies all registered listeners about the change.
+     *
+     * @param id The unique identifier of the entity whose used ability points are being set.
+     * @param points The number of ability points to mark as used for the specified entity.
+     */
     public void setUsedAbilityPoints(UUID id, int points) {
         var data = get(id);
         data.setUsedAbilityPoints(points);
@@ -370,6 +500,15 @@ public class LevelServiceImpl {
         );
     }
 
+    /**
+     * Deducts the specified number of ability points from the available points
+     * of the entity identified by the given UUID. If the requested amount exceeds
+     * the available points or if the amount is invalid, the operation will fail.
+     *
+     * @param id the unique identifier of the entity whose ability points are being modified
+     * @param amount the number of ability points to deduct
+     * @return true if the ability points were successfully deducted, false otherwise
+     */
     public boolean useAbilityPoints(UUID id, int amount) {
         if (amount <= 0)
             return false;
@@ -521,6 +660,10 @@ public class LevelServiceImpl {
 
     public List<ConstitutionListener> getConstitutionListeners() {
         return conListeners;
+    }
+
+    public List<AbilityPointsListener> getAbilityPointsListeners() {
+        return abilityPointsListeners;
     }
 
     /**
