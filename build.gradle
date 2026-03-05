@@ -69,7 +69,7 @@ dependencies {
     vineCompileOnly 'curse.maven:automultihud-1451807:7650909'
     vineCompileOnly 'curse.maven:placeholderlib-1438208:7540696'
     vineCompileOnly 'at.helpch:placeholderapi-hytale:1.0.7'
-    vineImplementation 'curse.maven:dynamictooltipslib-1459711:7674275'
+    vineImplementation 'curse.maven:dynamictooltipslib-1459711:7702598'
     //compileOnly fileTree(dir: "$rootDir/libs", include: ["*.jar"])
     //runtimeOnly fileTree(dir: "$rootDir/libs", include: ["*.jar"])
     // Needed libs

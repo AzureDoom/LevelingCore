@@ -1,5 +1,6 @@
 package com.azuredoom.levelingcore.compat.dynamictooltips;
 
+import com.azuredoom.levelingcore.lang.CommandLang;
 import org.herolias.tooltips.api.DynamicTooltipsApiProvider;
 
 import com.azuredoom.levelingcore.LevelingCore;
@@ -23,8 +24,7 @@ public class DynamicTooltipsLibCompat {
             var itemId = entry.getKey();
             var requiredLevel = entry.getValue();
 
-            api.addGlobalLine(itemId, "Required Level: " + requiredLevel);
-            // api.addGlobalLine(itemId, CommandLang.REQUIRED_LEVEL.param("level", requiredLevel).toString());
+            api.addGlobalTranslationLine(itemId, CommandLang.REQUIRED_LEVEL.param("level", requiredLevel).toString());
         }
     }
 }
