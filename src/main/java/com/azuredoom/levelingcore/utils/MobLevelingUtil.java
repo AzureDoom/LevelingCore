@@ -219,10 +219,15 @@ public class MobLevelingUtil {
         if (variance <= 0) {
             return baseLevel;
         }
-        var seed = npc.getUuid().getMostSignificantBits() ^ npc.getUuid().getLeastSignificantBits();
+
+        var npcUUID = npc.getUuid();
+        if (npcUUID == null) {
+            return baseLevel;
+        }
+
+        var seed = npcUUID.getMostSignificantBits() ^ npcUUID.getLeastSignificantBits();
         var rng = new Random(seed);
 
-        var range = baseLevel + variance;
-        return baseLevel + rng.nextInt(range - baseLevel);
+        return Math.max(1, baseLevel - variance + rng.nextInt(variance * 2 + 1));
     }
 }
