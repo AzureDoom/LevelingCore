@@ -1,5 +1,10 @@
 package com.azuredoom.levelingcore;
 
+import com.azuredoom.levelingcore.commands.level.AddLevelCommand;
+import com.azuredoom.levelingcore.commands.level.RemoveLevelCommand;
+import com.azuredoom.levelingcore.commands.level.SetLevelCommand;
+import com.azuredoom.levelingcore.commands.xp.AddXpCommand;
+import com.azuredoom.levelingcore.commands.xp.RemoveXpCommand;
 import com.hypixel.hytale.common.plugin.PluginIdentifier;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.HytaleServer;
