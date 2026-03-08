@@ -20,6 +20,16 @@ public class PartyPluginCompat {
 
     private PartyPluginCompat() {}
 
+    /**
+     * Handles experience (XP) gain for a player or party, taking into account party sharing, distance checks, and
+     * configuration settings for XP notifications and distribution.
+     *
+     * @param xp           The amount of XP to be awarded.
+     * @param playerUuid   The unique identifier for the player gaining XP.
+     * @param levelService The service responsible for handling player levels and XP.
+     * @param config       The configuration object containing settings related to XP gain and party behavior.
+     * @param playerRef    The reference to the player object gaining XP.
+     */
     public static void onXPGain(
         long xp,
         UUID playerUuid,

@@ -102,6 +102,18 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
         }
     }
 
+    /**
+     * Drains and processes pending mob level updates from the queue until the maximum allowed updates per drain are
+     * processed or the queue is empty. If there are still updates remaining in the queue, the method schedules itself
+     * recursively until all updates are processed.
+     * <p>
+     * This method adjusts the dynamic level of mobs based on the computed maximum mob level and other leveling rules
+     * defined in the configuration. It applies the computed level to the mobs and ensures the changes are reflected
+     * unless the mob data is locked. Any successfully applied changes are stored to avoid redundant updates.
+     *
+     * @param store The store containing entities and associated data, used for applying updates and retrieving
+     *              additional context during level computation and scaling.
+     */
     private void drainPending(@NonNullDecl Store<EntityStore> store) {
         try {
             var mobMaxLevel = computeMobMaxLevel();
@@ -154,6 +166,21 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
         }
     }
 
+    /**
+     * Determines the maximum mob level based on the formula type defined in the LevelingCore configuration.
+     * <p>
+     * The value is resolved according to the configured formula type:
+     * <ul>
+     * <li><b>LINEAR</b> – Returns the maximum level specified in the linear formula configuration.</li>
+     * <li><b>TABLE</b> – Loads the configured level table file and determines the maximum level from the table
+     * data.</li>
+     * <li><b>CUSTOM</b> – Returns the maximum level defined in the custom formula configuration.</li>
+     * <li><b>Other / default</b> – Falls back to the maximum level defined in the exponential formula
+     * configuration.</li>
+     * </ul>
+     *
+     * @return the maximum mob level determined from the active formula configuration
+     */
     private int computeMobMaxLevel() {
         var internalConfig = LevelingCore.levelingCoreConfig;
         var type = internalConfig.formula.type.trim().toUpperCase(Locale.ROOT);

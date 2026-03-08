@@ -20,6 +20,15 @@ public class PartyProCompat {
 
     private PartyProCompat() {}
 
+    /**
+     * Handles the experience (XP) gain for a player, including individual and party-based XP distribution.
+     *
+     * @param xp           The number of experience points gained.
+     * @param playerUuid   The unique identifier of the player gaining XP.
+     * @param levelService The service for managing player levels and experience.
+     * @param config       The configuration containing GUI and XP-related settings.
+     * @param playerRef    A reference to the player's in-game representation.
+     */
     public static void onXPGain(
         long xp,
         UUID playerUuid,

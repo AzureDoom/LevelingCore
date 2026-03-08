@@ -11,6 +11,10 @@ public class DynamicTooltipsLibCompat {
 
     private DynamicTooltipsLibCompat() {}
 
+    /**
+     * Registers dynamic tooltip translations for items based on their required levels. This method ensures the
+     * registration happens only once per runtime by checking the `registered` flag.
+     */
     public static void register() {
         if (registered)
             return;
