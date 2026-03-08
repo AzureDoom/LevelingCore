@@ -23,3 +23,6 @@ levelingcore.con = CON: {points}
 levelingcore.con.desc = Снижает получаемый урон
 
 levelingcore.requiredlevel = Требуемый уровень: {level}
+levelingcore.addstats = Добавлено {value} {stat} игроку {player}
+levelingcore.removestats = Удалено {value} {stat} у игрока {player}
+levelingcore.setstats = Установлено {value} {stat} для игрока {player}

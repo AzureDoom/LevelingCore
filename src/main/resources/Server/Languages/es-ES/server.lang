@@ -23,3 +23,6 @@ levelingcore.con = CON: {points}
 levelingcore.con.desc = Reduce el daño recibido
 
 levelingcore.requiredlevel = Nivel requerido: {level}
+levelingcore.addstats = Se añadieron {value} {stat} a {player}
+levelingcore.removestats = Se eliminaron {value} {stat} de {player}
+levelingcore.setstats = Se establecieron {value} {stat} para {player}

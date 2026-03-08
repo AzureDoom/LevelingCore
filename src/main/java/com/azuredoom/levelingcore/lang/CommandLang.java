@@ -98,4 +98,16 @@ public class CommandLang {
         "server.levelingcore.requiredlevel"
     );
 
+    public static final Message ADD_STATS = Message.translation(
+        "server.levelingcore.addstats"
+    );
+
+    public static final Message REMOVE_STATS = Message.translation(
+        "server.levelingcore.removestats"
+    );
+
+    public static final Message SET_STATS = Message.translation(
+        "server.levelingcore.setstats"
+    );
+
 }
