@@ -4,5 +4,5 @@ import java.util.UUID;
 
 public interface PerceptionListener {
 
-    void onPerceptionGain(UUID playerId, int perception);
+    void onPerceptionChange(UUID playerId, int perception);
 }

@@ -4,5 +4,5 @@ import java.util.UUID;
 
 public interface ConstitutionListener {
 
-    void onConstitutionGain(UUID playerId, int intelligence);
+    void onConstitutionChange(UUID playerId, int intelligence);
 }

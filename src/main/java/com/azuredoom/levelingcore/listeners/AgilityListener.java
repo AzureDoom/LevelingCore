@@ -4,5 +4,5 @@ import java.util.UUID;
 
 public interface AgilityListener {
 
-    void onAgilityGain(UUID playerId, int agility);
+    void onAgilityChange(UUID playerId, int agility);
 }

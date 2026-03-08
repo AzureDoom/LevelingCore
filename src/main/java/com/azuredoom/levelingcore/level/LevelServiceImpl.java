@@ -279,10 +279,11 @@ public class LevelServiceImpl {
      */
     public void setStr(UUID id, int str) {
         var data = get(id);
-        data.setStr(str);
+        var clamped = Math.max(0, str);
+        data.setStr(clamped);
         repository.save(data);
 
-        strListeners.forEach(l -> l.onStrengthGain(id, str));
+        strListeners.forEach(l -> l.onStrengthChange(id, clamped));
     }
 
     /**
@@ -304,10 +305,11 @@ public class LevelServiceImpl {
      */
     public void setAgi(UUID id, int agi) {
         var data = get(id);
-        data.setAgi(agi);
+        var clamped = Math.max(0, agi);
+        data.setStr(clamped);
         repository.save(data);
 
-        agiListeners.forEach(l -> l.onAgilityGain(id, agi));
+        agiListeners.forEach(l -> l.onAgilityChange(id, clamped));
     }
 
     /**
@@ -329,10 +331,11 @@ public class LevelServiceImpl {
      */
     public void setPer(UUID id, int per) {
         var data = get(id);
-        data.setPer(per);
+        var clamped = Math.max(0, per);
+        data.setStr(clamped);
         repository.save(data);
 
-        perListeners.forEach(l -> l.onPerceptionGain(id, per));
+        perListeners.forEach(l -> l.onPerceptionChange(id, clamped));
     }
 
     /**
@@ -354,10 +357,11 @@ public class LevelServiceImpl {
      */
     public void setVit(UUID id, int vit) {
         var data = get(id);
-        data.setVit(vit);
+        var clamped = Math.max(0, vit);
+        data.setStr(clamped);
         repository.save(data);
 
-        vitListeners.forEach(l -> l.onVitalityGain(id, vit));
+        vitListeners.forEach(l -> l.onVitalityChange(id, clamped));
     }
 
     /**
@@ -379,10 +383,11 @@ public class LevelServiceImpl {
      */
     public void setInt(UUID id, int intelligence) {
         var data = get(id);
-        data.setIntelligence(intelligence);
+        var clamped = Math.max(0, intelligence);
+        data.setStr(clamped);
         repository.save(data);
 
-        intListeners.forEach(l -> l.onIntelligenceGain(id, intelligence));
+        intListeners.forEach(l -> l.onIntelligenceChange(id, clamped));
     }
 
     /**
@@ -404,10 +409,11 @@ public class LevelServiceImpl {
      */
     public void setCon(UUID id, int con) {
         var data = get(id);
-        data.setCon(con);
+        var clamped = Math.max(0, con);
+        data.setStr(clamped);
         repository.save(data);
 
-        conListeners.forEach(l -> l.onConstitutionGain(id, con));
+        conListeners.forEach(l -> l.onConstitutionChange(id, clamped));
     }
 
     /**

@@ -4,5 +4,5 @@ import java.util.UUID;
 
 public interface VitalityListener {
 
-    void onVitalityGain(UUID playerId, int vitality);
+    void onVitalityChange(UUID playerId, int vitality);
 }

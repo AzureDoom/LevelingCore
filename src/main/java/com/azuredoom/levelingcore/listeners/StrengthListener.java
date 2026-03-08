@@ -4,5 +4,5 @@ import java.util.UUID;
 
 public interface StrengthListener {
 
-    void onStrengthGain(UUID playerId, int strength);
+    void onStrengthChange(UUID playerId, int strength);
 }
