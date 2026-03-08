@@ -1,4 +1,4 @@
-package com.azuredoom.levelingcore.commands;
+package com.azuredoom.levelingcore.commands.level;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -21,10 +21,12 @@ import com.azuredoom.levelingcore.lang.CommandLang;
 import com.azuredoom.levelingcore.utils.LevelingUtil;
 
 /**
- * This class represents a command that allows adjusting the level of a player within the context of the leveling
- * system.
+ * The AddLevelCommand class is responsible for handling the command logic to add levels to a player's progress using
+ * the LevelingCore API. This command ensures that the leveling system is properly initialized before performing any
+ * operations and updates the player's level accordingly. Feedback messages are sent to both the player and the command
+ * executor.
  */
-public class SetLevelCommand extends AbstractPlayerCommand {
+public class AddLevelCommand extends AbstractPlayerCommand {
 
     @Nonnull
     private final RequiredArg<PlayerRef> playerArg;
@@ -34,16 +36,16 @@ public class SetLevelCommand extends AbstractPlayerCommand {
 
     private final Config<GUIConfig> config;
 
-    public SetLevelCommand(Config<GUIConfig> config) {
-        super("setlevel", "Set level of player");
-        this.requirePermission("levelingcore.setlevel");
+    public AddLevelCommand(Config<GUIConfig> config) {
+        super("addlevel", "Add level to player");
+        this.requirePermission("levelingcore.addlevel");
         this.config = config;
         this.playerArg = this.withRequiredArg(
             "player",
-            "Name of player to set level of.",
+            "Player to add level to.",
             ArgTypes.PLAYER_REF
         );
-        this.levelArg = this.withRequiredArg("level", "Level to set player to.", ArgTypes.INTEGER);
+        this.levelArg = this.withRequiredArg("level", "Amount of levels to add", ArgTypes.INTEGER);
     }
 
     @Override
@@ -66,13 +68,14 @@ public class SetLevelCommand extends AbstractPlayerCommand {
             return;
         }
         var playerUUID = playerRef.getUuid();
-        levelService.setLevel(playerUUID, levelRef);
+        levelService.addLevel(playerUUID, levelRef);
         var level = levelService.getLevel(playerUUID);
-        var setLevelMsg = CommandLang.SET_LEVEL_1.param("player", playerRef.getUsername()).param("level", levelRef);
-        var levelTotalMsg = CommandLang.SET_LEVEL_2.param("player", playerRef.getUsername()).param("level", level);
+        var addLevelMsg = levelRef == 1 ? CommandLang.ADD_LEVEL_1 : CommandLang.ADD_LEVEL_2;
+        var finalAddLevelMsg = addLevelMsg.param("level", levelRef).param("player", playerRef.getUsername());
+        var playerLevelNowMsg = CommandLang.ADD_LEVEL_3.param("player", playerRef.getUsername()).param("level", level);
         if (config.get().isEnableLevelAndXPTitles())
-            EventTitleUtil.showEventTitleToPlayer(playerRef, levelTotalMsg, setLevelMsg, true);
-        commandContext.sendMessage(setLevelMsg);
-        commandContext.sendMessage(levelTotalMsg);
+            EventTitleUtil.showEventTitleToPlayer(playerRef, playerLevelNowMsg, finalAddLevelMsg, true);
+        commandContext.sendMessage(finalAddLevelMsg);
+        commandContext.sendMessage(playerLevelNowMsg);
     }
 }

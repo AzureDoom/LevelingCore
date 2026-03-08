@@ -1,4 +1,4 @@
-package com.azuredoom.levelingcore.commands;
+package com.azuredoom.levelingcore.commands.xp;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
@@ -18,31 +18,35 @@ import javax.annotation.Nonnull;
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.lang.CommandLang;
+import com.azuredoom.levelingcore.ui.hud.XPBarHud;
+import com.azuredoom.levelingcore.utils.LevelingUtil;
 
 /**
- * Represents a command that removes a specific number of levels from a player. This command operates within the
- * Leveling Core system and adjusts the player's level based on the specified number of levels to be removed.
+ * The AddXpCommand class is responsible for handling the logic to add experience points (XP) to a player's progress
+ * using the LevelingCore API. This command validates that the leveling system is initialized before proceeding with XP
+ * modification. It updates the player's XP and calculates the resulting level, sending feedback messages to both the
+ * player and the command executor.
  */
-public class RemoveLevelCommand extends AbstractPlayerCommand {
+public class AddXpCommand extends AbstractPlayerCommand {
 
     @Nonnull
     private final RequiredArg<PlayerRef> playerArg;
 
     @Nonnull
-    private final RequiredArg<Integer> levelArg;
+    private final RequiredArg<Integer> xpArg;
 
     private final Config<GUIConfig> config;
 
-    public RemoveLevelCommand(Config<GUIConfig> config) {
-        super("removelevel", "Remove level from player");
-        this.requirePermission("levelingcore.removelevel");
+    public AddXpCommand(Config<GUIConfig> config) {
+        super("addxp", "Add XP to player");
+        this.requirePermission("levelingcore.addxp");
         this.config = config;
         this.playerArg = this.withRequiredArg(
             "player",
-            "Player to remove level from.",
+            "Player to add XP to.",
             ArgTypes.PLAYER_REF
         );
-        this.levelArg = this.withRequiredArg("level", "Amount of levels to remove", ArgTypes.INTEGER);
+        this.xpArg = this.withRequiredArg("xpvalue", "Amount of XP to add", ArgTypes.INTEGER);
     }
 
     @Override
@@ -59,25 +63,29 @@ public class RemoveLevelCommand extends AbstractPlayerCommand {
             return;
         }
         playerRef = this.playerArg.get(commandContext);
-        var levelRef = this.levelArg.get(commandContext);
+        var xpRef = this.xpArg.get(commandContext);
         var playerUUID = playerRef.getUuid();
-        var currentLevel = levelService.getLevel(playerUUID);
-
-        if (currentLevel - levelRef <= 0) {
+        int maxLevel = LevelingUtil.computeMaxLevel();
+        int currentLevel = levelService.getLevel(playerUUID);
+        if (currentLevel >= maxLevel) {
             commandContext.sendMessage(
-                CommandLang.CANNOT_REMOVE_LEVEL_BELOW_ONE
+                CommandLang.ADD_LEVEL_MAX_LEVEL_REACHED
                     .param("player", playerRef.getUsername())
             );
             return;
         }
-        levelService.removeLevel(playerUUID, levelRef);
-        var level = levelService.getLevel(playerUUID);
-        var removeLevelMsg = CommandLang.REMOVE_LEVEL_1.param("level", levelRef)
-            .param("player", playerRef.getUsername());
-        var levelTotalMsg = CommandLang.REMOVE_LEVEL_2.param("player", playerRef.getUsername()).param("level", level);
+        levelService.addXp(playerUUID, xpRef);
+        XPBarHud.updateHud(playerRef);
+        int newLevel = levelService.getLevel(playerUUID);
+        if (newLevel > maxLevel) {
+            levelService.removeLevel(playerUUID, newLevel - maxLevel);
+            newLevel = maxLevel;
+        }
+        var setXPMsg = CommandLang.ADD_XP_1.param("xp", xpRef).param("player", playerRef.getUsername());
+        var levelTotalMsg = CommandLang.ADD_XP_2.param("player", playerRef.getUsername()).param("level", newLevel);
         if (config.get().isEnableLevelAndXPTitles())
-            EventTitleUtil.showEventTitleToPlayer(playerRef, levelTotalMsg, removeLevelMsg, true);
-        commandContext.sendMessage(removeLevelMsg);
+            EventTitleUtil.showEventTitleToPlayer(playerRef, levelTotalMsg, setXPMsg, true);
+        commandContext.sendMessage(setXPMsg);
         commandContext.sendMessage(levelTotalMsg);
     }
 }
