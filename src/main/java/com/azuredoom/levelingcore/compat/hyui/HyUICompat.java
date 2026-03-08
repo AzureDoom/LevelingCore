@@ -37,7 +37,11 @@ public class HyUICompat {
             currentLevel
         );
         var percentage = (float) currentXp / xpForNextLevel * 100;
-        var playerStatMap = store.ensureAndGetComponent(playerRef.getReference(), EntityStatMap.getComponentType());
+        var pRef = playerRef.getReference();
+        if (pRef == null) {
+            return;
+        }
+        var playerStatMap = store.ensureAndGetComponent(pRef, EntityStatMap.getComponentType());
         var healthIndex = DefaultEntityStatTypes.getHealth();
         var staminaIndex = DefaultEntityStatTypes.getStamina();
         var oxygenIndex = DefaultEntityStatTypes.getOxygen();

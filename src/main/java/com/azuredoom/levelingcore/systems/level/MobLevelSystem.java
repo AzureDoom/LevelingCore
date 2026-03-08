@@ -68,8 +68,12 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
             return;
 
         var entityStatMap = archetypeChunk.getComponent(index, EntityStatMap.getComponentType());
+        if (entityStatMap == null)
+            return;
         var healthStat = DefaultEntityStatTypes.getHealth();
         var healthValue = entityStatMap.get(healthStat);
+        if (healthValue == null)
+            return;
         if (healthValue.get() <= 0)
             return;
 
