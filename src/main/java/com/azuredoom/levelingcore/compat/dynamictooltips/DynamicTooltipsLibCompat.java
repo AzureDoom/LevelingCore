@@ -28,7 +28,7 @@ public class DynamicTooltipsLibCompat {
             var itemId = entry.getKey();
             var requiredLevel = entry.getValue();
 
-            api.addGlobalTranslationLine(itemId, CommandLang.REQUIRED_LEVEL.param("level", requiredLevel).toString());
+            api.addGlobalLine(itemId, "Level Requirement: " + requiredLevel);
         }
     }
 }
