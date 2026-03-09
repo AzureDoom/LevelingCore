@@ -227,7 +227,6 @@ public class DynamicTooltipsLibCompat {
                     .withCause(e)
                     .log("Failed reflection crawl while extracting item damage text");
             }
-
         }
     }
 
