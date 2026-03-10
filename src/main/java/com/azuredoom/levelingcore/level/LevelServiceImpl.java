@@ -306,7 +306,7 @@ public class LevelServiceImpl {
     public void setAgi(UUID id, int agi) {
         var data = get(id);
         var clamped = Math.max(0, agi);
-        data.setStr(clamped);
+        data.setAgi(clamped);
         repository.save(data);
 
         agiListeners.forEach(l -> l.onAgilityChange(id, clamped));
@@ -332,7 +332,7 @@ public class LevelServiceImpl {
     public void setPer(UUID id, int per) {
         var data = get(id);
         var clamped = Math.max(0, per);
-        data.setStr(clamped);
+        data.setPer(clamped);
         repository.save(data);
 
         perListeners.forEach(l -> l.onPerceptionChange(id, clamped));
@@ -358,7 +358,7 @@ public class LevelServiceImpl {
     public void setVit(UUID id, int vit) {
         var data = get(id);
         var clamped = Math.max(0, vit);
-        data.setStr(clamped);
+        data.setVit(clamped);
         repository.save(data);
 
         vitListeners.forEach(l -> l.onVitalityChange(id, clamped));
@@ -384,7 +384,7 @@ public class LevelServiceImpl {
     public void setInt(UUID id, int intelligence) {
         var data = get(id);
         var clamped = Math.max(0, intelligence);
-        data.setStr(clamped);
+        data.setIntelligence(clamped);
         repository.save(data);
 
         intListeners.forEach(l -> l.onIntelligenceChange(id, clamped));
@@ -410,7 +410,7 @@ public class LevelServiceImpl {
     public void setCon(UUID id, int con) {
         var data = get(id);
         var clamped = Math.max(0, con);
-        data.setStr(clamped);
+        data.setCon(clamped);
         repository.save(data);
 
         conListeners.forEach(l -> l.onConstitutionChange(id, clamped));
