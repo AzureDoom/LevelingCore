@@ -86,8 +86,8 @@ public class DynamicTooltipsLibCompat {
         try {
             var allItems = Item.getAssetMap().getAssetMap().values();
 
-            for (Item item : allItems) {
-                String itemId = item.getId();
+            for (var item : allItems) {
+                var itemId = item.getId();
                 if (itemId == null || this.processedItems.contains(itemId)) {
                     continue;
                 }
@@ -97,7 +97,7 @@ public class DynamicTooltipsLibCompat {
                     continue;
                 }
 
-                Map<String, List<Integer>> damagesByType = this.getDamagesByTypeFromBuffer(item);
+                var damagesByType = this.getDamagesByTypeFromBuffer(item);
                 if (damagesByType.isEmpty() || this.processItem(item, damagesByType)) {
                     this.processedItems.add(itemId);
                 }
@@ -116,18 +116,18 @@ public class DynamicTooltipsLibCompat {
 
         try {
             if (!damagesByType.isEmpty()) {
-                StringBuilder text = new StringBuilder();
+                var text = new StringBuilder();
 
                 text.append(String.format("<color is=\"#b5a077\">Weapon Level: %d</color>\n", item.getItemLevel()));
-                int i = 0;
+                var i = 0;
                 for (Map.Entry<String, List<Integer>> entry : damagesByType.entrySet()) {
-                    List<Integer> values = entry.getValue();
+                    var values = entry.getValue();
                     if (values.isEmpty()) {
                         continue;
                     }
 
-                    int min = values.get(0);
-                    int max = values.get(values.size() - 1);
+                    var min = values.getFirst();
+                    var max = values.getLast();
                     if (i++ > 0) {
                         text.append("\n");
                     }
@@ -146,16 +146,16 @@ public class DynamicTooltipsLibCompat {
 
     private Map<String, List<Integer>> getDamagesByTypeFromBuffer(Item item) {
         Map<String, List<Integer>> damagesByType = new LinkedHashMap<>();
-        StringBuilder bufferDump = new StringBuilder();
+        var bufferDump = new StringBuilder();
 
         try {
             this.crawlBufferText(item, bufferDump, 0);
-            Matcher m = CRAWL_PATTERN.matcher(bufferDump.toString());
+            var m = CRAWL_PATTERN.matcher(bufferDump.toString());
 
             while (m.find()) {
                 try {
-                    String damageType = this.normalizeDamageType(m.group(1));
-                    int val = Integer.parseInt(m.group(2));
+                    var damageType = this.normalizeDamageType(m.group(1));
+                    var val = Integer.parseInt(m.group(2));
                     if (val > 0) {
                         damagesByType.computeIfAbsent(damageType, key -> new ArrayList<>()).add(val);
                     }
@@ -189,9 +189,9 @@ public class DynamicTooltipsLibCompat {
                     return;
                 }
 
-                Field bufField = this.getField(obj.getClass(), "buffer");
+                var bufField = this.getField(obj.getClass(), "buffer");
                 if (bufField != null) {
-                    Object buf = bufField.get(obj);
+                    var buf = bufField.get(obj);
                     if (buf != null) {
                         if (buf instanceof byte[]) {
                             sb.append(new String((byte[]) buf, StandardCharsets.UTF_8)).append(" ");
@@ -202,21 +202,21 @@ public class DynamicTooltipsLibCompat {
                 }
 
                 if (obj instanceof Map) {
-                    for (Object val : ((Map<?, ?>) obj).values()) {
+                    for (var val : ((Map<?, ?>) obj).values()) {
                         this.crawlBufferText(val, sb, depth + 1);
                     }
                 } else if (obj instanceof Iterable) {
-                    for (Object val : (Iterable<?>) obj) {
+                    for (var val : (Iterable<?>) obj) {
                         this.crawlBufferText(val, sb, depth + 1);
                     }
                 } else if (obj.getClass().isArray()) {
                     int len = Array.getLength(obj);
 
-                    for (int i = 0; i < len; ++i) {
+                    for (var i = 0; i < len; ++i) {
                         this.crawlBufferText(Array.get(obj, i), sb, depth + 1);
                     }
                 } else if (this.isComplex(obj.getClass())) {
-                    for (Field f : getDeclaredFields(obj.getClass())) {
+                    for (var f : getDeclaredFields(obj.getClass())) {
                         if (!Modifier.isStatic(f.getModifiers())) {
                             this.crawlBufferText(f.get(obj), sb, depth + 1);
                         }
@@ -243,14 +243,14 @@ public class DynamicTooltipsLibCompat {
         if (item.getWeapon() != null) {
             return true;
         } else {
-            String id = item.getId().toLowerCase();
+            var id = item.getId().toLowerCase();
             return id.contains("sword") || id.contains("axe") || id.contains("staff") || id.contains("bow") || id
                 .contains("hammer") || id.contains("dagger");
         }
     }
 
     private Field getField(Class<?> clazz, String name) {
-        Field cachedField = bufferFieldCache.get(clazz);
+        var cachedField = bufferFieldCache.get(clazz);
         if (cachedField != null) {
             return cachedField;
         }
@@ -258,7 +258,7 @@ public class DynamicTooltipsLibCompat {
             return null;
         }
 
-        Field foundField = findField(clazz, name);
+        var foundField = findField(clazz, name);
         if (foundField != null) {
             bufferFieldCache.put(clazz, foundField);
             return foundField;
@@ -271,7 +271,7 @@ public class DynamicTooltipsLibCompat {
     private Field findField(Class<?> clazz, String name) {
         while (clazz != null) {
             try {
-                Field f = clazz.getDeclaredField(name);
+                var f = clazz.getDeclaredField(name);
                 f.setAccessible(true);
                 return f;
             } catch (NoSuchFieldException var4) {
@@ -283,8 +283,8 @@ public class DynamicTooltipsLibCompat {
 
     private Field[] getDeclaredFields(Class<?> clazz) {
         return declaredFieldsCache.computeIfAbsent(clazz, c -> {
-            Field[] fields = c.getDeclaredFields();
-            for (Field field : fields) {
+            var fields = c.getDeclaredFields();
+            for (var field : fields) {
                 field.setAccessible(true);
             }
             return fields;
