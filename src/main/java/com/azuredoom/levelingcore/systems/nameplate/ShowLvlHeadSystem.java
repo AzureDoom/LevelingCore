@@ -14,6 +14,7 @@ import com.hypixel.hytale.server.core.util.Config;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
@@ -84,6 +85,11 @@ public class ShowLvlHeadSystem implements Runnable {
                 if (npc == null)
                     continue;
 
+                var blacklistedMobs = config.get().getBlacklistedMobs();
+                var npcTypeId = npc.getNPCTypeId();
+                if (Arrays.asList(blacklistedMobs).contains(npcTypeId)) {
+                    continue;
+                }
                 final var entityId = npc.getUuid();
                 var entityName = I18nModule.get()
                     .getMessage(

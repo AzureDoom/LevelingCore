@@ -15,6 +15,7 @@ import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
@@ -82,6 +83,11 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
             return;
 
         final var entityId = npc.getUuid();
+        var blacklistedMobs = config.get().getBlacklistedMobs();
+        if (Arrays.asList(blacklistedMobs).contains(npc.getNPCTypeId())) {
+            return;
+        }
+
         final var nowMs = System.currentTimeMillis();
 
         var data = LevelingCore.mobLevelRegistry.getOrCreateWithPersistence(
