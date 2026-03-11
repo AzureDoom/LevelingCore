@@ -38,7 +38,7 @@ public class PartyProCompat {
     ) {
         var cfg = config.get();
         var party = PartyProAPI.getInstance().getPartyByPlayer(playerUuid);
-        if (party == null || !cfg.isEnablePartyPluginXPShareCompat()) {
+        if (party == null || !cfg.isEnablePartyProXPShareCompat()) {
             if (!cfg.isDisableXPGainNotification() && !levelService.isMaxLevel(playerUuid)) {
                 NotificationsUtil.sendXPGainNotification(playerRef, xp);
             }
