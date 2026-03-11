@@ -1,3 +1,21 @@
+v0.9.11
+- Tweaked level variance to work both up and down in terms of levels.
+
+**Examples**
+
+| Base Level | Level Variance | Possible Final Levels |
+| :--- | :--- | :--- |
+| 5 | 0 | 5 (No change) |
+| 5 | 2 | 3, 4, 5, 6, or 7 |
+| 5 | 5 | 0–10 |
+
+- Added add/remove/set stats commands.
+- Reverted DynamicTooltips lang usage due to an issue with global translated tooltips. Now uses the old method.
+- Updated default zone level mapping with all current zones.
+- Updated default item leveling mapping with all current weapons and armors.
+- Added a blacklistedMobs config option to disable mob leveling on certain entities.
+- Fixed PartyProCompat config not properly being used for enabling compatibility.
+
 v0.9.10
 - Implemented full level gating support for any item.
 - Fixed addxp and removexp commands not updating the player's HUD properly. 
