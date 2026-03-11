@@ -18,7 +18,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.azuredoom.levelingcore.LevelingCore;
@@ -61,7 +60,8 @@ public class DynamicTooltipsLibCompat {
         if (api == null)
             return;
 
-        // Wait for 10 seconds before scanning to ensure all items are loaded, then add tooltips for required levels & weapon damages
+        // Wait for 10 seconds before scanning to ensure all items are loaded, then add tooltips for required levels &
+        // weapon damages
         SCAN_TIMER.schedule(new TimerTask() {
 
             {

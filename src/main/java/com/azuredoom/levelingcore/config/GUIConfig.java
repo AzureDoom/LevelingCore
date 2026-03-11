@@ -651,6 +651,11 @@ public class GUIConfig {
         return enableLevelChatMsgs;
     }
 
+    /**
+     * Determines whether the notification for experience points (XP) gain is disabled in the configuration.
+     *
+     * @return {@code true} if the XP gain notification is disabled, otherwise {@code false}.
+     */
     public boolean isDisableXPGainNotification() {
         return disableXPGainNotification;
     }
@@ -664,30 +669,69 @@ public class GUIConfig {
         return enableLevelAndXPTitles;
     }
 
+    /**
+     * Determines whether compatibility for party-based experience points (XP) sharing using the "Pro" party system is
+     * enabled in the configuration.
+     *
+     * @return {@code true} if the party XP sharing compatibility for the "Pro" system is enabled, otherwise
+     *         {@code false}.
+     */
     public boolean isEnablePartyProXPShareCompat() {
         return enablePartyProXPShareCompat;
     }
 
+    /**
+     * Determines whether compatibility for party-based experience points (XP) sharing using a specific plugin-based
+     * party system is enabled in the configuration.
+     *
+     * @return {@code true} if the party XP sharing compatibility for the plugin-based system is enabled, otherwise
+     *         {@code false}.
+     */
     public boolean isEnablePartyPluginXPShareCompat() {
         return enablePartyPluginXPShareCompat;
     }
 
+    /**
+     * Determines whether the party experience split feature is enabled.
+     *
+     * @return true if the party experience split feature is enabled; false otherwise.
+     */
     public boolean isEnablePartyXPSplit() {
         return enablePartyXPSplit;
     }
 
+    /**
+     * Retrieves the experience points (XP) multiplier for the party group.
+     *
+     * @return The XP multiplier applied to the party group as a double.
+     */
     public double getPartyGroupXPMultiplier() {
         return partyGroupXPMultiplier;
     }
 
+    /**
+     * Determines if the killer receives full experience points (XP).
+     *
+     * @return true if the killer gets full XP, false otherwise.
+     */
     public boolean isKillerGetsFullXp() {
         return killerGetsFullXp;
     }
 
+    /**
+     * Determines if the party experience distance check is enabled.
+     *
+     * @return true if the party experience distance check is enabled, false otherwise.
+     */
     public boolean isEnablePartyXPDistanceCheck() {
         return enablePartyXPDistanceCheck;
     }
 
+    /**
+     * Retrieves the distance in blocks within which party members can share experience points.
+     *
+     * @return The maximum distance in blocks within which party experience sharing is effective.
+     */
     public double getPartyXPDistanceBlocks() {
         return partyXPDistanceBlocks;
     }
@@ -746,58 +790,129 @@ public class GUIConfig {
         return enableStatHealing;
     }
 
+    /**
+     * Gets the sound identifier played when a player levels up.
+     *
+     * @return the sound asset ID used for level-up events
+     */
     public String getLevelUpSound() {
         return levelUpSound;
     }
 
+    /**
+     * Gets the sound identifier that is played when a player loses a level.
+     *
+     * @return the sound asset ID used for level-down events
+     */
     public String getLevelDownSound() {
         return levelDownSound;
     }
 
+    /**
+     * Determines whether XP-to-level mappings defined in the configuration should be used instead of the default
+     * health-based XP calculations.
+     *
+     * @return true if configuration XP mappings should override default behavior
+     */
     public boolean isUseConfigXPMappingsInsteadOfHealthDefaults() {
         return useConfigXPMappingsInsteadOfHealthDefaults;
     }
 
+    /**
+     * Determines whether level-up rewards should be loaded and applied from the configuration file.
+     *
+     * @return true if level-up rewards defined in config are enabled
+     */
     public boolean isEnableLevelUpRewardsConfig() {
         return enableLevelUpRewardsConfig;
     }
 
+    /**
+     * Determines whether stat points are prevented from being granted automatically when a player levels up.
+     *
+     * @return true if stat point gain on level-up is disabled
+     */
     public boolean isDisableStatPointGainOnLevelUp() {
         return disableStatPointGainOnLevelUp;
     }
 
+    /**
+     * Gets the number of stat points granted per level-up when using a fixed stat allocation model.
+     *
+     * @return the number of stat points awarded each level
+     */
     public int getStatsPerLevel() {
         return statsPerLevel;
     }
 
+    /**
+     * Determines whether stat points per level should be determined by a configured mapping instead of a fixed value.
+     *
+     * @return true if stat-per-level mapping is enabled
+     */
     public boolean isUseStatsPerLevelMapping() {
         return useStatsPerLevelMapping;
     }
 
+    /**
+     * Gets the multiplier applied to the Strength stat. This affects how much benefit each Strength point provides.
+     *
+     * @return the strength stat multiplier
+     */
     public float getStrStatMultiplier() {
         return strStatMultiplier;
     }
 
+    /**
+     * Gets the multiplier applied to the Perception stat. This modifies the effectiveness of Perception points.
+     *
+     * @return the perception stat multiplier
+     */
     public float getPerStatMultiplier() {
         return perStatMultiplier;
     }
 
+    /**
+     * Gets the multiplier applied to the Vitality stat.
+     *
+     * @return the vitality stat multiplier
+     */
     public float getVitStatMultiplier() {
         return vitStatMultiplier;
     }
 
+    /**
+     * Gets the multiplier applied to the Agility stat.
+     *
+     * @return the agility stat multiplier
+     */
     public float getAgiStatMultiplier() {
         return agiStatMultiplier;
     }
 
+    /**
+     * Gets the multiplier applied to the Intelligence stat.
+     *
+     * @return the intelligence stat multiplier
+     */
     public float getIntStatMultiplier() {
         return intStatMultiplier;
     }
 
+    /**
+     * Gets the multiplier applied to the Constitution stat.
+     *
+     * @return the constitution stat multiplier
+     */
     public float getConStatMultiplier() {
         return conStatMultiplier;
     }
 
+    /**
+     * Gets the leveling mode currently configured. This determines how player levels are calculated or applied.
+     *
+     * @return the configured level mode identifier
+     */
     public String getLevelMode() {
         return levelMode;
     }
@@ -811,46 +926,105 @@ public class GUIConfig {
         return levelVariance;
     }
 
+    /**
+     * Gets the multiplier applied to mob maximum health. This scales the base health of mobs based on the configured
+     * value.
+     *
+     * @return the mob health multiplier
+     */
     public float getMobHealthMultiplier() {
         return mobHealthMultiplier;
     }
 
+    /**
+     * Gets the multiplier applied to mob melee damage. This modifies how much damage mobs deal with close-range
+     * attacks.
+     *
+     * @return the mob melee damage multiplier
+     */
     public float getMobDamageMultiplier() {
         return mobDamageMultiplier;
     }
 
+    /**
+     * Gets the base melee damage value used for mobs. This value may be scaled further by damage multipliers.
+     *
+     * @return the base melee damage applied to mobs
+     */
     public float getMobBaseDamage() {
         return mobBaseDamage;
     }
 
+    /**
+     * Gets the multiplier applied to mob ranged damage. This affects damage from projectiles or other ranged attacks.
+     *
+     * @return the mob ranged damage multiplier
+     */
     public float getMobRangeDamageMultiplier() {
         return mobRangeDamageMultiplier;
     }
 
+    /**
+     * Gets the base ranged damage value used for mobs. This value may be scaled further by the ranged damage
+     * multiplier.
+     *
+     * @return the base ranged damage applied to mobs
+     */
     public float getMobBaseRangeDamage() {
         return mobBaseRangeDamage;
     }
 
+    /**
+     * Determines whether item level restrictions are enabled. When enabled, players may be prevented from equipping or
+     * using items that require a higher level than their current level.
+     *
+     * @return true if item level restrictions are enabled
+     */
     public boolean isEnableItemLevelRestriction() {
         return enableItemLevelRestriction;
     }
 
+    /**
+     * Determines whether the experience bar UI is displayed to players.
+     *
+     * @return true if the XP bar interface should be visible
+     */
     public boolean isEnableXPBarUI() {
         return enableXPBarUI;
     }
 
+    /**
+     * Determines whether player levels are displayed on nameplates.
+     *
+     * @return true if player levels should be shown
+     */
     public boolean isShowPlayerLvls() {
         return showPlayerLvls;
     }
 
+    /**
+     * Determines whether mob levels are displayed in on mob nameplates.
+     *
+     * @return true if mob levels should be shown
+     */
     public boolean isShowMobLvls() {
         return showMobLvls;
     }
 
+    /**
+     * Gets the multiplier used to scale mob levels.
+     *
+     * @return the mob level scaling multiplier
+     */
     public double getMobLevelMultiplier() {
         return mobLevelMultiplier;
     }
 
+    /**
+     * Gets the format string used for mob nameplates. This may include placeholders for level, name, or other values.
+     *
+     * @return the configured mob nameplate format
+     */
     public String getMobNameplate() {
         return mobNameplate;
     }
