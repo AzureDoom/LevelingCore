@@ -49,6 +49,7 @@ import com.azuredoom.levelingcore.level.mobs.mapping.MobEnvironmentMapping;
 import com.azuredoom.levelingcore.level.mobs.mapping.MobInstanceMapping;
 import com.azuredoom.levelingcore.level.mobs.mapping.MobOverrideMapping;
 import com.azuredoom.levelingcore.level.mobs.mapping.MobZoneMapping;
+import com.azuredoom.levelingcore.level.objectives.ObjectivesXPMapping;
 import com.azuredoom.levelingcore.level.rewards.LevelRewards;
 import com.azuredoom.levelingcore.level.rewards.RewardEntry;
 import com.azuredoom.levelingcore.level.stats.StatsPerLevelMapping;
@@ -62,6 +63,7 @@ import com.azuredoom.levelingcore.systems.level.LevelDownTickingSystem;
 import com.azuredoom.levelingcore.systems.level.LevelUpTickingSystem;
 import com.azuredoom.levelingcore.systems.level.MobLevelSystem;
 import com.azuredoom.levelingcore.systems.nameplate.ShowLvlHeadSystem;
+import com.azuredoom.levelingcore.systems.objectives.ObjectivesSystem;
 import com.azuredoom.levelingcore.systems.xp.GainXPEventSystem;
 import com.azuredoom.levelingcore.systems.xp.LossXPEventSystem;
 import com.azuredoom.levelingcore.ui.hud.XPBarHud;
@@ -123,6 +125,10 @@ public class LevelingCore extends JavaPlugin {
     public static final EquipBlockManager equipBlockManager = new EquipBlockManager();
 
     public static final ItemBlockPacketManager itemBlockPacketManager = new ItemBlockPacketManager();
+
+    public static final Map<String, Integer> objectiveXPMapping = ObjectivesXPMapping.loadOrCreate(
+        LevelingCore.configPath
+    );
 
     /**
      * Constructs a new {@code LevelingCore} instance and initializes the core components of the leveling system. This
@@ -299,6 +305,7 @@ public class LevelingCore extends JavaPlugin {
         getEntityStoreRegistry().registerSystem(
             new HandGateTickingSystem(LevelingCore.itemBlockPacketManager.getHandGate())
         );
+        getEntityStoreRegistry().registerSystem(new ObjectivesSystem());
         getEntityStoreRegistry().registerSystem(new MobLevelSystem(config));
         getEntityStoreRegistry().registerSystem(new LevelUpTickingSystem(config));
         getEntityStoreRegistry().registerSystem(new LevelDownTickingSystem(config));

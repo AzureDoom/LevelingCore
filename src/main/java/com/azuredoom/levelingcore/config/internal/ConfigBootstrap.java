@@ -39,6 +39,7 @@ public final class ConfigBootstrap {
         Map<String, Integer> mobBiomeMapping,
         Map<String, Integer> mobEnvironmentMapping,
         Map<String, Integer> mobOverrideMapping,
+        Map<String, Integer> objectiveXPMapping,
         AutoCloseable closeable
     ) {}
 
@@ -78,6 +79,7 @@ public final class ConfigBootstrap {
         var mobBiomeMapping = LevelingCore.mobBiomeMapping;
         var mobEnvironmentMapping = LevelingCore.mobEnvironmentMapping;
         var mobOverrideMapping = LevelingCore.mobOverrideMapping;
+        var objectiveXPMapping = LevelingCore.objectiveXPMapping;
 
         return new Bootstrap(
             service,
@@ -90,6 +92,7 @@ public final class ConfigBootstrap {
             mobBiomeMapping,
             mobEnvironmentMapping,
             mobOverrideMapping,
+            objectiveXPMapping,
             repo::close
         );
     }
