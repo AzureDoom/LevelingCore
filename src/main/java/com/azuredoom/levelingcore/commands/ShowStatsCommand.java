@@ -56,11 +56,6 @@ public class ShowStatsCommand extends AbstractPlayerCommand {
                     config
                 );
                 player.getPageManager().openCustomPage(ref, store, page);
-                player.sendMessage(
-                    Message.raw(
-                        "Missing HyUI plugin, stats will be shown in old screen. Please install HyUI to use the new screen."
-                    )
-                );
             }
         }
     }
