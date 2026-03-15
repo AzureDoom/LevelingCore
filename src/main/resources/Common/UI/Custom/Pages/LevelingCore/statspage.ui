@@ -13,10 +13,48 @@ $C = "../../Common.ui";
 @AddButtonWidth = 48;
 @AddButtonHeight = 28;
 
+@SmallSecondaryButtonLabelStyle2 = LabelStyle(
+  FontSize: 30,
+  TextColor: #bfcdd5,
+  RenderBold: true,
+  RenderUppercase: true,
+  HorizontalAlignment: Center,
+  VerticalAlignment: Center
+);
+
+@SmallSecondaryButtonLabelStyle3 = LabelStyle(
+  FontSize: 15,
+  TextColor: #bfcdd5,
+  RenderBold: true,
+  RenderUppercase: true,
+  HorizontalAlignment: Center,
+  VerticalAlignment: Center
+);
+
+@SmallSecondaryTextButtonStyle2 = TextButtonStyle(
+  Default: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Primary_Square.png"), LabelStyle: @SmallSecondaryButtonLabelStyle2),
+  Hovered: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Primary_Square_Pressed.png"), LabelStyle: @SmallSecondaryButtonLabelStyle2),
+  Pressed: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Primary_Square_Pressed.png"), LabelStyle: @SmallSecondaryButtonLabelStyle2),
+  Disabled: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Primary_Square.png"), LabelStyle: @SmallSecondaryButtonLabelStyle2)
+);
+
+@SmallSecondaryTextButtonStyle3 = TextButtonStyle(
+  Default: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Primary_Square.png"), LabelStyle: @SmallSecondaryButtonLabelStyle3),
+  Hovered: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Primary_Square_Pressed.png"), LabelStyle: @SmallSecondaryButtonLabelStyle3),
+  Pressed: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Primary_Square_Pressed.png"), LabelStyle: @SmallSecondaryButtonLabelStyle3),
+  Disabled: (Background: PatchStyle(TexturePath: "../../Common/Buttons/Primary_Square.png"), LabelStyle: @SmallSecondaryButtonLabelStyle3)
+);
+
 @StatAddButton = TextButton {
-  Style: $C.@SecondaryTextButtonStyle;
-  Anchor: (Width: @AddButtonWidth, Height: @AddButtonHeight);
-  Text: "+ 1";
+  Style: @SmallSecondaryTextButtonStyle2;
+  Anchor: (Right: 10, Width: @AddButtonWidth, Height: @AddButtonHeight);
+  Text: "+";
+};
+
+@StatAddFiveButton = TextButton {
+  Style: @SmallSecondaryTextButtonStyle3;
+  Anchor: (Right: 10, Width: @AddButtonWidth, Height: @AddButtonHeight);
+  Text: "+ 5";
 };
 
 @HeaderTitleStyle = LabelStyle(
@@ -31,7 +69,7 @@ $C = "../../Common.ui";
 
 $C.@PageOverlay {
   $C.@DecoratedContainer {
-    Anchor: (Width: 900, Height: 700);
+    Anchor: (Width: 600, Height: 630);
     Padding: (Full: 0);
     Background: #737d85;
 
@@ -64,63 +102,119 @@ $C.@PageOverlay {
           Padding: (Full: 0);
 
           Group {
-            LayoutMode: Center;
-            Padding: (Top: 10, Bottom: 10);
-
-            Label #Level {
-              Style: (
-                FontSize: 20,
-                TextColor: #ffffff,
-                RenderBold: true
-              );
-              Anchor: ();
-              Text: "PlayerName - Level 1";
-              Padding: (Bottom: 5);
-            }
-          }
-          Group {
-            LayoutMode: Top;
-            Padding: (Full: 0);
+            LayoutMode: Left;
+            Padding: (Left: 0, Right: 0, Top: 10, Bottom: 10);
 
             Group {
-              LayoutMode: Center;
-              Padding: (Top: 10, Bottom: 10);
+              LayoutMode: Top;
+              Anchor: (Width: 260);
+
+              Label #Playername {
+                Style: (
+                  FontSize: 16,
+                  TextColor: #FFD700,
+                  RenderBold: true
+                );
+                Text: "Playername";
+              }
+
+              Label #Level {
+                Style: (
+                  FontSize: 16,
+                  TextColor: #FFD700,
+                  RenderBold: true
+                );
+                Text: "Level 1";
+              }
 
               Label #XP {
                 Style: (
-                  FontSize: 14,
-                  TextColor: #ffffff,
-                  RenderBold: false
+                  FontSize: 16,
+                  TextColor: #FFD700,
+                  RenderBold: true
                 );
-                Anchor: ();
-                Text: "0.0 / 0.0 XP (0%)";
-                Padding: (Top: 2, Bottom: 5);
+                Text: "XP: 0 / 0 (0.0%)";
               }
-            }
-          }
-
-          Group {
-            LayoutMode: Top;
-            Padding: (Full: 0);
-
-            Group {
-              LayoutMode: Center;
-              Padding: (Top: 10, Bottom: 10);
 
               Label #PNTSLabel {
                 Style: (
-                  FontSize: 14,
-                  TextColor: #ffffff,
-                  RenderBold: false
+                  FontSize: 16,
+                  TextColor: #FFD700,
+                  RenderBold: true
                 );
-                Anchor: ();
-                Text: "0.0 / 0.0 XP";
-                Padding: (Top: 2, Bottom: 5);
+                Text: "Available Stat Points: 0";
+              }
+            }
+
+            Group {
+              FlexWeight: 1;
+            }
+
+            Group {
+              LayoutMode: Top;
+              Anchor: (Width: 220);
+
+              Group {
+                LayoutMode: Left;
+
+                AssetImage #HealthIcon {
+                  Anchor: (Width: 20, Height: 20);
+                  Background: PatchStyle(TexturePath: "health.png");
+                }
+
+                Label #Health {
+                  Style: (
+                    FontSize: 16,
+                    TextColor: #ffffff,
+                    RenderBold: true
+                  );
+                  Text: "Health: 173/173";
+                  Padding: (Left: 6);
+                }
+              }
+
+              Group {
+                LayoutMode: Left;
+
+                AssetImage #StaminaIcon {
+                  Anchor: (Width: 20, Height: 20);
+                  Background: PatchStyle(TexturePath: "stamina.png");
+                }
+
+                Label #Stamina {
+                  Style: (
+                    FontSize: 16,
+                    TextColor: #ffffff,
+                    RenderBold: true
+                  );
+                  Text: "Stamina: 19/19";
+                  Padding: (Left: 6);
+                }
+              }
+
+              Group {
+                LayoutMode: Left;
+
+                AssetImage #ManaIcon {
+                  Anchor: (Width: 20, Height: 20);
+                  Background: PatchStyle(TexturePath: "mana.png");
+                }
+
+                Label #Mana {
+                  Style: (
+                    FontSize: 16,
+                    TextColor: #ffffff,
+                    RenderBold: true
+                  );
+                  Text: "Mana: 14/14";
+                  Padding: (Left: 6);
+                }
               }
             }
           }
+
           Group #StatsContent {
-              Anchor: (Width: 720);
+              Anchor: (Width: 600);
               FlexWeight: 1;
               LayoutMode: TopScrolling;
               Padding: (Left: 7, Top: 2, Right: 12, Bottom: 4);
@@ -130,229 +224,289 @@ $C.@PageOverlay {
                 LayoutMode: Top;
 
                 Group #STRGroup {
-                  Anchor: (Width: 680, Height: 70, Bottom: 3);
-                  LayoutMode: Center;
+                  Anchor: (Width: 550, Height: 70, Bottom: 3);
+                  LayoutMode: Left;
                   Background: #1e2d3d(0.5);
+                  Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10);
 
-                  Group {
+                  AssetImage #StrIcon {
+                    Anchor: (Width: 48, Height: 48);
+                    Background: PatchStyle(TexturePath: "str.png");
+                    Padding: (Right: 10);
+                  }
+
+                  Group #STRTextGroup {
                     LayoutMode: Top;
-                    Padding: (Left: 4, Right: 5);
+                    Anchor: (Width: 260, Height: 40);
+                    Padding: (Top: 0);
 
                     Label #STR {
                       Style: (
                         FontSize: 16,
                         TextColor: #ffffff,
-                        RenderBold: true
+                        RenderBold: false
                       );
-                      Anchor: (Width: 240, Height: 20);
-                      Text: "STR: Value";
-                      Padding: (Bottom: 2);
+                      Anchor: (Width: 240, Height: 18);
+                      Text: "STR: 40";
                     }
 
                     Label #STRDescription {
                       Style: (
-                        FontSize: 12,
+                        FontSize: 14,
                         TextColor: #aaaaaa,
                         RenderBold: false
                       );
-                      Anchor: (Width: 240);
+                      Anchor: (Width: 240, Height: 18);
                       Text: "";
+                      Padding: (Top: 2);
                     }
                   }
 
                   Group {
                     FlexWeight: 1;
                   }
+
+                  @StatAddFiveButton #AddStrFive {}
 
                   @StatAddButton #AddStr {}
                 }
 
                 Group #AGIGroup {
-                  Anchor: (Width: 680, Height: 70, Bottom: 3);
-                  LayoutMode: Center;
+                  Anchor: (Width: 550, Height: 70, Bottom: 3);
+                  LayoutMode: Left;
                   Background: #1e2d3d(0.5);
+                  Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10);
 
-                  Group {
+                  AssetImage #AgiIcon {
+                    Anchor: (Width: 48, Height: 48);
+                    Background: PatchStyle(TexturePath: "agi.png");
+                    Padding: (Right: 10);
+                  }
+
+                  Group #AGITextGroup {
                     LayoutMode: Top;
-                    Padding: (Left: 4, Right: 5);
+                    Anchor: (Width: 260, Height: 40);
+                    Padding: (Top: 0);
 
                     Label #AGI {
                       Style: (
                         FontSize: 16,
                         TextColor: #ffffff,
-                        RenderBold: true
+                        RenderBold: false
                       );
-                      Anchor: (Width: 240, Height: 20);
-                      Text: "AGI: Value";
-                      Padding: (Bottom: 2);
+                      Anchor: (Width: 240, Height: 18);
+                      Text: "AGI: 40";
                     }
 
                     Label #AGIDescription {
                       Style: (
-                        FontSize: 12,
+                        FontSize: 14,
                         TextColor: #aaaaaa,
                         RenderBold: false
                       );
-                      Anchor: (Width: 240);
+                      Anchor: (Width: 240, Height: 18);
                       Text: "";
+                      Padding: (Top: 2);
                     }
                   }
 
                   Group {
                     FlexWeight: 1;
                   }
+
+                  @StatAddFiveButton #AddAgiFive {}
 
                   @StatAddButton #AddAgi {}
                 }
 
                 Group #PERGroup {
-                  Anchor: (Width: 680, Height: 70, Bottom: 3);
-                  LayoutMode: Center;
+                  Anchor: (Width: 550, Height: 70, Bottom: 3);
+                  LayoutMode: Left;
                   Background: #1e2d3d(0.5);
+                  Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10);
 
-                  Group {
+                  AssetImage #PERIcon {
+                    Anchor: (Width: 48, Height: 48);
+                    Background: PatchStyle(TexturePath: "per.png");
+                    Padding: (Right: 10);
+                  }
+
+                  Group #PERTextGroup {
                     LayoutMode: Top;
-                    Padding: (Left: 4, Right: 5);
+                    Anchor: (Width: 260, Height: 40);
+                    Padding: (Top: 0);
 
                     Label #PER {
                       Style: (
                         FontSize: 16,
                         TextColor: #ffffff,
-                        RenderBold: true
+                        RenderBold: false
                       );
-                      Anchor: (Width: 240, Height: 20);
-                      Text: "PER: Value";
-                      Padding: (Bottom: 2);
+                      Anchor: (Width: 240, Height: 18);
+                      Text: "PER: 40";
                     }
 
                     Label #PERDescription {
                       Style: (
-                        FontSize: 12,
+                        FontSize: 14,
                         TextColor: #aaaaaa,
                         RenderBold: false
                       );
-                      Anchor: (Width: 240);
+                      Anchor: (Width: 240, Height: 18);
                       Text: "";
+                      Padding: (Top: 2);
                     }
                   }
 
                   Group {
                     FlexWeight: 1;
                   }
+
+                  @StatAddFiveButton #AddPerFive {}
 
                   @StatAddButton #AddPer {}
                 }
 
                 Group #VITGroup {
-                  Anchor: (Width: 680, Height: 70, Bottom: 3);
-                  LayoutMode: Center;
+                  Anchor: (Width: 550, Height: 70, Bottom: 3);
+                  LayoutMode: Left;
                   Background: #1e2d3d(0.5);
+                  Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10);
 
-                  Group {
+                  AssetImage #VITIcon {
+                    Anchor: (Width: 48, Height: 48);
+                    Background: PatchStyle(TexturePath: "vit.png");
+                    Padding: (Right: 10);
+                  }
+
+                  Group #VITTextGroup {
                     LayoutMode: Top;
-                    Padding: (Left: 4, Right: 5);
+                    Anchor: (Width: 260, Height: 40);
+                    Padding: (Top: 0);
 
                     Label #VIT {
                       Style: (
                         FontSize: 16,
                         TextColor: #ffffff,
-                        RenderBold: true
+                        RenderBold: false
                       );
-                      Anchor: (Width: 240, Height: 20);
-                      Text: "VIT: Value";
-                      Padding: (Bottom: 2);
+                      Anchor: (Width: 240, Height: 18);
+                      Text: "VIT: 40";
                     }
 
                     Label #VITDescription {
                       Style: (
-                        FontSize: 12,
+                        FontSize: 14,
                         TextColor: #aaaaaa,
                         RenderBold: false
                       );
-                      Anchor: (Width: 240);
+                      Anchor: (Width: 240, Height: 18);
                       Text: "";
+                      Padding: (Top: 2);
                     }
                   }
 
                   Group {
                     FlexWeight: 1;
                   }
+
+                  @StatAddFiveButton #AddVitFive {}
 
                   @StatAddButton #AddVit {}
                 }
 
                 Group #INTGroup {
-                  Anchor: (Width: 680, Height: 70, Bottom: 3);
-                  LayoutMode: Center;
+                  Anchor: (Width: 550, Height: 70, Bottom: 3);
+                  LayoutMode: Left;
                   Background: #1e2d3d(0.5);
+                  Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10);
 
-                  Group {
+                  AssetImage #INTcon {
+                    Anchor: (Width: 48, Height: 48);
+                    Background: PatchStyle(TexturePath: "int.png");
+                    Padding: (Right: 10);
+                  }
+
+                  Group #INTTextGroup {
                     LayoutMode: Top;
-                    Padding: (Left: 4, Right: 5);
+                    Anchor: (Width: 260, Height: 40);
+                    Padding: (Top: 0);
 
                     Label #INT {
                       Style: (
                         FontSize: 16,
                         TextColor: #ffffff,
-                        RenderBold: true
+                        RenderBold: false
                       );
-                      Anchor: (Width: 240, Height: 20);
-                      Text: "INT: Value";
-                      Padding: (Bottom: 2);
+                      Anchor: (Width: 240, Height: 18);
+                      Text: "PER: 40";
                     }
 
                     Label #INTDescription {
                       Style: (
-                        FontSize: 12,
+                        FontSize: 14,
                         TextColor: #aaaaaa,
                         RenderBold: false
                       );
-                      Anchor: (Width: 240);
+                      Anchor: (Width: 240, Height: 18);
                       Text: "";
+                      Padding: (Top: 2);
                     }
                   }
 
                   Group {
                     FlexWeight: 1;
                   }
+
+                  @StatAddFiveButton #AddIntFive {}
 
                   @StatAddButton #AddInt {}
                 }
 
                 Group #CONGroup {
-                  Anchor: (Width: 680, Height: 70, Bottom: 3);
-                  LayoutMode: Center;
+                  Anchor: (Width: 550, Height: 70, Bottom: 3);
+                  LayoutMode: Left;
                   Background: #1e2d3d(0.5);
+                  Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10);
 
-                  Group {
+                  AssetImage #CONIcon {
+                    Anchor: (Width: 48, Height: 48);
+                    Background: PatchStyle(TexturePath: "con.png");
+                    Padding: (Right: 10);
+                  }
+
+                  Group #CONTextGroup {
                     LayoutMode: Top;
-                    Padding: (Left: 4, Right: 5);
+                    Anchor: (Width: 260, Height: 40);
+                    Padding: (Top: 0);
 
                     Label #CON {
                       Style: (
                         FontSize: 16,
                         TextColor: #ffffff,
-                        RenderBold: true
+                        RenderBold: false
                       );
-                      Anchor: (Width: 240, Height: 20);
-                      Text: "CON: Value";
-                      Padding: (Bottom: 2);
+                      Anchor: (Width: 240, Height: 18);
+                      Text: "CON: 40";
                     }
 
                     Label #CONDescription {
                       Style: (
-                        FontSize: 12,
+                        FontSize: 14,
                         TextColor: #aaaaaa,
                         RenderBold: false
                       );
-                      Anchor: (Width: 240);
+                      Anchor: (Width: 240, Height: 18);
                       Text: "";
+                      Padding: (Top: 2);
                     }
                   }
 
                   Group {
                     FlexWeight: 1;
                   }
+
+                  @StatAddFiveButton #AddConFive {}
 
                   @StatAddButton #AddCon {}
                 }

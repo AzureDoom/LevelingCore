@@ -44,122 +44,133 @@ public class StatsScreen extends InteractiveCustomUIPage<StatsScreen.BindingData
         @Nonnull Store<EntityStore> store
     ) {
         uiCommandBuilder.append("Pages/LevelingCore/statspage.ui");
-        this.update(uiCommandBuilder);
-        uiEventBuilder.addEventBinding(
-            CustomUIEventBindingType.Activating,
-            "#AddStr",
-            new EventData().append("Type", "SpendStat").append("Stat", "str")
-        );
-        uiEventBuilder.addEventBinding(
-            CustomUIEventBindingType.Activating,
-            "#AddAgi",
-            new EventData().append("Type", "SpendStat").append("Stat", "agi")
-        );
-        uiEventBuilder.addEventBinding(
-            CustomUIEventBindingType.Activating,
-            "#AddPer",
-            new EventData().append("Type", "SpendStat").append("Stat", "per")
-        );
-        uiEventBuilder.addEventBinding(
-            CustomUIEventBindingType.Activating,
-            "#AddVit",
-            new EventData().append("Type", "SpendStat").append("Stat", "vit")
-        );
-        uiEventBuilder.addEventBinding(
-            CustomUIEventBindingType.Activating,
-            "#AddInt",
-            new EventData().append("Type", "SpendStat").append("Stat", "int")
-        );
-        uiEventBuilder.addEventBinding(
-            CustomUIEventBindingType.Activating,
-            "#AddCon",
-            new EventData().append("Type", "SpendStat").append("Stat", "con")
-        );
+        this.update(uiCommandBuilder, store);
+        String[] stats = { "str", "agi", "per", "vit", "int", "con" };
+
+        for (var stat : stats) {
+            uiEventBuilder.addEventBinding(
+                CustomUIEventBindingType.Activating,
+                "#Add" + capitalize(stat),
+                new EventData()
+                    .append("Type", "SpendStat")
+                    .append("Stat", stat)
+                    .append("Amount", "1")
+            );
+            uiEventBuilder.addEventBinding(
+                CustomUIEventBindingType.Activating,
+                "#Add" + capitalize(stat) + "Five",
+                new EventData()
+                    .append("Type", "SpendStat")
+                    .append("Stat", stat)
+                    .append("Amount", "5")
+            );
+        }
     }
 
-    public void update(UICommandBuilder uiCommandBuilder) {
+    public void update(UICommandBuilder uiCommandBuilder, Store<EntityStore> store) {
         var levelService = LevelingCoreApi.getLevelServiceIfPresent().orElse(null);
         if (levelService == null) {
             uiCommandBuilder.set("#PNTSLabel.TextSpans", Message.raw("Service unavailable"));
             return;
         }
+
         var playerUUID = playerRef.getUuid();
-        var hasAbilityPoints = levelService.getAvailableAbilityPoints(playerUUID) > 0;
+        var availablePoints = levelService.getAvailableAbilityPoints(playerUUID);
+
+        var canAddOne = availablePoints >= 1;
+        var canAddFive = availablePoints >= 5;
+
         var currentLevel = levelService.getLevel(playerUUID);
         var currentXp = levelService.getXp(playerUUID) - levelService.getXpForLevel(currentLevel);
-        var xpForNextLevel = levelService.getXpForLevel(levelService.getLevel(playerUUID) + 1) - levelService
-            .getXpForLevel(currentLevel);
+        var xpForNextLevel = levelService.getXpForLevel(levelService.getLevel(playerUUID) + 1)
+            - levelService.getXpForLevel(currentLevel);
         var percentage = (float) currentXp / xpForNextLevel * 100;
+        var ref = playerRef.getReference();
+        if (ref == null) {
+            return;
+        }
+        var playerStatMap = store.ensureAndGetComponent(ref, EntityStatMap.getComponentType());
 
-        uiCommandBuilder.set(
-            "#Level.TextSpans",
-            CommandLang.SHOW_LEVEL.param("playername", playerRef.getUsername()).param("level", currentLevel)
-        );
+        uiCommandBuilder.set("#Level.TextSpans", CommandLang.SHOW_LEVEL.param("level", currentLevel));
+        uiCommandBuilder.set("#Playername.TextSpans", Message.raw(playerRef.getUsername()));
         uiCommandBuilder.set(
             "#XP.TextSpans",
             CommandLang.XP_NEEDED.param("currentXp", StatsUtils.formatXp(currentXp))
                 .param("xpForNextLevel", StatsUtils.formatXp(xpForNextLevel))
                 .param("percentage", String.format("%.1f", percentage))
         );
-        uiCommandBuilder.set("#AddStr" + ".HitTestVisible", hasAbilityPoints);
-        uiCommandBuilder.set("#AddAgi" + ".HitTestVisible", hasAbilityPoints);
-        uiCommandBuilder.set("#AddPer" + ".HitTestVisible", hasAbilityPoints);
-        uiCommandBuilder.set("#AddVit" + ".HitTestVisible", hasAbilityPoints);
-        uiCommandBuilder.set("#AddInt" + ".HitTestVisible", hasAbilityPoints);
-        uiCommandBuilder.set("#AddCon" + ".HitTestVisible", hasAbilityPoints);
+        uiCommandBuilder.set(
+            "#Health.TextSpans",
+            Message.raw(
+                StatsUtils.formatXp(playerStatMap.get(DefaultEntityStatTypes.getHealth()).get()) + "/" + StatsUtils
+                    .formatXp(playerStatMap.get(DefaultEntityStatTypes.getHealth()).getMax())
+            )
+        );
+        uiCommandBuilder.set(
+            "#Stamina.TextSpans",
+            Message.raw(
+                StatsUtils.formatXp(playerStatMap.get(DefaultEntityStatTypes.getStamina()).get()) + "/" + StatsUtils
+                    .formatXp(playerStatMap.get(DefaultEntityStatTypes.getStamina()).getMax())
+            )
+        );
+        uiCommandBuilder.set(
+            "#Mana.TextSpans",
+            Message.raw(
+                StatsUtils.formatXp(playerStatMap.get(DefaultEntityStatTypes.getMana()).get()) + "/" + StatsUtils
+                    .formatXp(playerStatMap.get(DefaultEntityStatTypes.getMana()).getMax())
+            )
+        );
+
+        String[] stats = { "Str", "Agi", "Per", "Vit", "Int", "Con" };
+        for (String stat : stats) {
+            uiCommandBuilder.set("#Add" + stat + ".Visible", canAddOne);
+            uiCommandBuilder.set("#Add" + stat + ".HitTestVisible", canAddOne);
+
+            uiCommandBuilder.set("#Add" + stat + "Five.Visible", canAddFive);
+            uiCommandBuilder.set("#Add" + stat + "Five.HitTestVisible", canAddFive);
+        }
+
         uiCommandBuilder.set(
             "#STR.TextSpans",
             CommandLang.STR.param("points", StatsUtils.formatXp(levelService.getStr(playerUUID)))
         );
-        uiCommandBuilder.set(
-            "#STRDescription.TextSpans",
-            CommandLang.STR_DESC
-        );
+        uiCommandBuilder.set("#STRDescription.TextSpans", CommandLang.STR_DESC);
+
         uiCommandBuilder.set(
             "#AGI.TextSpans",
             CommandLang.AGI.param("points", StatsUtils.formatXp(levelService.getAgi(playerUUID)))
         );
-        uiCommandBuilder.set(
-            "#AGIDescription.TextSpans",
-            CommandLang.AGI_DESC
-        );
+        uiCommandBuilder.set("#AGIDescription.TextSpans", CommandLang.AGI_DESC);
+
         uiCommandBuilder.set(
             "#PER.TextSpans",
             CommandLang.PER.param("points", StatsUtils.formatXp(levelService.getPer(playerUUID)))
         );
-        uiCommandBuilder.set(
-            "#PERDescription.TextSpans",
-            CommandLang.PER_DESC
-        );
+        uiCommandBuilder.set("#PERDescription.TextSpans", CommandLang.PER_DESC);
+
         uiCommandBuilder.set(
             "#VIT.TextSpans",
             CommandLang.VIT.param("points", StatsUtils.formatXp(levelService.getVit(playerUUID)))
         );
-        uiCommandBuilder.set(
-            "#VITDescription.TextSpans",
-            CommandLang.VIT_DESC
-        );
+        uiCommandBuilder.set("#VITDescription.TextSpans", CommandLang.VIT_DESC);
+
         uiCommandBuilder.set(
             "#INT.TextSpans",
             CommandLang.INT.param("points", StatsUtils.formatXp(levelService.getInt(playerUUID)))
         );
-        uiCommandBuilder.set(
-            "#INTDescription.TextSpans",
-            CommandLang.INT_DESC
-        );
+        uiCommandBuilder.set("#INTDescription.TextSpans", CommandLang.INT_DESC);
+
         uiCommandBuilder.set(
             "#CON.TextSpans",
             CommandLang.CON.param("points", StatsUtils.formatXp(levelService.getCon(playerUUID)))
         );
-        uiCommandBuilder.set(
-            "#CONDescription.TextSpans",
-            CommandLang.CON_DESC
-        );
+        uiCommandBuilder.set("#CONDescription.TextSpans", CommandLang.CON_DESC);
+
         uiCommandBuilder.set(
             "#PNTSLabel.TextSpans",
             CommandLang.ABILITY_POINTS_AVAILABLE.param(
                 "ability_points",
-                StatsUtils.formatXp(levelService.getAvailableAbilityPoints(playerUUID))
+                StatsUtils.formatXp(availablePoints)
             )
         );
     }
@@ -178,7 +189,7 @@ public class StatsScreen extends InteractiveCustomUIPage<StatsScreen.BindingData
                 CommandLang.ERROR_UI.param("class_name", t.getClass().getSimpleName()).param("msg", t.getMessage())
             );
         } finally {
-            this.refreshUI();
+            this.refreshUI(store);
         }
     }
 
@@ -187,7 +198,7 @@ public class StatsScreen extends InteractiveCustomUIPage<StatsScreen.BindingData
         @Nonnull Store<EntityStore> store,
         @Nonnull BindingData data
     ) {
-        if (data == null || data.Type == null) {
+        if (data == null || data.Type == null || data.Amount == null) {
             return;
         }
 
@@ -203,27 +214,33 @@ public class StatsScreen extends InteractiveCustomUIPage<StatsScreen.BindingData
 
         var uuid = playerRef.getUuid();
 
-        if (levelService.getAvailableAbilityPoints(uuid) <= 0) {
-            this.refreshUI();
+        int amount = 0;
+        try {
+            amount = Integer.parseInt(data.Amount);
+        } catch (Exception ignored) {}
+
+        if (levelService.getAvailableAbilityPoints(uuid) < amount) {
+            this.refreshUI(store);
             return;
         }
 
-        if (!levelService.useAbilityPoints(uuid, 1)) {
-            this.refreshUI();
+        if (!levelService.useAbilityPoints(uuid, amount)) {
+            this.refreshUI(store);
             return;
         }
 
-        String stat = (data.Stat == null) ? "" : data.Stat.toLowerCase();
+        var stat = (data.Stat == null) ? "" : data.Stat.toLowerCase();
+
         switch (stat) {
-            case "str" -> levelService.setStr(uuid, levelService.getStr(uuid) + 1);
-            case "agi" -> levelService.setAgi(uuid, levelService.getAgi(uuid) + 1);
-            case "per" -> levelService.setPer(uuid, levelService.getPer(uuid) + 1);
-            case "vit" -> levelService.setVit(uuid, levelService.getVit(uuid) + 1);
-            case "int" -> levelService.setInt(uuid, levelService.getInt(uuid) + 1);
-            case "con" -> levelService.setCon(uuid, levelService.getCon(uuid) + 1);
+            case "str" -> levelService.setStr(uuid, levelService.getStr(uuid) + amount);
+            case "agi" -> levelService.setAgi(uuid, levelService.getAgi(uuid) + amount);
+            case "per" -> levelService.setPer(uuid, levelService.getPer(uuid) + amount);
+            case "vit" -> levelService.setVit(uuid, levelService.getVit(uuid) + amount);
+            case "int" -> levelService.setInt(uuid, levelService.getInt(uuid) + amount);
+            case "con" -> levelService.setCon(uuid, levelService.getCon(uuid) + amount);
             default -> {
                 playerRef.sendMessage(CommandLang.UNKNOWN_STAT.param("stat", data.Stat));
-                this.refreshUI();
+                this.refreshUI(store);
                 return;
             }
         }
@@ -271,13 +288,17 @@ public class StatsScreen extends InteractiveCustomUIPage<StatsScreen.BindingData
         playerStatMap.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getStamina());
         playerStatMap.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getMana());
 
-        this.refreshUI();
+        this.refreshUI(store);
     }
 
-    private void refreshUI() {
+    private void refreshUI(Store<EntityStore> store) {
         var builder = new UICommandBuilder();
-        this.update(builder);
+        this.update(builder, store);
         this.sendUpdate(builder);
+    }
+
+    private static String capitalize(String s) {
+        return Character.toUpperCase(s.charAt(0)) + s.substring(1);
     }
 
     public static class BindingData {
@@ -285,6 +306,8 @@ public class StatsScreen extends InteractiveCustomUIPage<StatsScreen.BindingData
         public String Type;
 
         public String Stat;
+
+        public String Amount;
 
         public static final BuilderCodec<BindingData> CODEC =
             BuilderCodec.builder(BindingData.class, BindingData::new)
@@ -298,6 +321,12 @@ public class StatsScreen extends InteractiveCustomUIPage<StatsScreen.BindingData
                     new KeyedCodec<>("Stat", Codec.STRING),
                     (d, v) -> d.Stat = v,
                     d -> d.Stat
+                )
+                .add()
+                .append(
+                    new KeyedCodec<>("Amount", Codec.STRING),
+                    (d, v) -> d.Amount = v,
+                    d -> d.Amount
                 )
                 .add()
                 .build();
