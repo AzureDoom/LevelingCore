@@ -1,3 +1,8 @@
+v0.9.12
+- Updated vanilla Player Stats screen to match that of the HyUI version, only missing player image.
+- Removed the chat log if HyUI is missing due to the above change.
+- Added support for giving Objectives a xp award. See here for vanilla Objectives: https://hytale-game.fandom.com/wiki/Objective
+
 v0.9.11
 - Tweaked level variance to work both up and down in terms of levels.
 
