@@ -1,6 +1,5 @@
 package com.azuredoom.levelingcore.level.itemlevellock;
 
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,7 +26,7 @@ public class ItemToLevelMapping {
             var configPath = dataDir.resolve(FILE_NAME);
 
             if (Files.notExists(configPath)) {
-                try (InputStream in = ConfigManager.class.getResourceAsStream(RESOURCE_DEFAULT)) {
+                try (var in = ConfigManager.class.getResourceAsStream(RESOURCE_DEFAULT)) {
                     if (in == null) {
                         throw new LevelingCoreException(
                             "defaultitemlevelmapping.csv not found in resources (expected at " + RESOURCE_DEFAULT + ")"
