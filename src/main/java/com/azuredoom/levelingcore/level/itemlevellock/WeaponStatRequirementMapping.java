@@ -14,9 +14,9 @@ import com.azuredoom.levelingcore.exceptions.LevelingCoreException;
 
 public final class WeaponStatRequirementMapping {
 
-    public static final String FILE_NAME = "weaponstatrequirements.csv";
+    public static final String FILE_NAME = "itemstatrequirements.csv";
 
-    public static final String RESOURCE_DEFAULT = "/defaultweaponstatrequirements.csv";
+    public static final String RESOURCE_DEFAULT = "/defaultitemstatrequirements.csv";
 
     private WeaponStatRequirementMapping() {}
 
@@ -29,12 +29,12 @@ public final class WeaponStatRequirementMapping {
                 try (var in = ConfigManager.class.getResourceAsStream(RESOURCE_DEFAULT)) {
                     if (in == null) {
                         throw new LevelingCoreException(
-                            "defaultweaponstatrequirements.csv not found at " + RESOURCE_DEFAULT
+                            "defaultitemstatrequirements.csv not found at " + RESOURCE_DEFAULT
                         );
                     }
 
                     LevelingCore.LOGGER.at(Level.INFO)
-                        .log("Creating default Weapon Stat Requirement config at " + configPath);
+                        .log("Creating default Item Stat Requirement config at " + configPath);
 
                     Files.copy(in, configPath, StandardCopyOption.REPLACE_EXISTING);
                 }
