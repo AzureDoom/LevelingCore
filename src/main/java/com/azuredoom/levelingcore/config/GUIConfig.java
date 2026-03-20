@@ -14,301 +14,301 @@ public class GUIConfig {
 
     public static final BuilderCodec<GUIConfig> CODEC = BuilderCodec.builder(GUIConfig.class, GUIConfig::new)
         .append(
-            new KeyedCodec<Boolean>("EnableXPLossOnDeath", Codec.BOOLEAN),
+            new KeyedCodec<>("EnableXPLossOnDeath", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.enableXPLossOnDeath = aBoolean,
             (exConfig, extraInfo) -> exConfig.enableXPLossOnDeath
         )
         .add()
         .append(
-            new KeyedCodec<Double>("XPLossPercentage", Codec.DOUBLE),
+            new KeyedCodec<>("XPLossPercentage", Codec.DOUBLE),
             (exConfig, aDouble, extraInfo) -> exConfig.xpLossPercentage = aDouble,
             (exConfig, extraInfo) -> exConfig.xpLossPercentage
         )
         .add()
         .append(
-            new KeyedCodec<Double>("DefaultXPGainPercentage", Codec.DOUBLE),
+            new KeyedCodec<>("DefaultXPGainPercentage", Codec.DOUBLE),
             (exConfig, aDouble, extraInfo) -> exConfig.defaultXPGainPercentage = aDouble,
             (exConfig, extraInfo) -> exConfig.defaultXPGainPercentage
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("EnableDefaultXPGainSystem", Codec.BOOLEAN),
+            new KeyedCodec<>("EnableDefaultXPGainSystem", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.enableDefaultXPGainSystem = aBoolean,
             (exConfig, extraInfo) -> exConfig.enableDefaultXPGainSystem
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("EnableLevelDownOnDeath", Codec.BOOLEAN),
+            new KeyedCodec<>("EnableLevelDownOnDeath", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.enableLevelDownOnDeath = aBoolean,
             (exConfig, extraInfo) -> exConfig.enableLevelDownOnDeath
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("EnableAllLevelsLostOnDeath", Codec.BOOLEAN),
+            new KeyedCodec<>("EnableAllLevelsLostOnDeath", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.enableAllLevelsLostOnDeath = aBoolean,
             (exConfig, extraInfo) -> exConfig.enableAllLevelsLostOnDeath
         )
         .add()
         .append(
-            new KeyedCodec<Integer>("MinLevelForLevelDown", Codec.INTEGER),
+            new KeyedCodec<>("MinLevelForLevelDown", Codec.INTEGER),
             (exConfig, aInteger, extraInfo) -> exConfig.minLevelForLevelDown = aInteger,
             (exConfig, extraInfo) -> exConfig.minLevelForLevelDown
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("EnableLevelChatMsgs", Codec.BOOLEAN),
+            new KeyedCodec<>("EnableLevelChatMsgs", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.enableLevelChatMsgs = aBoolean,
             (exConfig, extraInfo) -> exConfig.enableLevelChatMsgs
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("DisableXPGainNotification", Codec.BOOLEAN),
+            new KeyedCodec<>("DisableXPGainNotification", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.disableXPGainNotification = aBoolean,
             (exConfig, extraInfo) -> exConfig.disableXPGainNotification
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("EnableLevelAndXPTitles", Codec.BOOLEAN),
+            new KeyedCodec<>("EnableLevelAndXPTitles", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.enableLevelAndXPTitles = aBoolean,
             (exConfig, extraInfo) -> exConfig.enableLevelAndXPTitles
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("ShowXPAmountInHUD", Codec.BOOLEAN),
+            new KeyedCodec<>("ShowXPAmountInHUD", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.showXPAmountInHUD = aBoolean,
             (exConfig, extraInfo) -> exConfig.showXPAmountInHUD
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("EnableStatLeveling", Codec.BOOLEAN),
+            new KeyedCodec<>("EnableStatLeveling", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.enableStatLeveling = aBoolean,
             (exConfig, extraInfo) -> exConfig.enableStatLeveling
         )
         .add()
         .append(
-            new KeyedCodec<Float>("HealthLevelUpMultiplier", Codec.FLOAT),
+            new KeyedCodec<>("HealthLevelUpMultiplier", Codec.FLOAT),
             (exConfig, aFloat, extraInfo) -> exConfig.healthLevelUpMultiplier = aFloat,
             (exConfig, extraInfo) -> exConfig.healthLevelUpMultiplier
         )
         .add()
         .append(
-            new KeyedCodec<Float>("StaminaLevelUpMultiplier", Codec.FLOAT),
+            new KeyedCodec<>("StaminaLevelUpMultiplier", Codec.FLOAT),
             (exConfig, aFloat, extraInfo) -> exConfig.staminaLevelUpMultiplier = aFloat,
             (exConfig, extraInfo) -> exConfig.staminaLevelUpMultiplier
         )
         .add()
         .append(
-            new KeyedCodec<Float>("ManaLevelUpMultiplier", Codec.FLOAT),
+            new KeyedCodec<>("ManaLevelUpMultiplier", Codec.FLOAT),
             (exConfig, aFloat, extraInfo) -> exConfig.manaLevelUpMultiplier = aFloat,
             (exConfig, extraInfo) -> exConfig.manaLevelUpMultiplier
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("EnableStatHealing", Codec.BOOLEAN),
+            new KeyedCodec<>("EnableStatHealing", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.enableStatHealing = aBoolean,
             (exConfig, extraInfo) -> exConfig.enableStatHealing
         )
         .add()
         .append(
-            new KeyedCodec<String>("LevelUpSound", Codec.STRING),
+            new KeyedCodec<>("LevelUpSound", Codec.STRING),
             (exConfig, aString, extraInfo) -> exConfig.levelUpSound = aString,
             (exConfig, extraInfo) -> exConfig.levelUpSound
         )
         .add()
         .append(
-            new KeyedCodec<String>("LevelDownSound", Codec.STRING),
+            new KeyedCodec<>("LevelDownSound", Codec.STRING),
             (exConfig, aString, extraInfo) -> exConfig.levelDownSound = aString,
             (exConfig, extraInfo) -> exConfig.levelDownSound
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("UseConfigXPMappingsInsteadOfHealthDefaults", Codec.BOOLEAN),
+            new KeyedCodec<>("UseConfigXPMappingsInsteadOfHealthDefaults", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.useConfigXPMappingsInsteadOfHealthDefaults = aBoolean,
             (exConfig, extraInfo) -> exConfig.useConfigXPMappingsInsteadOfHealthDefaults
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("EnableLevelUpRewardsConfig", Codec.BOOLEAN),
+            new KeyedCodec<>("EnableLevelUpRewardsConfig", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.enableLevelUpRewardsConfig = aBoolean,
             (exConfig, extraInfo) -> exConfig.enableLevelUpRewardsConfig
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("DisableStatPointGainOnLevelUp", Codec.BOOLEAN),
+            new KeyedCodec<>("DisableStatPointGainOnLevelUp", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.disableStatPointGainOnLevelUp = aBoolean,
             (exConfig, extraInfo) -> exConfig.disableStatPointGainOnLevelUp
         )
         .add()
         .append(
-            new KeyedCodec<Integer>("StatsPerLevel", Codec.INTEGER),
+            new KeyedCodec<>("StatsPerLevel", Codec.INTEGER),
             (exConfig, aInteger, extraInfo) -> exConfig.statsPerLevel = aInteger,
             (exConfig, extraInfo) -> exConfig.statsPerLevel
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("UseStatsPerLevelMapping", Codec.BOOLEAN),
+            new KeyedCodec<>("UseStatsPerLevelMapping", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.useStatsPerLevelMapping = aBoolean,
             (exConfig, extraInfo) -> exConfig.useStatsPerLevelMapping
         )
         .add()
         .append(
-            new KeyedCodec<Float>("StrStatMultiplier", Codec.FLOAT),
+            new KeyedCodec<>("StrStatMultiplier", Codec.FLOAT),
             (exConfig, aFloat, extraInfo) -> exConfig.strStatMultiplier = aFloat,
             (exConfig, extraInfo) -> exConfig.strStatMultiplier
         )
         .add()
         .append(
-            new KeyedCodec<Float>("PerStatMultiplier", Codec.FLOAT),
+            new KeyedCodec<>("PerStatMultiplier", Codec.FLOAT),
             (exConfig, aFloat, extraInfo) -> exConfig.perStatMultiplier = aFloat,
             (exConfig, extraInfo) -> exConfig.perStatMultiplier
         )
         .add()
         .append(
-            new KeyedCodec<Float>("VitStatMultiplier", Codec.FLOAT),
+            new KeyedCodec<>("VitStatMultiplier", Codec.FLOAT),
             (exConfig, aFloat, extraInfo) -> exConfig.vitStatMultiplier = aFloat,
             (exConfig, extraInfo) -> exConfig.vitStatMultiplier
         )
         .add()
         .append(
-            new KeyedCodec<Float>("AgiStatMultiplier", Codec.FLOAT),
+            new KeyedCodec<>("AgiStatMultiplier", Codec.FLOAT),
             (exConfig, aFloat, extraInfo) -> exConfig.agiStatMultiplier = aFloat,
             (exConfig, extraInfo) -> exConfig.agiStatMultiplier
         )
         .add()
         .append(
-            new KeyedCodec<Float>("IntStatMultiplier", Codec.FLOAT),
+            new KeyedCodec<>("IntStatMultiplier", Codec.FLOAT),
             (exConfig, aFloat, extraInfo) -> exConfig.intStatMultiplier = aFloat,
             (exConfig, extraInfo) -> exConfig.intStatMultiplier
         )
         .add()
         .append(
-            new KeyedCodec<Float>("ConStatMultiplier", Codec.FLOAT),
+            new KeyedCodec<>("ConStatMultiplier", Codec.FLOAT),
             (exConfig, aFloat, extraInfo) -> exConfig.conStatMultiplier = aFloat,
             (exConfig, extraInfo) -> exConfig.conStatMultiplier
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("EnablePartyProXPShareCompat", Codec.BOOLEAN),
+            new KeyedCodec<>("EnablePartyProXPShareCompat", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.enablePartyProXPShareCompat = aBoolean,
             (exConfig, extraInfo) -> exConfig.enablePartyProXPShareCompat
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("EnablePartyPluginXPShareCompat", Codec.BOOLEAN),
+            new KeyedCodec<>("EnablePartyPluginXPShareCompat", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.enablePartyPluginXPShareCompat = aBoolean,
             (exConfig, extraInfo) -> exConfig.enablePartyPluginXPShareCompat
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("EnablePartyXPSplit", Codec.BOOLEAN),
+            new KeyedCodec<>("EnablePartyXPSplit", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.enablePartyXPSplit = aBoolean,
             (exConfig, extraInfo) -> exConfig.enablePartyXPSplit
         )
         .add()
         .append(
-            new KeyedCodec<Double>("PartyGroupXPMultiplier", Codec.DOUBLE),
+            new KeyedCodec<>("PartyGroupXPMultiplier", Codec.DOUBLE),
             (exConfig, aDouble, extraInfo) -> exConfig.partyGroupXPMultiplier = aDouble,
             (exConfig, extraInfo) -> exConfig.partyGroupXPMultiplier
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("KillerGetsFullXp", Codec.BOOLEAN),
+            new KeyedCodec<>("KillerGetsFullXp", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.killerGetsFullXp = aBoolean,
             (exConfig, extraInfo) -> exConfig.killerGetsFullXp
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("EnablePartyXPDistanceCheck", Codec.BOOLEAN),
+            new KeyedCodec<>("EnablePartyXPDistanceCheck", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.enablePartyXPDistanceCheck = aBoolean,
             (exConfig, extraInfo) -> exConfig.enablePartyXPDistanceCheck
         )
         .add()
         .append(
-            new KeyedCodec<Double>("PartyXPDistanceBlocks", Codec.DOUBLE),
+            new KeyedCodec<>("PartyXPDistanceBlocks", Codec.DOUBLE),
             (exConfig, aDouble, extraInfo) -> exConfig.partyXPDistanceBlocks = aDouble,
             (exConfig, extraInfo) -> exConfig.partyXPDistanceBlocks
         )
         .add()
         .append(
-            new KeyedCodec<String>("LevelMode", Codec.STRING),
+            new KeyedCodec<>("LevelMode", Codec.STRING),
             (exConfig, aString, extraInfo) -> exConfig.levelMode = aString,
             (exConfig, extraInfo) -> exConfig.levelMode
         )
         .add()
         .append(
-            new KeyedCodec<Integer>("LevelVariance", Codec.INTEGER),
+            new KeyedCodec<>("LevelVariance", Codec.INTEGER),
             (exConfig, anInteger, extraInfo) -> exConfig.levelVariance = anInteger,
             (exConfig, extraInfo) -> exConfig.levelVariance
         )
         .add()
         .append(
-            new KeyedCodec<Float>("MobHealthMultiplier", Codec.FLOAT),
+            new KeyedCodec<>("MobHealthMultiplier", Codec.FLOAT),
             (exConfig, aFloat, extraInfo) -> exConfig.mobHealthMultiplier = aFloat,
             (exConfig, extraInfo) -> exConfig.mobHealthMultiplier
         )
         .add()
         .append(
-            new KeyedCodec<Float>("MobDamageMultiplier", Codec.FLOAT),
+            new KeyedCodec<>("MobDamageMultiplier", Codec.FLOAT),
             (exConfig, aFloat, extraInfo) -> exConfig.mobDamageMultiplier = aFloat,
             (exConfig, extraInfo) -> exConfig.mobDamageMultiplier
         )
         .add()
         .append(
-            new KeyedCodec<Float>("MobBaseDamage", Codec.FLOAT),
+            new KeyedCodec<>("MobBaseDamage", Codec.FLOAT),
             (exConfig, aFloat, extraInfo) -> exConfig.mobBaseDamage = aFloat,
             (exConfig, extraInfo) -> exConfig.mobBaseDamage
         )
         .add()
         .append(
-            new KeyedCodec<Float>("MobRangeDamageMultiplier", Codec.FLOAT),
+            new KeyedCodec<>("MobRangeDamageMultiplier", Codec.FLOAT),
             (exConfig, aFloat, extraInfo) -> exConfig.mobRangeDamageMultiplier = aFloat,
             (exConfig, extraInfo) -> exConfig.mobRangeDamageMultiplier
         )
         .add()
         .append(
-            new KeyedCodec<Float>("MobBaseRangeDamage", Codec.FLOAT),
+            new KeyedCodec<>("MobBaseRangeDamage", Codec.FLOAT),
             (exConfig, aFloat, extraInfo) -> exConfig.mobBaseRangeDamage = aFloat,
             (exConfig, extraInfo) -> exConfig.mobBaseRangeDamage
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("EnableItemLevelRestriction", Codec.BOOLEAN),
+            new KeyedCodec<>("EnableItemLevelRestriction", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.enableItemLevelRestriction = aBoolean,
             (exConfig, extraInfo) -> exConfig.enableItemLevelRestriction
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("EnableXPBarUI", Codec.BOOLEAN),
+            new KeyedCodec<>("EnableXPBarUI", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.enableXPBarUI = aBoolean,
             (exConfig, extraInfo) -> exConfig.enableXPBarUI
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("ShowPlayerLvls", Codec.BOOLEAN),
+            new KeyedCodec<>("ShowPlayerLvls", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.showPlayerLvls = aBoolean,
             (exConfig, extraInfo) -> exConfig.showPlayerLvls
         )
         .add()
         .append(
-            new KeyedCodec<Boolean>("ShowMobLvls", Codec.BOOLEAN),
+            new KeyedCodec<>("ShowMobLvls", Codec.BOOLEAN),
             (exConfig, aBoolean, extraInfo) -> exConfig.showMobLvls = aBoolean,
             (exConfig, extraInfo) -> exConfig.showMobLvls
         )
         .add()
         .append(
-            new KeyedCodec<Double>("MobLevelMultiplier", Codec.DOUBLE),
+            new KeyedCodec<>("MobLevelMultiplier", Codec.DOUBLE),
             (exConfig, aDouble, extraInfo) -> exConfig.mobLevelMultiplier = aDouble,
             (exConfig, extraInfo) -> exConfig.mobLevelMultiplier
         )
         .add()
         .append(
-            new KeyedCodec<String>("MobNameplate", Codec.STRING),
+            new KeyedCodec<>("MobNameplate", Codec.STRING),
             (exConfig, aString, extraInfo) -> exConfig.mobNameplate = aString,
             (exConfig, extraInfo) -> exConfig.mobNameplate
         )
         .add()
         .append(
-            new KeyedCodec<String[]>("BlacklistedMobs", Codec.STRING_ARRAY),
+            new KeyedCodec<>("BlacklistedMobs", Codec.STRING_ARRAY),
             (exConfig, aStringArray, extraInfo) -> exConfig.blacklistedMobs = aStringArray,
             (exConfig, extraInfo) -> exConfig.blacklistedMobs
         )
