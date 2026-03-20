@@ -313,6 +313,12 @@ public class GUIConfig {
             (exConfig, extraInfo) -> exConfig.blacklistedMobs
         )
         .add()
+        .append(
+            new KeyedCodec<>("EnableItemStatRequirement", Codec.BOOLEAN),
+            (exConfig, aBoolean, extraInfo) -> exConfig.enableItemStatRequirement = aBoolean,
+            (exConfig, extraInfo) -> exConfig.enableItemStatRequirement
+        )
+        .add()
         .build();
 
     private boolean enableXPLossOnDeath = false;
@@ -412,6 +418,8 @@ public class GUIConfig {
     private double mobLevelMultiplier = 0.35;
 
     private String mobNameplate = " [Lvl {level}]";
+
+    private boolean enableItemStatRequirement = false;
 
     private String[] blacklistedMobs = {
         "Arrow_Crossbow_Signature",
@@ -1037,5 +1045,9 @@ public class GUIConfig {
      */
     public String[] getBlacklistedMobs() {
         return blacklistedMobs;
+    }
+
+    public boolean isEnableItemStatRequirement() {
+        return enableItemStatRequirement;
     }
 }

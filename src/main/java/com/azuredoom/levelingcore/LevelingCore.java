@@ -41,7 +41,9 @@ import com.azuredoom.levelingcore.exceptions.LevelingCoreException;
 import com.azuredoom.levelingcore.interaction.OpenSkillsInteraction;
 import com.azuredoom.levelingcore.interaction.SkillPointResetInteraction;
 import com.azuredoom.levelingcore.level.LevelServiceImpl;
+import com.azuredoom.levelingcore.level.itemlevellock.ItemStatRequirement;
 import com.azuredoom.levelingcore.level.itemlevellock.ItemToLevelMapping;
+import com.azuredoom.levelingcore.level.itemlevellock.WeaponStatRequirementMapping;
 import com.azuredoom.levelingcore.level.mobs.MobLevelPersistence;
 import com.azuredoom.levelingcore.level.mobs.MobLevelRegistry;
 import com.azuredoom.levelingcore.level.mobs.mapping.MobBiomeMapping;
@@ -57,8 +59,11 @@ import com.azuredoom.levelingcore.level.xp.XPValues;
 import com.azuredoom.levelingcore.systems.damage.MobDamageFilter;
 import com.azuredoom.levelingcore.systems.damage.PlayerDamageFilter;
 import com.azuredoom.levelingcore.systems.equipment.EquipBlockManager;
+import com.azuredoom.levelingcore.systems.equipment.EquipBlockStatManager;
 import com.azuredoom.levelingcore.systems.items.HandGateTickingSystem;
 import com.azuredoom.levelingcore.systems.items.ItemBlockPacketManager;
+import com.azuredoom.levelingcore.systems.items.stats.HandStatGateTickingSystem;
+import com.azuredoom.levelingcore.systems.items.stats.ItemStatBlockPacketManager;
 import com.azuredoom.levelingcore.systems.level.LevelDownTickingSystem;
 import com.azuredoom.levelingcore.systems.level.LevelUpTickingSystem;
 import com.azuredoom.levelingcore.systems.level.MobLevelSystem;
@@ -130,6 +135,13 @@ public class LevelingCore extends JavaPlugin {
         LevelingCore.configPath
     );
 
+    public static final Map<String, ItemStatRequirement> itemStatRequirements =
+        WeaponStatRequirementMapping.loadOrCreate(LevelingCore.configPath);
+
+    public static final EquipBlockStatManager equipBlockStatManager = new EquipBlockStatManager();
+
+    public static final ItemStatBlockPacketManager itemStatBlockPacketManager = new ItemStatBlockPacketManager();
+
     /**
      * Constructs a new {@code LevelingCore} instance and initializes the core components of the leveling system. This
      * constructor takes a non-null {@link JavaPluginInit} object to set up the necessary dependencies and
@@ -200,6 +212,8 @@ public class LevelingCore extends JavaPlugin {
                         });
                         if (LevelingCore.getConfig().get().isEnableItemLevelRestriction())
                             LevelingCore.equipBlockManager.validateArmorOnReady(player);
+                        if (LevelingCore.getConfig().get().isEnableItemStatRequirement())
+                            LevelingCore.equipBlockStatManager.validateArmorOnReady(player);
                     }
                     HudPlayerReady.ready(playerReadyEvent, config);
                 })
@@ -236,6 +250,10 @@ public class LevelingCore extends JavaPlugin {
             LevelingCore.equipBlockManager.start();
             LevelingCore.itemBlockPacketManager.start();
         }
+        if (LevelingCore.getConfig().get().isEnableItemStatRequirement()) {
+            LevelingCore.equipBlockStatManager.start();
+            LevelingCore.itemStatBlockPacketManager.start();
+        }
         if (PluginManager.get().getPlugin(new PluginIdentifier("org.herolias", "DynamicTooltipsLib")) != null) {
             DynamicTooltipsLibCompat.register();
         }
@@ -254,6 +272,10 @@ public class LevelingCore extends JavaPlugin {
         if (LevelingCore.getConfig().get().isEnableItemLevelRestriction()) {
             LevelingCore.equipBlockManager.shutdown();
             LevelingCore.itemBlockPacketManager.shutdown();
+        }
+        if (LevelingCore.getConfig().get().isEnableItemStatRequirement()) {
+            LevelingCore.equipBlockStatManager.shutdown();
+            LevelingCore.itemStatBlockPacketManager.shutdown();
         }
         super.shutdown();
         LOGGER.at(Level.INFO).log("Leveling Core shutting down");
@@ -304,6 +326,9 @@ public class LevelingCore extends JavaPlugin {
     public void registerAllSystems() {
         getEntityStoreRegistry().registerSystem(
             new HandGateTickingSystem(LevelingCore.itemBlockPacketManager.getHandGate())
+        );
+        getEntityStoreRegistry().registerSystem(
+            new HandStatGateTickingSystem(LevelingCore.itemStatBlockPacketManager.getHandGate())
         );
         getEntityStoreRegistry().registerSystem(new ObjectivesSystem());
         getEntityStoreRegistry().registerSystem(new MobLevelSystem(config));

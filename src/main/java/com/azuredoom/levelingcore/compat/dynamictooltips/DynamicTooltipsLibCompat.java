@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 import com.azuredoom.levelingcore.LevelingCore;
+import com.azuredoom.levelingcore.level.itemlevellock.ItemStatRequirement;
 
 public class DynamicTooltipsLibCompat {
 
@@ -60,26 +61,52 @@ public class DynamicTooltipsLibCompat {
         if (api == null)
             return;
 
-        // Wait for 10 seconds before scanning to ensure all items are loaded, then add tooltips for required levels &
-        // weapon damages
-        SCAN_TIMER.schedule(new TimerTask() {
+        if (LevelingCore.getConfig().get().isEnableItemLevelRestriction()) {
+            // Wait for 10 seconds before scanning to ensure all items are loaded, then add tooltips for required levels
+            // &
+            // weapon damages
+            SCAN_TIMER.schedule(new TimerTask() {
 
-            {
-                Objects.requireNonNull(DynamicTooltipsLibCompat.INSTANCE);
-            }
-
-            public void run() {
-                DynamicTooltipsLibCompat.INSTANCE.scanForWeapons();
-                for (var entry : LevelingCore.itemLevelMapping.entrySet()) {
-                    var itemId = entry.getKey();
-                    var requiredLevel = entry.getValue();
-                    api.addGlobalLine(
-                        itemId,
-                        "\n<color is=\"#b5a077\">Required Level: " + requiredLevel + " </color>"
-                    );
+                {
+                    Objects.requireNonNull(DynamicTooltipsLibCompat.INSTANCE);
                 }
-            }
-        }, 10000L);
+
+                public void run() {
+                    DynamicTooltipsLibCompat.INSTANCE.scanForWeapons();
+                    for (var entry : LevelingCore.itemLevelMapping.entrySet()) {
+                        var itemId = entry.getKey();
+                        var requiredLevel = entry.getValue();
+                        api.addGlobalLine(
+                            itemId,
+                            "\n<color is=\"#b5a077\">Required Level: " + requiredLevel + " </color>"
+                        );
+                    }
+                }
+            }, 10000L);
+        }
+        if (LevelingCore.getConfig().get().isEnableItemStatRequirement()) {
+            SCAN_TIMER.schedule(new TimerTask() {
+
+                {
+                    Objects.requireNonNull(DynamicTooltipsLibCompat.INSTANCE);
+                }
+
+                public void run() {
+                    DynamicTooltipsLibCompat.INSTANCE.scanForWeapons();
+                    for (var entry : LevelingCore.itemStatRequirements.entrySet()) {
+                        var itemId = entry.getKey();
+                        var req = entry.getValue();
+
+                        var tooltip = buildStatTooltip(req);
+
+                        api.addGlobalLine(
+                            itemId,
+                            tooltip
+                        );
+                    }
+                }
+            }, 10000L);
+        }
     }
 
     private void scanForWeapons() {
@@ -189,7 +216,7 @@ public class DynamicTooltipsLibCompat {
                     return;
                 }
 
-                var bufField = this.getField(obj.getClass(), "buffer");
+                var bufField = this.getField(obj.getClass());
                 if (bufField != null) {
                     var buf = bufField.get(obj);
                     if (buf != null) {
@@ -249,7 +276,7 @@ public class DynamicTooltipsLibCompat {
         }
     }
 
-    private Field getField(Class<?> clazz, String name) {
+    private Field getField(Class<?> clazz) {
         var cachedField = bufferFieldCache.get(clazz);
         if (cachedField != null) {
             return cachedField;
@@ -258,7 +285,7 @@ public class DynamicTooltipsLibCompat {
             return null;
         }
 
-        var foundField = findField(clazz, name);
+        var foundField = findField(clazz);
         if (foundField != null) {
             bufferFieldCache.put(clazz, foundField);
             return foundField;
@@ -268,10 +295,10 @@ public class DynamicTooltipsLibCompat {
         return null;
     }
 
-    private Field findField(Class<?> clazz, String name) {
+    private Field findField(Class<?> clazz) {
         while (clazz != null) {
             try {
-                var f = clazz.getDeclaredField(name);
+                var f = clazz.getDeclaredField("buffer");
                 f.setAccessible(true);
                 return f;
             } catch (NoSuchFieldException var4) {
@@ -289,6 +316,33 @@ public class DynamicTooltipsLibCompat {
             }
             return fields;
         });
+    }
+
+    private static String buildStatTooltip(ItemStatRequirement req) {
+        var sb = new StringBuilder();
+
+        sb.append("\n<color is=\"#b5a077\">Required Stats:</color>");
+
+        appendStat(sb, "STR", req.str());
+        appendStat(sb, "AGI", req.agi());
+        appendStat(sb, "PER", req.per());
+        appendStat(sb, "VIT", req.vit());
+        appendStat(sb, "INT", req.intelligence());
+        appendStat(sb, "CON", req.con());
+
+        return sb.toString();
+    }
+
+    private static void appendStat(StringBuilder sb, String name, int value) {
+        if (value <= 0) {
+            return;
+        }
+
+        sb.append("\n<color is=\"#d4c08a\">")
+            .append(name)
+            .append(": ")
+            .append(value)
+            .append("</color>");
     }
 
 }

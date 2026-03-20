@@ -58,4 +58,17 @@ public class NotificationsUtil {
             NotificationStyle.Danger
         );
     }
+
+    public static void sendStatRequirementNotification(PlayerRef playerRef, ItemStack item) {
+        var itemTranslatedName = I18nModule.get()
+            .getMessage(
+                playerRef.getLanguage(),
+                item.getItem().getTranslationKey()
+            );
+        NotificationUtil.sendNotification(
+            playerRef.getPacketHandler(),
+            Message.raw("Stats not met for " + itemTranslatedName + "!"),
+            NotificationStyle.Danger
+        );
+    }
 }

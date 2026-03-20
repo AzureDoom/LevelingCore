@@ -9,6 +9,7 @@ import com.azuredoom.levelingcore.database.DataSourceFactory;
 import com.azuredoom.levelingcore.database.JdbcLevelRepository;
 import com.azuredoom.levelingcore.exceptions.LevelingCoreException;
 import com.azuredoom.levelingcore.level.LevelServiceImpl;
+import com.azuredoom.levelingcore.level.itemlevellock.ItemStatRequirement;
 import com.azuredoom.levelingcore.level.rewards.RewardEntry;
 import com.azuredoom.levelingcore.level.stats.StatsPerLevelMapping;
 
@@ -40,6 +41,7 @@ public final class ConfigBootstrap {
         Map<String, Integer> mobEnvironmentMapping,
         Map<String, Integer> mobOverrideMapping,
         Map<String, Integer> objectiveXPMapping,
+        Map<String, ItemStatRequirement> weaponStatRequirements,
         AutoCloseable closeable
     ) {}
 
@@ -80,6 +82,7 @@ public final class ConfigBootstrap {
         var mobEnvironmentMapping = LevelingCore.mobEnvironmentMapping;
         var mobOverrideMapping = LevelingCore.mobOverrideMapping;
         var objectiveXPMapping = LevelingCore.objectiveXPMapping;
+        var weaponStatRequirements = LevelingCore.itemStatRequirements;
 
         return new Bootstrap(
             service,
@@ -93,6 +96,7 @@ public final class ConfigBootstrap {
             mobEnvironmentMapping,
             mobOverrideMapping,
             objectiveXPMapping,
+            weaponStatRequirements,
             repo::close
         );
     }

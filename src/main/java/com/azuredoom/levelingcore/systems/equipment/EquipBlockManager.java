@@ -27,11 +27,11 @@ import com.azuredoom.levelingcore.utils.NotificationsUtil;
 public class EquipBlockManager {
 
     @Nullable
-    private volatile EventRegistration<?, LivingEntityInventoryChangeEvent> inventoryChangeRegistration;
+    protected volatile EventRegistration<?, LivingEntityInventoryChangeEvent> inventoryChangeRegistration;
 
-    private final Set<UUID> ignoreArmorEvents = ConcurrentHashMap.newKeySet();
+    protected final Set<UUID> ignoreArmorEvents = ConcurrentHashMap.newKeySet();
 
-    private volatile boolean restoringArmor = false;
+    protected volatile boolean restoringArmor = false;
 
     public void start() {
         if (inventoryChangeRegistration == null || !inventoryChangeRegistration.isRegistered()) {
@@ -105,7 +105,7 @@ public class EquipBlockManager {
      * @param event the inventory change event that contains context about the entity, transaction, and the affected
      *              inventory container
      */
-    private void onInventoryChange(@Nonnull LivingEntityInventoryChangeEvent event) {
+    protected void onInventoryChange(@Nonnull LivingEntityInventoryChangeEvent event) {
         if (!(event.getEntity() instanceof Player player)) {
             return;
         }
@@ -154,7 +154,7 @@ public class EquipBlockManager {
      * @param refundedKeys   a set of keys used to track already refunded or processed slots and avoid duplicates; must
      *                       not be null
      */
-    private void rollbackArmorTransaction(
+    protected void rollbackArmorTransaction(
         @Nonnull Player player,
         @Nonnull ItemContainer armorContainer,
         @Nullable Transaction transaction,
@@ -233,7 +233,7 @@ public class EquipBlockManager {
      * @param b the second {@link ItemStack} to compare, or {@code null}
      * @return {@code true} if the two stacks are considered equivalent; {@code false} otherwise
      */
-    private static boolean sameStack(@Nullable ItemStack a, @Nullable ItemStack b) {
+    protected static boolean sameStack(@Nullable ItemStack a, @Nullable ItemStack b) {
         if (a == b)
             return true;
         if (a == null || b == null)
@@ -258,7 +258,7 @@ public class EquipBlockManager {
      * @param stack the {@link ItemStack} to be used as the base for creating the new stack; must not be null
      * @return a new {@link ItemStack} with the same item ID and metadata as the input stack, but with a quantity of 1
      */
-    private static ItemStack oneOf(@Nonnull ItemStack stack) {
+    protected static ItemStack oneOf(@Nonnull ItemStack stack) {
         return new ItemStack(stack.getItemId(), 1, stack.getMetadata());
     }
 
@@ -271,7 +271,7 @@ public class EquipBlockManager {
      *               not enough inventory space; must not be null
      * @param stack  the item stack to be given to the player or partially dropped; must not be null
      */
-    private static void giveOrDrop(@Nonnull Player player, @Nonnull ItemStack stack) {
+    protected static void giveOrDrop(@Nonnull Player player, @Nonnull ItemStack stack) {
         if (ItemStack.isEmpty(stack))
             return;
 
