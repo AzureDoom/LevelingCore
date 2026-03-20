@@ -3,6 +3,7 @@ package com.azuredoom.levelingcore.systems.damage;
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.server.core.entity.EntityUtils;
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.AllLegacyLivingEntityTypesQuery;
 import com.hypixel.hytale.server.core.modules.entity.EntityModule;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
@@ -13,6 +14,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -38,29 +40,40 @@ public class MobDamageFilter extends DamageEventSystem {
         var isPlayer = archetypeChunk.getArchetype().contains(EntityModule.get().getPlayerComponentType());
         if (isPlayer)
             return;
+
         var holder = EntityUtils.toHolder(index, archetypeChunk);
-        var victimNPCRef = holder.getComponent(NPCEntity.getComponentType());
-        if (victimNPCRef == null || !(victimNPCRef instanceof NPCEntity))
+        var victimNPCRef = holder.getComponent(Objects.requireNonNull(NPCEntity.getComponentType()));
+        if (victimNPCRef == null)
             return;
+
         if (!(damage.getSource() instanceof Damage.EntitySource entitySource))
             return;
+
         var attackerRef = entitySource.getRef();
-        if (attackerRef == null || !attackerRef.isValid())
+        if (!attackerRef.isValid())
             return;
 
         var playerRefAttacker = store.getComponent(attackerRef, PlayerRef.getComponentType());
         if (playerRefAttacker == null)
             return;
 
+        var playerComponent = store.getComponent(attackerRef, Player.getComponentType());
+        if (playerComponent == null || playerComponent.getInventory() == null)
+            return;
+
         var levelServiceOpt = LevelingCoreApi.getLevelServiceIfPresent();
         if (levelServiceOpt.isEmpty())
             return;
-
         var levelService = levelServiceOpt.get();
+
+        var uuid = playerRefAttacker.getUuid();
+        var str = levelService.getStr(uuid);
+        var per = levelService.getPer(uuid);
 
         var incoming = damage.getAmount();
         if (incoming <= 0f)
             return;
+
         var cause = damage.getCause();
         if (cause == null)
             return;
@@ -70,15 +83,9 @@ public class MobDamageFilter extends DamageEventSystem {
         var isProjectile = causeIdLower.contains("projectile") || causeIdLower.contains("arrow");
 
         if (isProjectile) {
-            var per = levelService.getPer(playerRefAttacker.getUuid());
-            damage.setAmount(
-                Math.round((float) (damage.getAmount() * (1.0 + per * config.get().getPerStatMultiplier())))
-            );
+            damage.setAmount(Math.round((float) (incoming * (1.0 + per * config.get().getPerStatMultiplier()))));
         } else {
-            var str = levelService.getStr(playerRefAttacker.getUuid());
-            damage.setAmount(
-                Math.round((float) (damage.getAmount() * (1.0 + str * config.get().getStrStatMultiplier())))
-            );
+            damage.setAmount(Math.round((float) (incoming * (1.0 + str * config.get().getStrStatMultiplier()))));
         }
     }
 
