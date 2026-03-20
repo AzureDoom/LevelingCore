@@ -48,7 +48,7 @@ public final class ConfigManager {
                             "default.yml not found in resources (expected at /default.yml)"
                         );
                     }
-                    LevelingCore.LOGGER.at(Level.INFO).log("Creating default config at {0}", configPath);
+                    LevelingCore.LOGGER.at(Level.INFO).log("Creating default config at " + configPath);
                     Files.copy(in, configPath, StandardCopyOption.REPLACE_EXISTING);
                 } catch (Exception e) {
                     throw new LevelingCoreException("Failed to create default config", e);
