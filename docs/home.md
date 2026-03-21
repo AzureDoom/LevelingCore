@@ -3,6 +3,7 @@ title: "Home"
 order: 1
 published: true
 draft: false
+is_index: true
 ---
 
 ![header](https://www.bisecthosting.com/images/CF/LEVELINGCORE/MP_LEVELINGCORE_Header.webp)
