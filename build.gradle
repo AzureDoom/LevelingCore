@@ -223,6 +223,13 @@ publishing {
         maven(MavenPublication) {
             artifactId base.archivesName.get()
             from components.java
+            pom.withXml {
+                asNode().dependencies.dependency.each { dep ->
+                    if (dep.groupId.text() == 'com.buuz135' && dep.groupId.text() == 'curse.maven') {
+                        dep.parent().remove(dep)
+                    }
+                }
+            }
         }
     }
 }
