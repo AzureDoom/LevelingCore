@@ -1,6 +1,6 @@
 ---
 title: "Entity XP Mapping"
-order: 7
+order: 10
 published: true
 draft: false
 ---

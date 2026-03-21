@@ -1,6 +1,6 @@
 ---
 title: "Standard Configuration"
-order: 4
+order: 5
 published: true
 draft: false
 ---

@@ -1,6 +1,6 @@
 ---
 title: "Commands & Permissions"
-order: 10
+order: 12
 published: true
 draft: false
 ---

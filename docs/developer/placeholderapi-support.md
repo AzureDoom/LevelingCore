@@ -1,6 +1,6 @@
 ---
 title: "PlaceholderAPI Support"
-order: 14
+order: 18
 published: true
 draft: false
 ---
