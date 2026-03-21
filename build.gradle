@@ -24,6 +24,11 @@ configurations {
         canBeConsumed = false
         extendsFrom(vineImplementation, vineCompileOnly)
     }
+    vineServerJar {
+        canBeResolved = true
+        canBeConsumed = false
+        transitive = false
+    }
     implementation.extendsFrom(vineImplementation)
     compileOnly.extendsFrom(vineCompileOnly)
 }
@@ -36,6 +41,10 @@ group = project.group
 
 java {
     toolchain.languageVersion = JavaLanguageVersion.of(java_version)
+}
+
+hytale {
+    updateChannel = "pre-release"
 }
 
 repositories {
@@ -81,7 +90,11 @@ repositories {
     }
 }
 
+def hytaleServerDep = 'com.hypixel.hytale:Server:2026.03.20-db226053c'
+
 dependencies {
+    vineServerJar hytaleServerDep
+    vineCompileOnly hytaleServerDep
     vineflowerTool 'org.vineflower:vineflower:1.11.2'
     vineImplementation 'com.buuz135:MultipleHUD:1.0.6'
     vineCompileOnly 'curse.maven:partyinfo-1429469:7526614'
@@ -236,19 +249,19 @@ publishing {
 
 tasks.register("decompileLibsWithVineflower") {
     group = "decompilation"
-    description = "Decompile /libs jars + implementation/compileOnly deps (compileClasspath) into build/vineflower/<jarName>/"
+    description = "Decompile only com/hytale from the Hytale Server jar into build/vineflower/hytale-server/"
 
-    def libsDir = file("$rootDir/libs")
-    def outDir = file("$buildDir/vineflower")
+    def outDir = file("$buildDir/vineflower/hytale-server")
+    def tempDir = file("$buildDir/tmp/vineflower")
+    def serverConfig = configurations.vineServerJar
+    def classpathConfig = configurations.vineDecompileClasspath
 
-    def depConfig = configurations.vineDecompileClasspath
-
-    inputs.files(depConfig)
-    inputs.dir(libsDir)
+    inputs.files(serverConfig, classpathConfig)
     outputs.dir(outDir)
 
     doLast {
         outDir.mkdirs()
+        tempDir.mkdirs()
 
         def vineflowerJar = configurations.vineflowerTool.singleFile
 
@@ -256,56 +269,57 @@ tasks.register("decompileLibsWithVineflower") {
             languageVersion = JavaLanguageVersion.of(java_version)
         }.get().executablePath.asFile.absolutePath
 
+        def serverJar = serverConfig.singleFile
+        if (!serverJar.exists()) {
+            throw new GradleException("Could not resolve Hytale Server jar from vineServerJar")
+        }
 
-        def localJars = libsDir.exists()
-                ? fileTree(dir: libsDir, include: ["*.jar"]).files
-                : [] as Set<File>
+        def filteredJar = new File(tempDir, "Server-com-hytale-only.jar")
+        if (filteredJar.exists()) {
+            filteredJar.delete()
+        }
 
-        def depJars = depConfig.incoming.artifactView { it.lenient(true) }
+        // Build a temp jar containing only com/hytale classes/resources
+        ant.jar(destfile: filteredJar.absolutePath) {
+            zipfileset(src: serverJar.absolutePath) {
+                include(name: "com/hytale/**")
+            }
+        }
+
+        if (!filteredJar.exists() || filteredJar.length() == 0) {
+            throw new GradleException("Filtered jar is empty. Nothing matched com/hytale/** inside ${serverJar.name}")
+        }
+
+        def externals = classpathConfig.incoming.artifactView { it.lenient(true) }
                 .files.files
-                .findAll { it.name.endsWith(".jar") } as Set<File>
+                .findAll { it.name.endsWith(".jar") && it != serverJar }
+                .collectMany { ["-e", it.absolutePath] }
 
-        def jars = (localJars + depJars).toList().unique()
+        def cmd = [
+                javaExe,
+                "-jar", vineflowerJar.absolutePath,
+                *externals,
+                filteredJar.absolutePath,
+                outDir.absolutePath
+        ]
 
-        if (jars.isEmpty()) {
-            logger.lifecycle("No .jar files found in /libs or on compileClasspath.")
-            return
+        logger.lifecycle("Running: ${cmd.join(' ')}")
+
+        def pb = new ProcessBuilder(cmd)
+        pb.directory(project.projectDir)
+        pb.redirectErrorStream(true)
+
+        def proc = pb.start()
+        proc.inputStream.withReader { r ->
+            r.eachLine { line -> logger.lifecycle(line) }
         }
 
-        jars.each { jarFile ->
-            def jarBase = jarFile.name.replaceAll(/\.jar$/, "")
-            def jarOut = new File(outDir, jarBase)
-            jarOut.mkdirs()
-
-            def externals = jars.findAll { it != jarFile }
-                    .collectMany { ["-e", it.absolutePath] }
-
-            def cmd = [
-                    javaExe,
-                    "-jar", vineflowerJar.absolutePath,
-                    *externals,
-                    jarFile.absolutePath,
-                    jarOut.absolutePath
-            ]
-
-            logger.lifecycle("Running: ${cmd.join(' ')}")
-
-            def pb = new ProcessBuilder(cmd)
-            pb.directory(project.projectDir)
-            pb.redirectErrorStream(true)
-
-            def proc = pb.start()
-            proc.inputStream.withReader { r ->
-                r.eachLine { line -> logger.lifecycle(line) }
-            }
-
-            def exit = proc.waitFor()
-            if (exit != 0) {
-                logger.lifecycle("Vineflower failed for ${jarFile.name} (exit ${exit})")
-            } else {
-                logger.lifecycle("Decompiled ${jarFile.name} -> ${jarOut}")
-            }
+        def exit = proc.waitFor()
+        if (exit != 0) {
+            throw new GradleException("Vineflower failed (exit ${exit})")
         }
+
+        logger.lifecycle("Decompiled com/hytale from ${serverJar.name} -> ${outDir}")
     }
 }
 

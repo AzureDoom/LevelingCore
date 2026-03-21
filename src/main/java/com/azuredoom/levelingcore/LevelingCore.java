@@ -58,8 +58,8 @@ import com.azuredoom.levelingcore.level.stats.StatsPerLevelMapping;
 import com.azuredoom.levelingcore.level.xp.XPValues;
 import com.azuredoom.levelingcore.systems.damage.MobDamageFilter;
 import com.azuredoom.levelingcore.systems.damage.PlayerDamageFilter;
-import com.azuredoom.levelingcore.systems.equipment.EquipBlockManager;
-import com.azuredoom.levelingcore.systems.equipment.EquipBlockStatManager;
+import com.azuredoom.levelingcore.systems.equipment.ArmorBlockLevelSystem;
+import com.azuredoom.levelingcore.systems.equipment.ArmorBlockStatSystem;
 import com.azuredoom.levelingcore.systems.items.HandGateTickingSystem;
 import com.azuredoom.levelingcore.systems.items.ItemBlockPacketManager;
 import com.azuredoom.levelingcore.systems.items.stats.HandStatGateTickingSystem;
@@ -127,7 +127,7 @@ public class LevelingCore extends JavaPlugin {
 
     public static final MobLevelPersistence mobLevelPersistence = new MobLevelPersistence();
 
-    public static final EquipBlockManager equipBlockManager = new EquipBlockManager();
+    public static final ArmorBlockLevelSystem equipBlockManager = new ArmorBlockLevelSystem();
 
     public static final ItemBlockPacketManager itemBlockPacketManager = new ItemBlockPacketManager();
 
@@ -138,7 +138,7 @@ public class LevelingCore extends JavaPlugin {
     public static final Map<String, ItemStatRequirement> itemStatRequirements =
         WeaponStatRequirementMapping.loadOrCreate(LevelingCore.configPath);
 
-    public static final EquipBlockStatManager equipBlockStatManager = new EquipBlockStatManager();
+    public static final ArmorBlockStatSystem equipBlockStatManager = new ArmorBlockStatSystem();
 
     public static final ItemStatBlockPacketManager itemStatBlockPacketManager = new ItemStatBlockPacketManager();
 
@@ -175,7 +175,7 @@ public class LevelingCore extends JavaPlugin {
     @Override
     protected void setup() {
         INSTANCE = this;
-        this.config.save();
+        config.save();
         LOGGER.at(Level.INFO).log("Leveling Core initializing");
         levelingService = bootstrap.service();
         this.registerAllCommands();
@@ -190,31 +190,29 @@ public class LevelingCore extends JavaPlugin {
                 PlayerReadyEvent.class,
                 (playerReadyEvent -> {
                     var player = playerReadyEvent.getPlayer();
-                    if (player != null) {
-                        LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService -> {
-                            var uuid = player.getUuid();
-                            var level = levelService.getLevel(uuid);
-                            int targetTotal;
-                            if (config.get().isUseStatsPerLevelMapping()) {
-                                targetTotal = statsPerLevel.getCumulativeStatsForLevel(
-                                    level,
-                                    level * config.get().getStatsPerLevel()
-                                );
-                            } else {
-                                targetTotal = level * config.get().getStatsPerLevel();
-                            }
-                            var used = levelService.getUsedAbilityPoints(uuid);
-                            var currentTotal = levelService.getAvailableAbilityPoints(uuid) + used;
+                    LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService -> {
+                        var uuid = player.getUuid();
+                        var level = levelService.getLevel(uuid);
+                        int targetTotal;
+                        if (config.get().isUseStatsPerLevelMapping()) {
+                            targetTotal = statsPerLevel.getCumulativeStatsForLevel(
+                                level,
+                                level * config.get().getStatsPerLevel()
+                            );
+                        } else {
+                            targetTotal = level * config.get().getStatsPerLevel();
+                        }
+                        var used = levelService.getUsedAbilityPoints(uuid);
+                        var currentTotal = levelService.getAvailableAbilityPoints(uuid) + used;
 
-                            if (currentTotal != targetTotal) {
-                                levelService.setAbilityPoints(uuid, Math.max(0, targetTotal));
-                            }
-                        });
-                        if (LevelingCore.getConfig().get().isEnableItemLevelRestriction())
-                            LevelingCore.equipBlockManager.validateArmorOnReady(player);
-                        if (LevelingCore.getConfig().get().isEnableItemStatRequirement())
-                            LevelingCore.equipBlockStatManager.validateArmorOnReady(player);
-                    }
+                        if (currentTotal != targetTotal) {
+                            levelService.setAbilityPoints(uuid, Math.max(0, targetTotal));
+                        }
+                    });
+                    if (LevelingCore.getConfig().get().isEnableItemLevelRestriction())
+                        LevelingCore.equipBlockManager.validateArmorOnReady(player);
+                    if (LevelingCore.getConfig().get().isEnableItemStatRequirement())
+                        LevelingCore.equipBlockStatManager.validateArmorOnReady(player);
                     HudPlayerReady.ready(playerReadyEvent, config);
                 })
             );
@@ -247,11 +245,9 @@ public class LevelingCore extends JavaPlugin {
         this.getTaskRegistry().registerTask(task);
         LevelingCore.mobLevelPersistence.load();
         if (LevelingCore.getConfig().get().isEnableItemLevelRestriction()) {
-            LevelingCore.equipBlockManager.start();
             LevelingCore.itemBlockPacketManager.start();
         }
         if (LevelingCore.getConfig().get().isEnableItemStatRequirement()) {
-            LevelingCore.equipBlockStatManager.start();
             LevelingCore.itemStatBlockPacketManager.start();
         }
         if (PluginManager.get().getPlugin(new PluginIdentifier("org.herolias", "DynamicTooltipsLib")) != null) {
@@ -270,11 +266,9 @@ public class LevelingCore extends JavaPlugin {
     protected void shutdown() {
         LevelingCore.mobLevelPersistence.save();
         if (LevelingCore.getConfig().get().isEnableItemLevelRestriction()) {
-            LevelingCore.equipBlockManager.shutdown();
             LevelingCore.itemBlockPacketManager.shutdown();
         }
         if (LevelingCore.getConfig().get().isEnableItemStatRequirement()) {
-            LevelingCore.equipBlockStatManager.shutdown();
             LevelingCore.itemStatBlockPacketManager.shutdown();
         }
         super.shutdown();
@@ -324,6 +318,10 @@ public class LevelingCore extends JavaPlugin {
     }
 
     public void registerAllSystems() {
+        if (config.get().isEnableItemLevelRestriction())
+            getEntityStoreRegistry().registerSystem(new ArmorBlockLevelSystem());
+        if (config.get().isEnableItemStatRequirement())
+            getEntityStoreRegistry().registerSystem(new ArmorBlockStatSystem());
         getEntityStoreRegistry().registerSystem(
             new HandGateTickingSystem(LevelingCore.itemBlockPacketManager.getHandGate())
         );
