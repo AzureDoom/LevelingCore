@@ -1,11 +1,14 @@
 package com.azuredoom.levelingcore.systems.nameplate;
 
+import com.azuredoom.levelingcore.compat.classescore.ClassesCoreCompat;
+import com.hypixel.hytale.common.plugin.PluginIdentifier;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.server.core.entity.nameplate.Nameplate;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
 import com.hypixel.hytale.server.core.modules.i18n.I18nModule;
+import com.hypixel.hytale.server.core.plugin.PluginManager;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.World;
@@ -15,6 +18,7 @@ import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
@@ -69,10 +73,14 @@ public class ShowLvlHeadSystem implements Runnable {
 
                 locale.set(playerRef.getLanguage());
                 var lvl = levelingService.getLevel(playerRef.getUuid());
+                String className = null;
+                if (PluginManager.get().getPlugin(new PluginIdentifier("com.azuredoom", "classescore")) != null) {
+                    className = ClassesCoreCompat.getPlayerClass(playerRef.getUuid());
+                }
                 insertNameplate(
                     commandBuffer,
                     ref,
-                    formatNameplate(playerRef.getUsername(), config.get().isShowPlayerLvls() ? lvl : 0)
+                    formatNameplate(playerRef.getUsername(), config.get().isShowPlayerLvls() ? lvl : 0, className)
                 );
             }
         });
@@ -81,7 +89,7 @@ public class ShowLvlHeadSystem implements Runnable {
             for (var i = 0; i < size; i++) {
                 var ref = chunk.getReferenceTo(i);
 
-                var npc = commandBuffer.getComponent(ref, NPCEntity.getComponentType());
+                var npc = commandBuffer.getComponent(ref, Objects.requireNonNull(NPCEntity.getComponentType()));
                 if (npc == null)
                     continue;
 
@@ -91,10 +99,14 @@ public class ShowLvlHeadSystem implements Runnable {
                     continue;
                 }
                 final var entityId = npc.getUuid();
+                var npcRole = npc.getRole();
+                if (npcRole == null) {
+                    continue;
+                }
                 var entityName = I18nModule.get()
                     .getMessage(
                         Boolean.parseBoolean(locale.get()) ? null : "en-US",
-                        npc.getRole().getNameTranslationKey()
+                        npcRole.getNameTranslationKey()
                     );
                 var lvl = LevelingCore.mobLevelRegistry.getOrCreateWithPersistence(
                     entityId,
@@ -105,7 +117,7 @@ public class ShowLvlHeadSystem implements Runnable {
                 if (lvl == null)
                     continue;
 
-                String text = formatNameplate(entityName, config.get().isShowMobLvls() ? lvl.level : 0);
+                var text = formatNameplate(entityName, config.get().isShowMobLvls() ? lvl.level : 0, null);
                 insertNameplate(commandBuffer, ref, text);
             }
         });
@@ -152,7 +164,7 @@ public class ShowLvlHeadSystem implements Runnable {
         }
     }
 
-    private String formatNameplate(@NullableDecl String entityName, int level) {
+    private String formatNameplate(@NullableDecl String entityName, int level, String className) {
         if (level <= 0)
             return null;
 
@@ -168,7 +180,8 @@ public class ShowLvlHeadSystem implements Runnable {
 
         return template
             .replace("{level}", Integer.toString(level))
-            .replace("{name}", entityName == null ? "" : entityName);
+            .replace("{name}", entityName == null ? "" : entityName)
+            .replace("{class}", className == null ? "" : className);
     }
 
     private static String unescape(String s) {

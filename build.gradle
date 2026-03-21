@@ -58,6 +58,10 @@ repositories {
     maven {
         url "https://cursemaven.com"
     }
+    maven {
+        name = "azuredoomModsMods"
+        url = uri("https://maven.azuredoom.com/mods")
+    }
     exclusiveContent {
         forRepository {
             ivy {
@@ -87,6 +91,7 @@ dependencies {
     vineCompileOnly 'curse.maven:placeholderlib-1438208:7540696'
     vineCompileOnly 'at.helpch:placeholderapi-hytale:1.0.7'
     vineImplementation 'curse.maven:dynamictooltipslib-1459711:7702598'
+    vineImplementation 'com.azuredoom.classescore:Classescore:0.+'
     //vineImplementation 'modtale:3e453e84-81af-46bf-9e7d-c7de99d9c4f0:0.1.0-alpha@jar'
     //compileOnly fileTree(dir: "$rootDir/libs", include: ["*.jar"])
     //runtimeOnly fileTree(dir: "$rootDir/libs", include: ["*.jar"])
