@@ -1,6 +1,5 @@
 package com.azuredoom.levelingcore.systems.nameplate;
 
-import com.azuredoom.levelingcore.compat.classescore.ClassesCoreCompat;
 import com.hypixel.hytale.common.plugin.PluginIdentifier;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
@@ -24,6 +23,7 @@ import java.util.regex.Pattern;
 
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
+import com.azuredoom.levelingcore.compat.classescore.ClassesCoreCompat;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.utils.MobLevelingUtil;
 
