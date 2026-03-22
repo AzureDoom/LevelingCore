@@ -151,7 +151,10 @@ public class ShowLvlHeadSystem implements Runnable {
             var strip = buildSuffixStripPattern();
 
             if (strip.matcher(oldText).find()) {
-                if (oldText.equals(desiredText))
+                var base = strip.matcher(oldText).replaceAll("");
+                var newText = base + desiredText;
+
+                if (oldText.equals(newText))
                     return;
                 current.setText(desiredText);
             } else {
@@ -178,10 +181,18 @@ public class ShowLvlHeadSystem implements Runnable {
             return null;
         }
 
-        return template
-            .replace("{level}", Integer.toString(level))
-            .replace("{name}", entityName == null ? "" : entityName)
-            .replace("{class}", className == null ? "" : className);
+        var result = template
+                .replace("{level}", Integer.toString(level))
+                .replace("{name}", entityName == null ? "" : entityName)
+                .replace("{class}", className == null ? "" : className);
+
+        result = result
+                .replaceAll("[ \\t]+\\n", "\n")
+                .replaceAll("\\n[ \\t]+", "\n")
+                .replaceAll(" {2,}", " ")
+                .trim();
+
+        return result.isBlank() ? null : result;
     }
 
     private static String unescape(String s) {
@@ -199,6 +210,7 @@ public class ShowLvlHeadSystem implements Runnable {
         var regex = Pattern.quote(rawTemplate)
             .replace("{level}", "\\E\\d+\\Q")
             .replace("{name}", "\\E.*?\\Q")
+            .replace("{class}", "\\E.*?\\Q")
             .replace(" \\\\n", "\\E\\s*\\Q")
             .replace("\\\\n", "\\E\\s*\\Q");
 
