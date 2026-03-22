@@ -32,9 +32,9 @@ import com.azuredoom.levelingcore.utils.NotificationsUtil;
 @SuppressWarnings("removal")
 public class ArmorBlockLevelSystem extends EntityEventSystem<EntityStore, InventoryChangeEvent> {
 
-    private final Set<UUID> ignoreArmorEvents = ConcurrentHashMap.newKeySet();
+    protected final Set<UUID> ignoreArmorEvents = ConcurrentHashMap.newKeySet();
 
-    private volatile boolean restoringArmor = false;
+    protected volatile boolean restoringArmor = false;
 
     public ArmorBlockLevelSystem() {
         super(InventoryChangeEvent.class);
