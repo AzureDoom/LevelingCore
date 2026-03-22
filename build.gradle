@@ -147,6 +147,13 @@ publishing {
     }
 }
 
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
+}
+
 def keyPropsFile = new File(rootProject.projectDir, "key.properties")
 
 if (keyPropsFile.exists()) {
