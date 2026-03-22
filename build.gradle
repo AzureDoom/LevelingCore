@@ -4,7 +4,7 @@ plugins {
     id 'maven-publish'
     id 'com.diffplug.spotless' version '8.1.0'
     id 'com.gradleup.shadow' version '9.3.0'
-    id 'com.azuredoom.hytale-tools' version '1.0.1'
+    id 'com.azuredoom.hytale-tools' version '1.0.3'
 }
 
 configurations {
@@ -80,10 +80,6 @@ dependencies {
     shadowBundle 'com.mysql:mysql-connector-j:9.5.0'
     shadowBundle 'org.mariadb.jdbc:mariadb-java-client:3.5.7'
     shadowBundle 'org.postgresql:postgresql:42.7.8'
-}
-
-tasks.named('processResources') {
-    dependsOn 'updatePluginManifest'
 }
 
 spotless {
