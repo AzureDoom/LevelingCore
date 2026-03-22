@@ -18,8 +18,6 @@ import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.regex.Pattern;
 
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
@@ -31,6 +29,18 @@ import com.azuredoom.levelingcore.utils.MobLevelingUtil;
 public class ShowLvlHeadSystem implements Runnable {
 
     private final Config<GUIConfig> config;
+
+    /**
+     * A marker string used to identify and differentiate nameplate components in the system.
+     * This marker is composed of zero-width Unicode characters (\u200B, \u200C, \u200D)
+     * that are invisible in rendered output but can be used for internal processing
+     * or as separators in nameplate configuration and formatting.
+     * <p>
+     * This constantly enables the system to embed or parse hidden metadata within
+     * strings associated with nameplates, ensuring that visual elements remain
+     * unaffected while still allowing for structured data handling.
+     */
+    private static final String NAMEPLATE_MARKER = "\u200B\u200C\u200D";
 
     public ShowLvlHeadSystem(Config<GUIConfig> config) {
         this.config = config;
@@ -48,172 +58,249 @@ public class ShowLvlHeadSystem implements Runnable {
         }
     }
 
+    /**
+     * Processes all entities within the world to update or insert nameplates for players and NPCs. The method iterates
+     * through entity chunks, extracts relevant data, computes levels, and displays updated information based on the
+     * game configuration and locale settings. Blacklisted entities are ignored. This method also accounts for optional
+     * plugins and localization.
+     *
+     * @param world the world object containing entity data and stores; must not be null.
+     */
     private void tickWorld(World world) {
         var store = world.getEntityStore().getStore();
-
-        if (store == null)
+        if (store == null) {
             return;
+        }
 
+        var guiConfig = config.get();
         var levelingServiceOpt = LevelingCoreApi.getLevelServiceIfPresent();
-        if (levelingServiceOpt.isEmpty())
+        if (levelingServiceOpt.isEmpty()) {
             return;
+        }
 
         var levelingService = levelingServiceOpt.get();
+        var hasClassesCore = PluginManager.get()
+            .getPlugin(new PluginIdentifier("com.azuredoom", "classescore")) != null;
 
-        AtomicReference<String> locale = new AtomicReference<>();
+        var blacklisted = new java.util.HashSet<>(Arrays.asList(guiConfig.getBlacklistedMobs()));
+        final String[] localeHolder = { "en-US" };
 
         store.forEachChunk(PlayerRef.getComponentType(), (chunk, commandBuffer) -> {
             var size = chunk.size();
             for (var i = 0; i < size; i++) {
                 var ref = chunk.getReferenceTo(i);
-
                 var playerRef = commandBuffer.getComponent(ref, PlayerRef.getComponentType());
-                if (playerRef == null)
+                if (playerRef == null) {
                     continue;
-
-                locale.set(playerRef.getLanguage());
-                var lvl = levelingService.getLevel(playerRef.getUuid());
-                String className = null;
-                if (PluginManager.get().getPlugin(new PluginIdentifier("com.azuredoom", "classescore")) != null) {
-                    className = ClassesCoreCompat.getPlayerClass(playerRef.getUuid());
                 }
+
+                localeHolder[0] = playerRef.getLanguage();
+                var lvl = levelingService.getLevel(playerRef.getUuid());
+                var className = hasClassesCore ? ClassesCoreCompat.getPlayerClass(playerRef.getUuid()) : null;
+
                 insertNameplate(
                     commandBuffer,
                     ref,
-                    formatNameplate(playerRef.getUsername(), config.get().isShowPlayerLvls() ? lvl : 0, className)
+                    playerRef.getUsername(),
+                    formatNameplate(
+                        guiConfig.getMobNameplate(),
+                        playerRef.getUsername(),
+                        guiConfig.isShowPlayerLvls() ? lvl : 0,
+                        className,
+                        false
+                    )
                 );
             }
         });
+
         store.forEachChunk(NPCEntity.getComponentType(), (chunk, commandBuffer) -> {
             var size = chunk.size();
             for (var i = 0; i < size; i++) {
                 var ref = chunk.getReferenceTo(i);
-
                 var npc = commandBuffer.getComponent(ref, Objects.requireNonNull(NPCEntity.getComponentType()));
-                if (npc == null)
-                    continue;
-
-                var blacklistedMobs = config.get().getBlacklistedMobs();
-                var npcTypeId = npc.getNPCTypeId();
-                if (Arrays.asList(blacklistedMobs).contains(npcTypeId)) {
+                if (npc == null) {
                     continue;
                 }
-                final var entityId = npc.getUuid();
+
+                if (blacklisted.contains(npc.getNPCTypeId())) {
+                    continue;
+                }
+
                 var npcRole = npc.getRole();
                 if (npcRole == null) {
                     continue;
                 }
+
+                var finalLocale = localeHolder[0] == null ? "en-US" : localeHolder[0];
                 var entityName = I18nModule.get()
                     .getMessage(
-                        Boolean.parseBoolean(locale.get()) ? null : "en-US",
+                        finalLocale,
                         npcRole.getNameTranslationKey()
                     );
+
                 var lvl = LevelingCore.mobLevelRegistry.getOrCreateWithPersistence(
-                    entityId,
+                    npc.getUuid(),
                     () -> MobLevelingUtil.computeSpawnLevel(npc),
                     0,
                     LevelingCore.mobLevelPersistence
                 );
-                if (lvl == null)
+                if (lvl == null) {
                     continue;
+                }
 
-                var text = formatNameplate(entityName, config.get().isShowMobLvls() ? lvl.level : 0, null);
-                insertNameplate(commandBuffer, ref, text);
+                insertNameplate(
+                    commandBuffer,
+                    ref,
+                    entityName,
+                    formatNameplate(
+                        guiConfig.getMobNameplate(),
+                        entityName,
+                        guiConfig.isShowMobLvls() ? lvl.level : 0,
+                        null,
+                        true
+                    )
+                );
             }
         });
     }
 
+    /**
+     * Updates or inserts a nameplate component for an entity based on the provided base name and suffix. If the suffix
+     * is blank or null, only the base name is considered. If the entity lacks sufficient health or other required
+     * conditions are not met, the nameplate update is skipped.
+     *
+     * @param commandBuffer the buffer used to manipulate entity components; must not be null.
+     * @param ref           a reference to the target entity whose nameplate needs to be updated; must not be null.
+     * @param baseName      the base name to display on the nameplate; may be null, in which case it defaults to an
+     *                      empty string.
+     * @param desiredSuffix the suffix to append to the base name; if null or blank, only the base name is used.
+     */
     private void insertNameplate(
         CommandBuffer<EntityStore> commandBuffer,
         Ref<EntityStore> ref,
-        String desiredText
+        String baseName,
+        String desiredSuffix
     ) {
-        if (desiredText == null || desiredText.isBlank()) {
-            var current = commandBuffer.getComponent(ref, Nameplate.getComponentType());
+        var current = commandBuffer.getComponent(ref, Nameplate.getComponentType());
+
+        var safeBaseName = baseName == null ? "" : baseName;
+
+        if (desiredSuffix == null || desiredSuffix.isBlank()) {
             if (current != null) {
-                var strip = buildSuffixStripPattern();
-                var base = strip.matcher(current.getText()).replaceAll("");
-                current.setText(base);
-                commandBuffer.putComponent(ref, Nameplate.getComponentType(), current);
+                if (!safeBaseName.equals(current.getText())) {
+                    current.setText(safeBaseName);
+                    commandBuffer.putComponent(ref, Nameplate.getComponentType(), current);
+                }
+            } else if (!safeBaseName.isBlank()) {
+                commandBuffer.putComponent(ref, Nameplate.getComponentType(), new Nameplate(safeBaseName));
             }
             return;
         }
+
         var entityStatMap = commandBuffer.getComponent(ref, EntityStatMap.getComponentType());
-        var healthStat = DefaultEntityStatTypes.getHealth();
-        var healthValue = entityStatMap.get(healthStat);
-
-        if (healthValue.get() <= 0)
+        if (entityStatMap == null) {
             return;
+        }
 
-        var current = commandBuffer.getComponent(ref, Nameplate.getComponentType());
+        var healthValue = entityStatMap.get(DefaultEntityStatTypes.getHealth());
+        if (healthValue == null || healthValue.get() <= 0) {
+            return;
+        }
+
+        var newText = safeBaseName + NAMEPLATE_MARKER + desiredSuffix;
+
         if (current != null) {
-            var oldText = current.getText();
-            var strip = buildSuffixStripPattern();
-
-            if (strip.matcher(oldText).find()) {
-                var base = strip.matcher(oldText).replaceAll("");
-                var newText = base + desiredText;
-
-                if (oldText.equals(newText))
-                    return;
-                current.setText(desiredText);
-            } else {
-                current.setText(oldText + desiredText);
+            if (newText.equals(current.getText())) {
+                return;
             }
 
+            current.setText(newText);
             commandBuffer.putComponent(ref, Nameplate.getComponentType(), current);
         } else {
-            commandBuffer.putComponent(ref, Nameplate.getComponentType(), new Nameplate(desiredText));
+            commandBuffer.putComponent(ref, Nameplate.getComponentType(), new Nameplate(newText));
         }
     }
 
-    private String formatNameplate(@NullableDecl String entityName, int level, String className) {
-        if (level <= 0)
+    /**
+     * Formats a nameplate string by replacing placeholders with appropriate values such as entity name, level, and
+     * class name. The formatting includes actions such as uncapping the input template, resolving placeholders, and
+     * cleaning up unnecessary whitespace or empty lines.
+     *
+     * @param rawTemplate           the raw template string containing placeholders such as {name}, {level}, and
+     *                              {class}. May include escaped newline or tab characters that will be unescaped.
+     * @param entityName            the name of the entity to be included in the formatted output. If {@code null}, the
+     *                              name placeholder will be replaced accordingly based on
+     *                              {@code includeNameInTemplate}.
+     * @param level                 the level to be injected into the template. Must be greater than 0; otherwise, the
+     *                              method will return {@code null}.
+     * @param className             the class name to be included in the formatted output. If {@code null} or blank,
+     *                              relevant placeholders in the template will be removed.
+     * @param includeNameInTemplate a flag indicating whether the entity name should be included in the formatted
+     *                              output. If {@code false}, the name placeholder will be omitted or replaced with an
+     *                              empty string.
+     * @return the formatted nameplate string with placeholders replaced by corresponding data, or {@code null} if the
+     *         input template is invalid, empty, or the level is lower than or equal to 0.
+     */
+    private String formatNameplate(
+        String rawTemplate,
+        @NullableDecl String entityName,
+        int level,
+        String className,
+        boolean includeNameInTemplate
+    ) {
+        if (level <= 0) {
             return null;
+        }
 
-        var rawTemplate = config.get().getMobNameplate();
         var template = unescape(rawTemplate);
 
-        if (template == null || template.isBlank())
+        if (template == null || template.isBlank()) {
             return null;
+        }
 
-        if ((entityName == null || entityName.isBlank()) && template.contains("{name}")) {
-            return null;
+        var resolvedName = includeNameInTemplate
+            ? (entityName == null ? "" : entityName)
+            : "";
+
+        if (className == null || className.isBlank()) {
+            template = template
+                .replace("[{class}] - ", "")
+                .replace("[{class}]- ", "")
+                .replace("[{class}] ", "")
+                .replace("[{class}]", "");
         }
 
         var result = template
-                .replace("{level}", Integer.toString(level))
-                .replace("{name}", entityName == null ? "" : entityName)
-                .replace("{class}", className == null ? "" : className);
+            .replace("{level}", Integer.toString(level))
+            .replace("{name}", resolvedName)
+            .replace("{class}", className == null ? "" : className);
 
-        result = result
-                .replaceAll("[ \\t]+\\n", "\n")
-                .replaceAll("\\n[ \\t]+", "\n")
-                .replaceAll(" {2,}", " ")
-                .trim();
+        var cleaned = new StringBuilder();
+        for (var line : result.split("\\R", -1)) {
+            if (!line.isBlank()) {
+                if (!cleaned.isEmpty()) {
+                    cleaned.append('\n');
+                }
 
-        return result.isBlank() ? null : result;
+                var normalizedLine = line.replaceAll(" {2,}", " ");
+                cleaned.append(normalizedLine);
+            }
+        }
+
+        return cleaned.isEmpty() ? null : cleaned.toString();
     }
 
+    /**
+     * Replaces escaped newline and tab characters in the input string with their actual values.
+     *
+     * @param s the string to unescape; may contain escaped newline (\n) or tab (\t) characters. If the input string is
+     *          null, the method returns null.
+     * @return a new string with escaped newline and tab characters replaced by their actual values, or null if the
+     *         input string is null.
+     */
     private static String unescape(String s) {
         if (s == null)
             return null;
         return s.replace("\\n", "\n").replace("\\t", "\t");
-    }
-
-    private Pattern buildSuffixStripPattern() {
-        var rawTemplate = config.get().getMobNameplate();
-        if (rawTemplate == null || rawTemplate.isBlank()) {
-            return Pattern.compile("(?!)");
-        }
-
-        var regex = Pattern.quote(rawTemplate)
-            .replace("{level}", "\\E\\d+\\Q")
-            .replace("{name}", "\\E.*?\\Q")
-            .replace("{class}", "\\E.*?\\Q")
-            .replace(" \\\\n", "\\E\\s*\\Q")
-            .replace("\\\\n", "\\E\\s*\\Q");
-
-        return Pattern.compile(regex + "$", Pattern.DOTALL);
     }
 }
