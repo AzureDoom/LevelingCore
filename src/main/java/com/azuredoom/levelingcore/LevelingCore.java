@@ -9,6 +9,7 @@ import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Int
 import com.hypixel.hytale.server.core.plugin.JavaPlugin;
 import com.hypixel.hytale.server.core.plugin.JavaPluginInit;
 import com.hypixel.hytale.server.core.plugin.PluginManager;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.util.Config;
 
 import java.nio.file.Path;
@@ -76,7 +77,6 @@ import com.azuredoom.levelingcore.utils.HudPlayerReady;
 import com.azuredoom.levelingcore.utils.LevelDownListenerRegistrar;
 import com.azuredoom.levelingcore.utils.LevelUpListenerRegistrar;
 
-@SuppressWarnings("removal")
 public class LevelingCore extends JavaPlugin {
 
     public static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
@@ -191,7 +191,18 @@ public class LevelingCore extends JavaPlugin {
                 (playerReadyEvent -> {
                     var player = playerReadyEvent.getPlayer();
                     LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService -> {
-                        var uuid = player.getUuid();
+                        var playerRef = player.getReference();
+                        if (playerRef == null) {
+                            LOGGER.at(Level.WARNING).log("Player reference is null");
+                            return;
+                        }
+                        var playerRefComponent = playerRef.getStore()
+                            .getComponent(playerRef, PlayerRef.getComponentType());
+                        if (playerRefComponent == null) {
+                            LOGGER.at(Level.WARNING).log("Player ref component is null");
+                            return;
+                        }
+                        var uuid = playerRefComponent.getUuid();
                         var level = levelService.getLevel(uuid);
                         int targetTotal;
                         if (config.get().isUseStatsPerLevelMapping()) {

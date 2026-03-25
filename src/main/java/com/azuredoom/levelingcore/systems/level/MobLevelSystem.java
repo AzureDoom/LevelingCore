@@ -6,6 +6,7 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.server.core.entity.EntityUtils;
+import com.hypixel.hytale.server.core.entity.UUIDComponent;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
@@ -17,6 +18,7 @@ import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -26,7 +28,6 @@ import com.azuredoom.levelingcore.level.formulas.loader.LevelTableLoader;
 import com.azuredoom.levelingcore.utils.MobLevelingUtil;
 import com.azuredoom.levelingcore.utils.PendingUpdate;
 
-@SuppressWarnings("removal")
 public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
 
     private final AtomicLong nextSaveAtMs = new AtomicLong(0);
@@ -64,8 +65,11 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
         }
 
         final var holder = EntityUtils.toHolder(index, archetypeChunk);
-        final var npc = holder.getComponent(NPCEntity.getComponentType());
+        final var npc = holder.getComponent(Objects.requireNonNull(NPCEntity.getComponentType()));
         if (npc == null)
+            return;
+        var npcRef = npc.getReference();
+        if (npcRef == null)
             return;
 
         var entityStatMap = archetypeChunk.getComponent(index, EntityStatMap.getComponentType());
@@ -82,7 +86,11 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
         if (transform == null)
             return;
 
-        final var entityId = npc.getUuid();
+        // TODO: Update
+        var uuidComponent = commandBuffer.getComponent(npcRef, UUIDComponent.getComponentType());
+        if (uuidComponent == null)
+            return;
+        var entityUuid = uuidComponent.getUuid();
         var blacklistedMobs = config.get().getBlacklistedMobs();
         if (Arrays.asList(blacklistedMobs).contains(npc.getNPCTypeId())) {
             return;
@@ -91,7 +99,7 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
         final var nowMs = System.currentTimeMillis();
 
         var data = LevelingCore.mobLevelRegistry.getOrCreateWithPersistence(
-            entityId,
+            entityUuid,
             () -> MobLevelingUtil.computeSpawnLevel(npc),
             nowMs,
             LevelingCore.mobLevelPersistence

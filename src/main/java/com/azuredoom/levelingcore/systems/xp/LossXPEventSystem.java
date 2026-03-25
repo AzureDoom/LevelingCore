@@ -8,6 +8,7 @@ import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.damage.DeathComponent;
 import com.hypixel.hytale.server.core.modules.entity.damage.DeathSystems;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 
@@ -23,7 +24,6 @@ import com.azuredoom.levelingcore.ui.hud.XPBarHud;
  * points (XP) and level loss events when an entity with a {@link DeathComponent} dies. The system logic for XP or level
  * reduction is determined based on the {@link GUIConfig} provided during initialization.
  */
-@SuppressWarnings("removal")
 public class LossXPEventSystem extends DeathSystems.OnDeathSystem {
 
     private final Config<GUIConfig> config;
@@ -59,7 +59,16 @@ public class LossXPEventSystem extends DeathSystems.OnDeathSystem {
         store.getExternalData()
             .getWorld()
             .execute(() -> LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService -> {
-                var playerUuid = player.getUuid();
+                var playerRef = player.getReference();
+                if (playerRef == null) {
+                    return;
+                }
+                var playerRefComponent = playerRef.getStore()
+                    .getComponent(playerRef, PlayerRef.getComponentType());
+                if (playerRefComponent == null) {
+                    return;
+                }
+                var playerUuid = playerRefComponent.getUuid();
                 var currentXp = levelService.getXp(playerUuid);
                 var currentLevel = levelService.getLevel(playerUuid);
                 if (this.config.get().isEnableLevelDownOnDeath()) {
@@ -88,7 +97,7 @@ public class LossXPEventSystem extends DeathSystems.OnDeathSystem {
                     levelService.setXp(playerUuid, newXp);
                     player.sendMessage(CommandLang.XP_LOST.param("xp", actualLoss));
                 }
-                XPBarHud.updateHud(player.getPlayerRef());
+                XPBarHud.updateHud(playerRefComponent);
             }));
     }
 }

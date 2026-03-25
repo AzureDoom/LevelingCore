@@ -1,9 +1,13 @@
 package com.azuredoom.levelingcore.systems.equipment;
 
+import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.inventory.transaction.*;
+import com.hypixel.hytale.server.core.universe.PlayerRef;
+import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,7 +16,6 @@ import java.util.Set;
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.utils.NotificationsUtil;
 
-@SuppressWarnings("removal")
 public class ArmorBlockStatSystem extends ArmorBlockLevelSystem {
 
     public ArmorBlockStatSystem() {
@@ -24,7 +27,8 @@ public class ArmorBlockStatSystem extends ArmorBlockLevelSystem {
         @NotNull Player player,
         @NotNull ItemContainer armorContainer,
         @Nullable Transaction transaction,
-        @NotNull Set<String> refundedKeys
+        @NotNull Set<String> refundedKeys,
+        @NotNull CommandBuffer<EntityStore> commandBuffer
     ) {
         if (transaction == null || !transaction.succeeded()) {
             return;
@@ -37,20 +41,21 @@ public class ArmorBlockStatSystem extends ArmorBlockLevelSystem {
                         player,
                         armorContainer,
                         moveTransaction.getAddTransaction(),
-                        refundedKeys
+                        refundedKeys,
+                        commandBuffer
                     );
                 }
             }
 
             case ListTransaction<?> listTransaction -> {
                 for (var nested : listTransaction.getList()) {
-                    rollbackArmorTransaction(player, armorContainer, nested, refundedKeys);
+                    rollbackArmorTransaction(player, armorContainer, nested, refundedKeys, commandBuffer);
                 }
             }
 
             case ItemStackTransaction itemStackTransaction -> {
                 for (var slotTransaction : itemStackTransaction.getSlotTransactions()) {
-                    rollbackArmorTransaction(player, armorContainer, slotTransaction, refundedKeys);
+                    rollbackArmorTransaction(player, armorContainer, slotTransaction, refundedKeys, commandBuffer);
                 }
             }
 
@@ -73,14 +78,23 @@ public class ArmorBlockStatSystem extends ArmorBlockLevelSystem {
                 }
 
                 var levelService = LevelingCore.getLevelService();
-                var uuid = player.getUuid();
+                var playerRef = player.getReference();
+                if (playerRef == null) {
+                    return;
+                }
+                var playerRefComponent = playerRef.getStore()
+                    .getComponent(playerRef, PlayerRef.getComponentType());
+                if (playerRefComponent == null) {
+                    return;
+                }
+                var playerUuid = playerRefComponent.getUuid();
 
-                var playerStr = levelService.getStr(uuid);
-                var playerAgi = levelService.getAgi(uuid);
-                var playerPer = levelService.getPer(uuid);
-                var playerVit = levelService.getVit(uuid);
-                var playerInt = levelService.getInt(uuid);
-                var playerCon = levelService.getCon(uuid);
+                var playerStr = levelService.getStr(playerUuid);
+                var playerAgi = levelService.getAgi(playerUuid);
+                var playerPer = levelService.getPer(playerUuid);
+                var playerVit = levelService.getVit(playerUuid);
+                var playerInt = levelService.getInt(playerUuid);
+                var playerCon = levelService.getCon(playerUuid);
 
                 if (
                     req.matches(
@@ -96,7 +110,7 @@ public class ArmorBlockStatSystem extends ArmorBlockLevelSystem {
                 }
 
                 NotificationsUtil.sendStatRequirementNotification(
-                    player.getPlayerRef(),
+                    playerRefComponent,
                     after
                 );
 
@@ -106,11 +120,16 @@ public class ArmorBlockStatSystem extends ArmorBlockLevelSystem {
 
                 var key = "armorSlot:" + slotTransaction.getSlot();
                 if (refundedKeys.add(key)) {
-                    giveOrDrop(player, after);
+                    var everythingInventoryComponent = InventoryComponent.getCombined(
+                        commandBuffer,
+                        playerRef,
+                        InventoryComponent.EVERYTHING
+                    );
+                    giveOrDrop(player, after, everythingInventoryComponent);
 
                     if (swapping) {
                         var removeOne = oneOf(before);
-                        player.getInventory().getCombinedHotbarFirst().removeItemStack(removeOne, false, true);
+                        everythingInventoryComponent.removeItemStack(removeOne, false, true);
                     }
                 }
             }

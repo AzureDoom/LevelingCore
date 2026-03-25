@@ -7,6 +7,7 @@ import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.server.core.entity.EntityUtils;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -36,35 +37,41 @@ public class HandStatGateTickingSystem extends EntityTickingSystem<EntityStore> 
         if (!LevelingCore.getConfig().get().isEnableItemStatRequirement()) {
             return;
         }
-
         var holder = EntityUtils.toHolder(index, chunk);
         var player = holder.getComponent(Player.getComponentType());
-        var playerRef = holder.getComponent(PlayerRef.getComponentType());
-        if (player == null || playerRef == null)
+        if (player == null)
             return;
-
-        var hand = player.getInventory().getItemInHand();
+        var playerRef = player.getReference();
+        if (playerRef == null) {
+            return;
+        }
+        var playerRefComponent = playerRef.getStore()
+            .getComponent(playerRef, PlayerRef.getComponentType());
+        if (playerRefComponent == null) {
+            return;
+        }
+        var playerUuid = playerRefComponent.getUuid();
+        var hand = InventoryComponent.getItemInHand(cb, player.getReference());
         if (hand == null || ItemStack.isEmpty(hand)) {
-            handGate.put(playerRef.getUuid(), new HandStatGateSnapshot(false, null, null, hand));
+            handGate.put(playerUuid, new HandStatGateSnapshot(false, null, null, hand));
             return;
         }
 
         var req = LevelingCore.itemStatRequirements.get(hand.getItemId());
         if (req == null) {
-            handGate.put(playerRef.getUuid(), new HandStatGateSnapshot(false, null, null, hand));
+            handGate.put(playerUuid, new HandStatGateSnapshot(false, null, null, hand));
             return;
         }
 
         var levelService = LevelingCore.getLevelService();
-        var uuid = playerRef.getUuid();
 
         var stats = new PlayerStatSnapshot(
-            levelService.getStr(uuid),
-            levelService.getAgi(uuid),
-            levelService.getPer(uuid),
-            levelService.getVit(uuid),
-            levelService.getInt(uuid),
-            levelService.getCon(uuid)
+            levelService.getStr(playerUuid),
+            levelService.getAgi(playerUuid),
+            levelService.getPer(playerUuid),
+            levelService.getVit(playerUuid),
+            levelService.getInt(playerUuid),
+            levelService.getCon(playerUuid)
         );
 
         var blocked = !req.matches(
@@ -76,7 +83,7 @@ public class HandStatGateTickingSystem extends EntityTickingSystem<EntityStore> 
             stats.con()
         );
 
-        handGate.put(playerRef.getUuid(), new HandStatGateSnapshot(blocked, req, stats, hand));
+        handGate.put(playerUuid, new HandStatGateSnapshot(blocked, req, stats, hand));
     }
 
     @Override

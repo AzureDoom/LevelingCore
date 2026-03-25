@@ -7,6 +7,7 @@ import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
 import com.hypixel.hytale.server.core.entity.EntityUtils;
 import com.hypixel.hytale.server.core.entity.entities.Player;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -48,26 +49,34 @@ public class HandGateTickingSystem extends EntityTickingSystem<EntityStore> {
         }
         var holder = EntityUtils.toHolder(index, chunk);
         var player = holder.getComponent(Player.getComponentType());
-        var playerRef = holder.getComponent(PlayerRef.getComponentType());
-        if (player == null || playerRef == null)
+        if (player == null)
             return;
-
-        var hand = player.getInventory().getItemInHand();
+        var playerRef = player.getReference();
+        if (playerRef == null) {
+            return;
+        }
+        var playerRefComponent = playerRef.getStore()
+            .getComponent(playerRef, PlayerRef.getComponentType());
+        if (playerRefComponent == null) {
+            return;
+        }
+        var playerUuid = playerRefComponent.getUuid();
+        var hand = InventoryComponent.getItemInHand(cb, player.getReference());
         if (hand == null || ItemStack.isEmpty(hand)) {
-            handGate.put(playerRef.getUuid(), new HandGateSnapshot(false, 0, 0, hand));
+            handGate.put(playerUuid, new HandGateSnapshot(false, 0, 0, hand));
             return;
         }
 
         var req = LevelingCore.itemLevelMapping.get(hand.getItemId());
         if (req == null) {
-            handGate.put(playerRef.getUuid(), new HandGateSnapshot(false, 0, 0, hand));
+            handGate.put(playerUuid, new HandGateSnapshot(false, 0, 0, hand));
             return;
         }
 
-        var lvl = LevelingCore.getLevelService().getLevel(playerRef.getUuid());
+        var lvl = LevelingCore.getLevelService().getLevel(playerUuid);
         var blocked = lvl < req;
 
-        handGate.put(playerRef.getUuid(), new HandGateSnapshot(blocked, req, lvl, hand));
+        handGate.put(playerUuid, new HandGateSnapshot(blocked, req, lvl, hand));
     }
 
     @Override

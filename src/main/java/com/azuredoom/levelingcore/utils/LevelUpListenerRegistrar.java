@@ -22,7 +22,6 @@ import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.lang.CommandLang;
 import com.azuredoom.levelingcore.ui.hud.XPBarHud;
 
-@SuppressWarnings("removal")
 public final class LevelUpListenerRegistrar {
 
     private static final Set<UUID> REGISTERED =
@@ -34,8 +33,8 @@ public final class LevelUpListenerRegistrar {
         PlayerRef playerRef,
         Config<GUIConfig> config
     ) {
-        UUID id = playerRef.getUuid();
-        if (!REGISTERED.add(id))
+        var playerUUID = playerRef.getUuid();
+        if (!REGISTERED.add(playerUUID))
             return;
 
         var world = player.getWorld();
@@ -49,7 +48,7 @@ public final class LevelUpListenerRegistrar {
             store.getExternalData()
                 .getWorld()
                 .execute(() -> levelService.registerLevelUpListener((playerId, oldLevel, newLevel) -> {
-                    if (!playerId.equals(id))
+                    if (!playerId.equals(playerUUID))
                         return;
 
                     StatsUtils.applyAllStats(store, player, newLevel, config);
@@ -60,7 +59,7 @@ public final class LevelUpListenerRegistrar {
                         var transform = worldStore.getStore()
                             .getComponent(
                                 Objects.requireNonNull(
-                                    store.getExternalData().getWorld().getEntityRef(player.getUuid())
+                                    store.getExternalData().getWorld().getEntityRef(playerUUID)
                                 ),
                                 EntityModule.get().getTransformComponentType()
                             );

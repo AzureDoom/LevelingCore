@@ -21,7 +21,6 @@ import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.lang.CommandLang;
 import com.azuredoom.levelingcore.ui.hud.XPBarHud;
 
-@SuppressWarnings("removal")
 public class LevelDownListenerRegistrar {
 
     private static final Set<UUID> REGISTERED =
@@ -33,8 +32,8 @@ public class LevelDownListenerRegistrar {
         PlayerRef playerRef,
         Config<GUIConfig> config
     ) {
-        UUID id = playerRef.getUuid();
-        if (!REGISTERED.add(id))
+        var playerUUID = playerRef.getUuid();
+        if (!REGISTERED.add(playerUUID))
             return;
 
         var world = player.getWorld();
@@ -42,7 +41,7 @@ public class LevelDownListenerRegistrar {
         var leveldown_sound = SoundEvent.getAssetMap().getIndex(config.get().getLevelDownSound());
 
         LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService1 -> {
-            LevelUpRewardsUtil.clear(player.getUuid());
+            LevelUpRewardsUtil.clear(playerUUID);
             if (config.get().isEnableStatLeveling()) {
                 store.getExternalData()
                     .getWorld()
@@ -85,7 +84,7 @@ public class LevelDownListenerRegistrar {
                         }
 
                         // Need to clear out mapping whenever a player levels down as well
-                        LevelUpListenerRegistrar.clear(player.getUuid());
+                        LevelUpListenerRegistrar.clear(playerUUID);
                         XPBarHud.updateHud(playerRef);
                         if (config.get().isEnableItemLevelRestriction())
                             LevelingCore.equipBlockManager.validateArmorOnReady(player);

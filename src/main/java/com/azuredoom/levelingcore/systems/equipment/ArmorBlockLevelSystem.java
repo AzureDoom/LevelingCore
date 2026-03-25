@@ -1,9 +1,6 @@
 package com.azuredoom.levelingcore.systems.equipment;
 
-import com.hypixel.hytale.component.ArchetypeChunk;
-import com.hypixel.hytale.component.CommandBuffer;
-import com.hypixel.hytale.component.Holder;
-import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
 import com.hypixel.hytale.server.core.HytaleServer;
@@ -11,7 +8,9 @@ import com.hypixel.hytale.server.core.entity.EntityUtils;
 import com.hypixel.hytale.server.core.entity.ItemUtils;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.inventory.InventoryChangeEvent;
+import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.inventory.container.CombinedItemContainer;
 import com.hypixel.hytale.server.core.inventory.container.ItemContainer;
 import com.hypixel.hytale.server.core.inventory.transaction.*;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -29,7 +28,6 @@ import java.util.concurrent.TimeUnit;
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.utils.NotificationsUtil;
 
-@SuppressWarnings("removal")
 public class ArmorBlockLevelSystem extends EntityEventSystem<EntityStore, InventoryChangeEvent> {
 
     protected final Set<UUID> ignoreArmorEvents = ConcurrentHashMap.newKeySet();
@@ -50,27 +48,39 @@ public class ArmorBlockLevelSystem extends EntityEventSystem<EntityStore, Invent
     ) {
         final Holder<EntityStore> holder = EntityUtils.toHolder(index, archetypeChunk);
         final Player player = holder.getComponent(Player.getComponentType());
-        final PlayerRef playerRef = holder.getComponent(PlayerRef.getComponentType());
-        if (player == null || playerRef == null) {
+        if (player == null) {
             return;
         }
+        var playerRef = player.getReference();
+        if (playerRef == null) {
+            return;
+        }
+        var playerRefComponent = playerRef.getStore()
+            .getComponent(playerRef, PlayerRef.getComponentType());
+        if (playerRefComponent == null) {
+            return;
+        }
+        var playerUuid = playerRefComponent.getUuid();
 
         if (restoringArmor) {
             return;
         }
 
-        if (ignoreArmorEvents.contains(player.getUuid())) {
+        if (ignoreArmorEvents.contains(playerUuid)) {
             return;
         }
 
-        var inventory = player.getInventory();
-        var armorContainer = inventory.getArmor();
+        var armorContainer = archetypeChunk.getComponent(index, InventoryComponent.Armor.getComponentType());
         if (armorContainer == null) {
+            return;
+        }
+        var armor = armorContainer.getInventory();
+        if (armor == null) {
             return;
         }
 
         var changedContainer = event.getItemContainer();
-        if (changedContainer == null || changedContainer != armorContainer) {
+        if (changedContainer == null || changedContainer != armor) {
             return;
         }
 
@@ -81,7 +91,7 @@ public class ArmorBlockLevelSystem extends EntityEventSystem<EntityStore, Invent
 
         restoringArmor = true;
         try {
-            rollbackArmorTransaction(player, armorContainer, transaction, new HashSet<>());
+            rollbackArmorTransaction(player, armor, transaction, new HashSet<>(), commandBuffer);
         } finally {
             restoringArmor = false;
         }
@@ -91,11 +101,22 @@ public class ArmorBlockLevelSystem extends EntityEventSystem<EntityStore, Invent
         @NotNull Player player,
         @NotNull ItemContainer armorContainer,
         @Nullable Transaction transaction,
-        @NotNull Set<String> refundedKeys
+        @NotNull Set<String> refundedKeys,
+        @NotNull CommandBuffer<EntityStore> commandBuffer
     ) {
         if (transaction == null || !transaction.succeeded()) {
             return;
         }
+        var playerRef = player.getReference();
+        if (playerRef == null) {
+            return;
+        }
+        var playerRefComponent = playerRef.getStore()
+            .getComponent(playerRef, PlayerRef.getComponentType());
+        if (playerRefComponent == null) {
+            return;
+        }
+        var playerUuid = playerRefComponent.getUuid();
 
         switch (transaction) {
             case MoveTransaction<?> moveTransaction -> {
@@ -104,20 +125,21 @@ public class ArmorBlockLevelSystem extends EntityEventSystem<EntityStore, Invent
                         player,
                         armorContainer,
                         moveTransaction.getAddTransaction(),
-                        refundedKeys
+                        refundedKeys,
+                        commandBuffer
                     );
                 }
             }
 
             case ListTransaction<?> listTransaction -> {
                 for (var nested : listTransaction.getList()) {
-                    rollbackArmorTransaction(player, armorContainer, nested, refundedKeys);
+                    rollbackArmorTransaction(player, armorContainer, nested, refundedKeys, commandBuffer);
                 }
             }
 
             case ItemStackTransaction itemStackTransaction -> {
                 for (var slotTransaction : itemStackTransaction.getSlotTransactions()) {
-                    rollbackArmorTransaction(player, armorContainer, slotTransaction, refundedKeys);
+                    rollbackArmorTransaction(player, armorContainer, slotTransaction, refundedKeys, commandBuffer);
                 }
             }
 
@@ -139,13 +161,13 @@ public class ArmorBlockLevelSystem extends EntityEventSystem<EntityStore, Invent
                     return;
                 }
 
-                var playerLevel = LevelingCore.getLevelService().getLevel(player.getUuid());
+                var playerLevel = LevelingCore.getLevelService().getLevel(playerUuid);
                 if (playerLevel >= levelRestriction) {
                     return;
                 }
 
                 NotificationsUtil.sendLevelRequirementNotification(
-                    player.getPlayerRef(),
+                    playerRefComponent,
                     levelRestriction,
                     after,
                     playerLevel
@@ -157,13 +179,16 @@ public class ArmorBlockLevelSystem extends EntityEventSystem<EntityStore, Invent
 
                 var key = "armorSlot:" + slotTransaction.getSlot();
                 if (refundedKeys.add(key)) {
-                    giveOrDrop(player, after);
+                    var everythingInventoryComponent = InventoryComponent.getCombined(
+                        commandBuffer,
+                        playerRef,
+                        InventoryComponent.EVERYTHING
+                    );
+                    giveOrDrop(player, after, everythingInventoryComponent);
 
                     if (swapping) {
                         var removeOne = oneOf(before);
-                        player.getInventory()
-                            .getCombinedHotbarFirst()
-                            .removeItemStack(removeOne, false, true);
+                        everythingInventoryComponent.removeItemStack(removeOne, false, true);
                     }
                 }
             }
@@ -199,13 +224,16 @@ public class ArmorBlockLevelSystem extends EntityEventSystem<EntityStore, Invent
         return new ItemStack(stack.getItemId(), 1, stack.getMetadata());
     }
 
-    protected static void giveOrDrop(@NotNull Player player, @NotNull ItemStack stack) {
+    protected static void giveOrDrop(
+        @NotNull Player player,
+        @NotNull ItemStack stack,
+        @NotNull CombinedItemContainer inventoryComponent
+    ) {
         if (ItemStack.isEmpty(stack)) {
             return;
         }
 
-        var inv = player.getInventory().getCombinedHotbarFirst();
-        var tx = inv.addItemStack(stack);
+        var tx = inventoryComponent.addItemStack(stack);
         var remainder = tx.getRemainder();
 
         if (remainder != null && !ItemStack.isEmpty(remainder)) {
@@ -217,21 +245,34 @@ public class ArmorBlockLevelSystem extends EntityEventSystem<EntityStore, Invent
     }
 
     public void validateArmorOnReady(@NotNull Player player) {
-        ignoreArmorEvents.add(player.getUuid());
+        var playerRef = player.getReference();
+        if (playerRef == null) {
+            return;
+        }
+        var playerRefComponent = playerRef.getStore()
+            .getComponent(playerRef, PlayerRef.getComponentType());
+        if (playerRefComponent == null) {
+            return;
+        }
+        var playerUuid = playerRefComponent.getUuid();
+        ignoreArmorEvents.add(playerUuid);
 
         HytaleServer.SCHEDULED_EXECUTOR.schedule(
-            () -> ignoreArmorEvents.remove(player.getUuid()),
+            () -> ignoreArmorEvents.remove(playerUuid),
             500L,
             TimeUnit.MILLISECONDS
         );
 
-        var inventory = player.getInventory();
-        var armor = inventory.getArmor();
+        var armorComponent = playerRef.getStore().getComponent(playerRef, InventoryComponent.Armor.getComponentType());
+        if (armorComponent == null) {
+            return;
+        }
+        var armor = armorComponent.getInventory();
         if (armor == null) {
             return;
         }
 
-        var playerLevel = LevelingCore.getLevelService().getLevel(player.getUuid());
+        var playerLevel = LevelingCore.getLevelService().getLevel(playerUuid);
 
         restoringArmor = true;
         try {
@@ -253,14 +294,19 @@ public class ArmorBlockLevelSystem extends EntityEventSystem<EntityStore, Invent
                 }
 
                 NotificationsUtil.sendLevelRequirementNotification(
-                    player.getPlayerRef(),
+                    playerRefComponent,
                     req,
                     stack,
                     playerLevel
                 );
 
                 armor.setItemStackForSlot(slot, null, true);
-                giveOrDrop(player, stack);
+                var everythingInventoryComponent = InventoryComponent.getCombined(
+                    playerRef.getStore(),
+                    playerRef,
+                    InventoryComponent.EVERYTHING
+                );
+                giveOrDrop(player, stack, everythingInventoryComponent);
             }
         } finally {
             restoringArmor = false;

@@ -6,6 +6,7 @@ import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
+import com.hypixel.hytale.server.core.entity.UUIDComponent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.entity.damage.DeathComponent;
@@ -14,11 +15,11 @@ import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.EntityStatType;
 import com.hypixel.hytale.server.core.plugin.PluginManager;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.Universe;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 
+import java.util.Objects;
 import javax.annotation.Nonnull;
 
 import com.azuredoom.levelingcore.LevelingCore;
@@ -44,7 +45,6 @@ import com.azuredoom.levelingcore.utils.NotificationsUtil;
  * </ul>
  * The class extends {@code DeathSystems.OnDeathSystem} to seamlessly integrate with death-related events in the game.
  */
-@SuppressWarnings("removal")
 public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
 
     private final Config<GUIConfig> config;
@@ -83,11 +83,19 @@ public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
                 var player = store.getComponent(attackerRef, Player.getComponentType());
                 if (player == null)
                     return;
-                var playerRef = Universe.get().getPlayer(player.getUuid());
+                var playerRef = player.getReference();
+                if (playerRef == null) {
+                    return;
+                }
+                var playerRefComponent = playerRef.getStore().getComponent(playerRef, PlayerRef.getComponentType());
+                if (playerRefComponent == null) {
+                    return;
+                }
+                var playerUUID = playerRefComponent.getUuid();
                 var statMap = store.getComponent(ref, EntityStatMap.getComponentType());
                 if (statMap == null)
                     return;
-                var entity = store.getComponent(ref, NPCEntity.getComponentType());
+                var entity = store.getComponent(ref, Objects.requireNonNull(NPCEntity.getComponentType()));
                 if (entity == null)
                     return;
                 var xpMap = LevelingCore.xpMapping;
@@ -96,11 +104,12 @@ public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
                 if (healthStat == null)
                     return;
                 var maxHealth = healthStat.getMax();
-                var playerLevel = LevelingCoreApi.getLevelServiceIfPresent()
-                    .map(levelService -> levelService.getLevel(player.getUuid()))
-                    .orElse(0);
+                var uuidComponent = commandBuffer.getComponent(ref, UUIDComponent.getComponentType());
+                if (uuidComponent == null)
+                    return;
+                var entityUuid = uuidComponent.getUuid();
                 var mobLevel = LevelingCore.mobLevelRegistry.getOrCreateWithPersistence(
-                    entity.getUuid(),
+                    entityUuid,
                     () -> MobLevelingUtil.computeSpawnLevel(entity),
                     0,
                     LevelingCore.mobLevelPersistence
@@ -119,40 +128,40 @@ public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
                     return;
                 store.getExternalData().getWorld().execute(() -> {
                     LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService -> {
-                        var levelBefore = levelService.getLevel(player.getUuid());
+                        var levelBefore = levelService.getLevel(playerUUID);
                         if (
                             PluginManager.get()
                                 .getPlugin(new PluginIdentifier("tsumori", "partypro")) != null
                         ) {
-                            PartyProCompat.onXPGain(xpAmount, player.getUuid(), levelService, config, playerRef);
+                            PartyProCompat.onXPGain(xpAmount, playerUUID, levelService, config, playerRefComponent);
                         } else if (
                             PluginManager.get()
                                 .getPlugin(new PluginIdentifier("com.carsonk", "Party Plugin")) != null
                         ) {
                             PartyPluginCompat.onXPGain(
                                 xpAmount,
-                                player.getUuid(),
+                                playerUUID,
                                 levelService,
                                 config,
-                                playerRef
+                                playerRefComponent
                             );
                         } else {
                             // Fallback to default XP gain if supported Party mods are not installed
                             if (
                                 !config.get().isDisableXPGainNotification() && !levelService.isMaxLevel(
-                                    player.getUuid()
+                                    playerUUID
                                 )
                             )
                                 NotificationsUtil.sendXPGainNotification(
-                                    playerRef,
+                                    playerRefComponent,
                                     xpAmount
                                 );
-                            levelService.addXp(player.getUuid(), xpAmount);
-                            XPBarHud.updateHud(playerRef);
+                            levelService.addXp(playerUUID, xpAmount);
+                            XPBarHud.updateHud(playerRefComponent);
                         }
-                        LevelingCore.mobLevelRegistry.remove(entity.getUuid());
-                        LevelingCore.mobLevelPersistence.remove(entity.getUuid());
-                        var levelAfter = levelService.getLevel(player.getUuid());
+                        LevelingCore.mobLevelRegistry.remove(entityUuid);
+                        LevelingCore.mobLevelPersistence.remove(entityUuid);
+                        var levelAfter = levelService.getLevel(playerUUID);
                         if (levelAfter > levelBefore) {
                             if (config.get().isEnableLevelChatMsgs())
                                 player.sendMessage(CommandLang.LEVEL_UP.param("level", levelAfter));
