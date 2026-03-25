@@ -9,7 +9,7 @@
         }
     ],
     "Website": "https://modtale.net/mod/levelingcore",
-    "ServerVersion": "2026.03.20-db226053c",
+    "ServerVersion": "2026.03.25-89796e57b",
     "Dependencies": {
         "Hytale:EntityModule": "*",
         "Hytale:InteractionModule": "*",
