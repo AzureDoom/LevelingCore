@@ -3,6 +3,7 @@ package com.azuredoom.levelingcore.systems.nameplate;
 import com.hypixel.hytale.common.plugin.PluginIdentifier;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Ref;
+import com.hypixel.hytale.server.core.entity.UUIDComponent;
 import com.hypixel.hytale.server.core.entity.nameplate.Nameplate;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
@@ -25,7 +26,6 @@ import com.azuredoom.levelingcore.compat.classescore.ClassesCoreCompat;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.utils.MobLevelingUtil;
 
-@SuppressWarnings("removal")
 public class ShowLvlHeadSystem implements Runnable {
 
     private final Config<GUIConfig> config;
@@ -136,9 +136,17 @@ public class ShowLvlHeadSystem implements Runnable {
                         npcRole.getNameTranslationKey()
                     );
 
+                var npcRef = npc.getReference();
+                if (npcRef == null)
+                    return;
+                var uuidComponent = commandBuffer.getComponent(npcRef, UUIDComponent.getComponentType());
+                if (uuidComponent == null)
+                    return;
+
+                var npcUUID = uuidComponent.getUuid();
                 var lvl = LevelingCore.mobLevelRegistry.getOrCreateWithPersistence(
-                    npc.getUuid(),
-                    () -> MobLevelingUtil.computeSpawnLevel(npc),
+                    npcUUID,
+                    () -> MobLevelingUtil.computeSpawnLevel(commandBuffer, npc),
                     0,
                     LevelingCore.mobLevelPersistence
                 );

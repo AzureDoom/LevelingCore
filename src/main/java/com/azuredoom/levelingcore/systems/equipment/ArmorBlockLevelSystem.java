@@ -19,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -211,17 +210,11 @@ public class ArmorBlockLevelSystem extends EntityEventSystem<EntityStore, Invent
             return false;
         }
 
-        if (!Objects.equals(a.getItemId(), b.getItemId())) {
-            return false;
-        }
-        if (a.getQuantity() != b.getQuantity()) {
-            return false;
-        }
-        return Objects.equals(a.getMetadata(), b.getMetadata());
+        return a.getQuantity() == b.getQuantity() && a.isEquivalentType(b);
     }
 
     protected static ItemStack oneOf(@NotNull ItemStack stack) {
-        return new ItemStack(stack.getItemId(), 1, stack.getMetadata());
+        return stack.withQuantity(1);
     }
 
     protected static void giveOrDrop(

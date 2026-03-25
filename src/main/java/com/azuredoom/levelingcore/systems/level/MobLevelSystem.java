@@ -86,7 +86,6 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
         if (transform == null)
             return;
 
-        // TODO: Update
         var uuidComponent = commandBuffer.getComponent(npcRef, UUIDComponent.getComponentType());
         if (uuidComponent == null)
             return;
@@ -100,7 +99,7 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
 
         var data = LevelingCore.mobLevelRegistry.getOrCreateWithPersistence(
             entityUuid,
-            () -> MobLevelingUtil.computeSpawnLevel(npc),
+            () -> MobLevelingUtil.computeSpawnLevel(commandBuffer, npc),
             nowMs,
             LevelingCore.mobLevelPersistence
         );
@@ -116,7 +115,7 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
 
         if (!drainScheduled) {
             drainScheduled = true;
-            drainPending(store);
+            drainPending(commandBuffer, store);
         }
     }
 
@@ -132,7 +131,10 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
      * @param store The store containing entities and associated data, used for applying updates and retrieving
      *              additional context during level computation and scaling.
      */
-    private void drainPending(@NonNullDecl Store<EntityStore> store) {
+    private void drainPending(
+        @NonNullDecl CommandBuffer<EntityStore> commandBuffer,
+        @NonNullDecl Store<EntityStore> store
+    ) {
         try {
             var mobMaxLevel = computeMobMaxLevel();
 
@@ -149,7 +151,10 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
 
                 var newLevel = Math.max(
                     1,
-                    Math.min(mobMaxLevel, MobLevelingUtil.computeDynamicLevel(config, npc, transform, store))
+                    Math.min(
+                        mobMaxLevel,
+                        MobLevelingUtil.computeDynamicLevel(config, npc, transform, store, commandBuffer)
+                    )
                 );
 
                 if (newLevel != data.level) {
@@ -161,7 +166,7 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
                         1,
                         Math.min(
                             mobMaxLevel,
-                            MobLevelingUtil.computeDynamicLevel(config, npc, transform, store)
+                            MobLevelingUtil.computeDynamicLevel(config, npc, transform, store, commandBuffer)
                         )
                     );
                 }
@@ -177,7 +182,7 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
         } finally {
             if (!pending.isEmpty()) {
                 drainScheduled = true;
-                drainPending(store);
+                drainPending(commandBuffer, store);
             } else {
                 drainScheduled = false;
             }

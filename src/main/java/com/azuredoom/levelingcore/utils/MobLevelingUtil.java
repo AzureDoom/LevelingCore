@@ -1,8 +1,11 @@
 package com.azuredoom.levelingcore.utils;
 
+import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.server.core.asset.type.environment.config.Environment;
+import com.hypixel.hytale.server.core.entity.UUIDComponent;
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
@@ -14,17 +17,14 @@ import com.hypixel.hytale.server.npc.entities.NPCEntity;
 
 import java.util.Random;
 import java.util.logging.Level;
+import javax.annotation.Nonnull;
 
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.level.mobs.CoreLevelMode;
-import com.azuredoom.levelingcore.level.mobs.MobLevelRegistry;
 
-@SuppressWarnings("removal")
 public class MobLevelingUtil {
-
-    private static final MobLevelRegistry registry = LevelingCore.mobLevelRegistry;
 
     public MobLevelingUtil() {}
 
@@ -42,7 +42,8 @@ public class MobLevelingUtil {
         Config<GUIConfig> config,
         NPCEntity npc,
         TransformComponent transform,
-        Store<EntityStore> store
+        Store<EntityStore> store,
+        @Nonnull CommandBuffer<EntityStore> commandBuffer
     ) {
         var modeStr = config.get().getLevelMode();
         var overrideLevel = computeNPCOverrideLevel(npc);
@@ -52,22 +53,22 @@ public class MobLevelingUtil {
         }
 
         if (modeStr == null) {
-            return computeNearbyPlayersMeanLevel(transform, store, npc);
+            return computeNearbyPlayersMeanLevel(commandBuffer, transform, store, npc);
         }
 
         return CoreLevelMode.fromString(modeStr)
             .map(mode -> switch (mode) {
-                case SPAWN_ONLY -> computeSpawnLevel(npc);
-                case NEARBY_PLAYERS_MEAN -> computeNearbyPlayersMeanLevel(transform, store, npc);
-                case BIOME -> computeBiomeLevel(store, npc);
-                case ZONE -> computeZoneLevel(store, npc);
-                case ENVIRONMENT -> computeEnvironmentLevel(transform, store, npc);
-                case INSTANCE -> computeInstanceLevel(store, npc);
+                case SPAWN_ONLY -> computeSpawnLevel(commandBuffer, npc);
+                case NEARBY_PLAYERS_MEAN -> computeNearbyPlayersMeanLevel(commandBuffer, transform, store, npc);
+                case BIOME -> computeBiomeLevel(commandBuffer, store, npc);
+                case ZONE -> computeZoneLevel(commandBuffer, store, npc);
+                case ENVIRONMENT -> computeEnvironmentLevel(commandBuffer, transform, store, npc);
+                case INSTANCE -> computeInstanceLevel(commandBuffer, store, npc);
             })
             .orElseGet(() -> {
                 LevelingCore.LOGGER.at(Level.INFO)
                     .log("Unknown level mode " + modeStr + " defaulting to NEARBY_PLAYERS_MEAN");
-                return computeNearbyPlayersMeanLevel(transform, store, npc);
+                return computeNearbyPlayersMeanLevel(commandBuffer, transform, store, npc);
             });
     }
 
@@ -93,7 +94,7 @@ public class MobLevelingUtil {
             return false;
 
         store.getExternalData().getWorld().execute(() -> {
-            var healthMult = Math.max(1f, (float) level * config.get().getMobHealthMultiplier());
+            var healthMulti = Math.max(1f, (float) level * config.get().getMobHealthMultiplier());
             var stats = store.getComponent(npc.getReference(), EntityStatMap.getComponentType());
             if (stats == null)
                 return;
@@ -101,7 +102,7 @@ public class MobLevelingUtil {
             var modifier = new StaticModifier(
                 Modifier.ModifierTarget.MAX,
                 StaticModifier.CalculationType.ADDITIVE,
-                healthMult
+                healthMulti
             );
             stats.putModifier(healthIndex, "LevelingCore_mob_health", modifier);
             stats.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getHealth());
@@ -121,11 +122,14 @@ public class MobLevelingUtil {
      * @return The computed spawn level for the NPC. The result is a value between 1 and 10, inclusive. If the UUID is
      *         null, the method returns 1.
      */
-    public static int computeSpawnLevel(NPCEntity npc) {
-        var npcUUID = npc.getUuid();
-        if (npcUUID == null) {
+    public static int computeSpawnLevel(@Nonnull CommandBuffer<EntityStore> commandBuffer, NPCEntity npc) {
+        var npcRef = npc.getReference();
+        if (npcRef == null)
             return 1;
-        }
+        var uuidComponent = commandBuffer.getComponent(npcRef, UUIDComponent.getComponentType());
+        if (uuidComponent == null)
+            return 1;
+        var npcUUID = uuidComponent.getUuid();
         var seed = npcUUID.getMostSignificantBits() ^ npcUUID.getLeastSignificantBits();
         var rng = new Random(seed);
         final var spawnMin = 1;
@@ -147,7 +151,11 @@ public class MobLevelingUtil {
      * @return The computed level for the NPC based on the instance data and adjusted by the randomization logic.
      *         Returns 0 if the instance name is blank or null.
      */
-    public static int computeInstanceLevel(Store<EntityStore> store, NPCEntity npc) {
+    public static int computeInstanceLevel(
+        @Nonnull CommandBuffer<EntityStore> commandBuffer,
+        Store<EntityStore> store,
+        NPCEntity npc
+    ) {
         var world = store.getExternalData().getWorld();
         var instanceName = world.getName();
         var instanceMapping = LevelingCore.mobInstanceMapping;
@@ -158,7 +166,7 @@ public class MobLevelingUtil {
         }
 
         var baseLevel = instanceMapping.getOrDefault(instanceName.toLowerCase(), 1);
-        return randomizeLevel(baseLevel, npc);
+        return randomizeLevel(commandBuffer, baseLevel, npc);
     }
 
     /**
@@ -173,16 +181,36 @@ public class MobLevelingUtil {
      * @return The computed level for the NPC based on the current zone and the NPC-specific randomization. Returns 0 if
      *         the current zone information is unavailable or null.
      */
-    public static int computeZoneLevel(Store<EntityStore> store, NPCEntity npc) {
+    public static int computeZoneLevel(
+        @Nonnull CommandBuffer<EntityStore> commandBuffer,
+        @Nonnull Store<EntityStore> store,
+        NPCEntity npc
+    ) {
         var world = store.getExternalData().getWorld();
-        var worldMapTracker = world.getPlayers().getFirst().getWorldMapTracker();
+        var playerRefs = world.getPlayerRefs();
+        if (playerRefs.isEmpty()) {
+            return 0;
+        }
+
+        var firstPlayerRef = playerRefs.iterator().next();
+        var playerEntityRef = firstPlayerRef.getReference();
+        if (playerEntityRef == null || !playerEntityRef.isValid()) {
+            return 0;
+        }
+
+        var player = store.getComponent(playerEntityRef, Player.getComponentType());
+        if (player == null) {
+            return 0;
+        }
+
+        var worldMapTracker = player.getWorldMapTracker();
         var currentZone = worldMapTracker.getCurrentZone();
         if (currentZone == null)
             return 0;
         var zoneMapping = LevelingCore.mobZoneMapping;
 
         var baseLevel = zoneMapping.getOrDefault(currentZone.zoneName().toLowerCase(), 1);
-        return randomizeLevel(baseLevel, npc);
+        return randomizeLevel(commandBuffer, baseLevel, npc);
     }
 
     /**
@@ -197,9 +225,29 @@ public class MobLevelingUtil {
      * @return The computed level based on the current biome and NPC randomization. Returns a value of 6 if the biome
      *         information is unavailable or null.
      */
-    public static int computeBiomeLevel(Store<EntityStore> store, NPCEntity npc) {
+    public static int computeBiomeLevel(
+        @Nonnull CommandBuffer<EntityStore> commandBuffer,
+        Store<EntityStore> store,
+        NPCEntity npc
+    ) {
         var world = store.getExternalData().getWorld();
-        var worldMapTracker = world.getPlayers().getFirst().getWorldMapTracker();
+        var playerRefs = world.getPlayerRefs();
+        if (playerRefs.isEmpty()) {
+            return 0;
+        }
+
+        var firstPlayerRef = playerRefs.iterator().next();
+        var playerEntityRef = firstPlayerRef.getReference();
+        if (playerEntityRef == null || !playerEntityRef.isValid()) {
+            return 0;
+        }
+
+        var player = store.getComponent(playerEntityRef, Player.getComponentType());
+        if (player == null) {
+            return 0;
+        }
+
+        var worldMapTracker = player.getWorldMapTracker();
         var currentBiome = worldMapTracker.getCurrentBiomeName();
 
         if (currentBiome == null)
@@ -207,7 +255,7 @@ public class MobLevelingUtil {
 
         var biomeMapping = LevelingCore.mobBiomeMapping;
         var baseLevel = biomeMapping.getOrDefault(currentBiome.toLowerCase(), 1);
-        return randomizeLevel(baseLevel, npc);
+        return randomizeLevel(commandBuffer, baseLevel, npc);
     }
 
     /**
@@ -219,11 +267,16 @@ public class MobLevelingUtil {
      * @param transform The transform component of the NPC entity, used to determine its position in the game world.
      * @param store     The entity store providing access to external data, including the world and its chunks.
      * @param npc       The NPC entity for which the environment level is being computed. The entity's information may
-     *                  be utilized in the randomization process.
+     *                  be used in the randomization process.
      * @return The computed environment-based level for the NPC. Returns the default level of 1 if any required data is
      *         unavailable or mismatched.
      */
-    public static int computeEnvironmentLevel(TransformComponent transform, Store<EntityStore> store, NPCEntity npc) {
+    public static int computeEnvironmentLevel(
+        @Nonnull CommandBuffer<EntityStore> commandBuffer,
+        TransformComponent transform,
+        Store<EntityStore> store,
+        NPCEntity npc
+    ) {
         var world = store.getExternalData().getWorld();
         var mobPos = transform.getPosition();
         var chunk = world.getChunkIfInMemory(ChunkUtil.indexChunkFromBlock((int) mobPos.x, (int) mobPos.z));
@@ -258,14 +311,14 @@ public class MobLevelingUtil {
         if (envName == null) {
             LevelingCore.LOGGER.at(Level.WARNING)
                 .log(
-                    "Environment " + envName + " does not exist in asset registry; defaulting to 1"
+                    "Environment does not exist in asset registry; defaulting to 1"
                 );
             return 1;
         }
 
         var environmentMapping = LevelingCore.mobEnvironmentMapping;
         var baseLevel = environmentMapping.getOrDefault(envName.toLowerCase(), 1);
-        return randomizeLevel(baseLevel, npc);
+        return randomizeLevel(commandBuffer, baseLevel, npc);
     }
 
     /**
@@ -281,13 +334,14 @@ public class MobLevelingUtil {
      *         of 5 is returned.
      */
     public static int computeNearbyPlayersMeanLevel(
+        @Nonnull CommandBuffer<EntityStore> commandBuffer,
         TransformComponent transform,
         Store<EntityStore> store,
         NPCEntity npc
     ) {
         var world = store.getExternalData().getWorld();
         var mobPos = transform.getPosition();
-        var players = world.getPlayers();
+        var playerRefs = world.getPlayerRefs();
         var sum = 0;
         var count = 0;
         final var nearbyRadius = 40f;
@@ -298,10 +352,15 @@ public class MobLevelingUtil {
         }
         var lvlService = lvlOpt.get();
 
-        for (var p : players) {
-            var pPos = p.getPlayerRef().getTransform().getPosition();
+        for (var playerRefComponent : playerRefs) {
+            var playerRef = playerRefComponent.getReference();
+            if (playerRef == null || !playerRef.isValid()) {
+                continue;
+            }
+
+            var pPos = playerRefComponent.getTransform().getPosition();
             if (pPos.distanceSquaredTo(mobPos) <= nearbyRadiusSq) {
-                var lvl = lvlService.getLevel(p.getPlayerRef().getUuid());
+                var lvl = lvlService.getLevel(playerRefComponent.getUuid());
                 sum += lvl;
                 count++;
             }
@@ -312,7 +371,7 @@ public class MobLevelingUtil {
 
         var mean = (double) sum / (double) count;
         var baseLevel = (int) Math.round(mean);
-        return randomizeLevel(baseLevel, npc);
+        return randomizeLevel(commandBuffer, baseLevel, npc);
     }
 
     /**
@@ -343,18 +402,21 @@ public class MobLevelingUtil {
      * @return The randomized level for the NPC, adjusted based on the variance. The result is ensured to be no less
      *         than 1.
      */
-    public static int randomizeLevel(int baseLevel, NPCEntity npc) {
+    public static int randomizeLevel(@Nonnull CommandBuffer<EntityStore> commandBuffer, int baseLevel, NPCEntity npc) {
+        var npcRef = npc.getReference();
+        if (npcRef == null)
+            return baseLevel;
+        var uuidComponent = commandBuffer.getComponent(npcRef, UUIDComponent.getComponentType());
+        if (uuidComponent == null)
+            return baseLevel;
+        var entityUuid = uuidComponent.getUuid();
+
         var variance = LevelingCore.getConfig().get().getLevelVariance();
         if (variance <= 0) {
             return baseLevel;
         }
 
-        var npcUUID = npc.getUuid();
-        if (npcUUID == null) {
-            return baseLevel;
-        }
-
-        var seed = npcUUID.getMostSignificantBits() ^ npcUUID.getLeastSignificantBits();
+        var seed = entityUuid.getMostSignificantBits() ^ entityUuid.getLeastSignificantBits();
         var rng = new Random(seed);
 
         return Math.max(1, baseLevel - variance + rng.nextInt(variance * 2 + 1));

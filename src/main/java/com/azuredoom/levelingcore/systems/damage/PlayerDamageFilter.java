@@ -6,9 +6,10 @@ import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.SystemGroup;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.server.core.entity.EntityUtils;
-import com.hypixel.hytale.server.core.modules.entity.AllLegacyLivingEntityTypesQuery;
+import com.hypixel.hytale.server.core.entity.UUIDComponent;
 import com.hypixel.hytale.server.core.modules.entity.EntityModule;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
+import com.hypixel.hytale.server.core.modules.entity.damage.DamageCause;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageEventSystem;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageModule;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -16,6 +17,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 
+import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -24,10 +26,9 @@ import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.utils.MobLevelingUtil;
 
-@SuppressWarnings("removal")
 public class PlayerDamageFilter extends DamageEventSystem {
 
-    private Config<GUIConfig> config;
+    private final Config<GUIConfig> config;
 
     public PlayerDamageFilter(Config<GUIConfig> config) {
         this.config = config;
@@ -46,16 +47,19 @@ public class PlayerDamageFilter extends DamageEventSystem {
             return;
         var holder = EntityUtils.toHolder(index, archetypeChunk);
         var victimPlayerRef = holder.getComponent(PlayerRef.getComponentType());
-        if (victimPlayerRef == null || !(victimPlayerRef instanceof PlayerRef))
+        if (victimPlayerRef == null)
             return;
         if (!(damage.getSource() instanceof Damage.EntitySource entitySource))
             return;
         var attackerRef = entitySource.getRef();
-        if (attackerRef == null || !attackerRef.isValid())
+        if (!attackerRef.isValid())
             return;
 
-        var npcAttacker = store.getComponent(attackerRef, NPCEntity.getComponentType());
+        var npcAttacker = store.getComponent(attackerRef, Objects.requireNonNull(NPCEntity.getComponentType()));
         if (npcAttacker == null)
+            return;
+        var npcAttackerRef = npcAttacker.getReference();
+        if (npcAttackerRef == null)
             return;
 
         var levelServiceOpt = LevelingCoreApi.getLevelServiceIfPresent();
@@ -68,7 +72,7 @@ public class PlayerDamageFilter extends DamageEventSystem {
         if (incoming <= 0f)
             return;
 
-        var cause = damage.getCause();
+        var cause = DamageCause.getAssetMap().getAsset(damage.getDamageCauseIndex());
         if (cause == null)
             return;
 
@@ -76,9 +80,13 @@ public class PlayerDamageFilter extends DamageEventSystem {
         var causeIdLower = causeId == null ? "" : causeId.toLowerCase();
         var isProjectile = causeIdLower.contains("projectile") || causeIdLower.contains("arrow");
 
+        var uuidComponent = commandBuffer.getComponent(npcAttackerRef, UUIDComponent.getComponentType());
+        if (uuidComponent == null)
+            return;
+        var entityUuid = uuidComponent.getUuid();
         var mobLevelData = LevelingCore.mobLevelRegistry.getOrCreate(
-            npcAttacker.getUuid(),
-            () -> MobLevelingUtil.computeSpawnLevel(npcAttacker)
+            entityUuid,
+            () -> MobLevelingUtil.computeSpawnLevel(commandBuffer, npcAttacker)
         );
         var mobLevel = mobLevelData.level;
         var baseMelee = config.get().getMobBaseDamage();
@@ -105,7 +113,7 @@ public class PlayerDamageFilter extends DamageEventSystem {
     @Nonnull
     @Override
     public Query<EntityStore> getQuery() {
-        return AllLegacyLivingEntityTypesQuery.INSTANCE;
+        return EntityModule.get().getPlayerComponentType();
     }
 
     private float conDamageMultiplier(int con) {

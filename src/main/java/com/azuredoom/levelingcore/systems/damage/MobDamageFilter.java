@@ -4,9 +4,9 @@ import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.server.core.entity.EntityUtils;
 import com.hypixel.hytale.server.core.entity.entities.Player;
-import com.hypixel.hytale.server.core.modules.entity.AllLegacyLivingEntityTypesQuery;
 import com.hypixel.hytale.server.core.modules.entity.EntityModule;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
+import com.hypixel.hytale.server.core.modules.entity.damage.DamageCause;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageEventSystem;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageModule;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
@@ -74,7 +74,7 @@ public class MobDamageFilter extends DamageEventSystem {
         if (incoming <= 0f)
             return;
 
-        var cause = damage.getCause();
+        var cause = DamageCause.getAssetMap().getAsset(damage.getDamageCauseIndex());
         if (cause == null)
             return;
 
@@ -98,6 +98,9 @@ public class MobDamageFilter extends DamageEventSystem {
     @Nonnull
     @Override
     public Query<EntityStore> getQuery() {
-        return AllLegacyLivingEntityTypesQuery.INSTANCE;
+        return Query.and(
+            NPCEntity.getComponentType(),
+            Query.not(EntityModule.get().getPlayerComponentType())
+        );
     }
 }

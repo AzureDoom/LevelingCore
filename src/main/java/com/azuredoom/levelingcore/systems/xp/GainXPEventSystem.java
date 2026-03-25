@@ -110,7 +110,7 @@ public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
                 var entityUuid = uuidComponent.getUuid();
                 var mobLevel = LevelingCore.mobLevelRegistry.getOrCreateWithPersistence(
                     entityUuid,
-                    () -> MobLevelingUtil.computeSpawnLevel(entity),
+                    () -> MobLevelingUtil.computeSpawnLevel(commandBuffer, entity),
                     0,
                     LevelingCore.mobLevelPersistence
                 );
