@@ -1,3 +1,14 @@
+v1.0.0
+- Updated default lvl mapping with all current vanilla zones.
+- Fixed one log not properly being filled.
+- Fixed item level requirement tooltips showing when the item level system is disabled.
+- Added an item stat requirements system.
+- Fixed formatting issues with nameplate config.
+- Added support for ClassesCore to add the class to the player's nameplate.
+
+TODO:
+- Add support for stopping item animations when an items level is gated.
+
 v0.9.12
 - Updated vanilla Player Stats screen to match that of the HyUI version, only missing player image.
 - Removed the chat log if HyUI is missing due to the above change.
