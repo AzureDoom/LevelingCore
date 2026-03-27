@@ -4,7 +4,7 @@ plugins {
     id 'maven-publish'
     id 'com.diffplug.spotless' version '8.1.0'
     id 'com.gradleup.shadow' version '9.3.0'
-    id 'com.azuredoom.hytale-tools' version '1.0.7'
+    id 'com.azuredoom.hytale-tools' version '1.0.8'
 }
 
 configurations {
@@ -48,27 +48,16 @@ hytaleTools {
 dependencies {
     vineServerJar "com.hypixel.hytale:Server:$hytale_version"
     compileOnly "com.hypixel.hytale:Server:$hytale_version"
-    implementation 'com.buuz135:MultipleHUD:1.0.6'
-    compileOnly 'curse.maven:partyinfo-1429469:7526614'
-    implementation 'curse.maven:partypro-1438292:7735309'
-    implementation 'curse.maven:hyui-1431415:7731691'
-    compileOnly 'curse.maven:automultihud-1451807:7650909'
-    compileOnly 'curse.maven:placeholderlib-1438208:7540696'
-    compileOnly 'at.helpch:placeholderapi-hytale:1.0.7'
-    implementation 'curse.maven:dynamictooltipslib-1459711:7782667'
-    compileOnly 'com.azuredoom.classescore:Classescore:0.+'
-    //implementation 'modtale:3e453e84-81af-46bf-9e7d-c7de99d9c4f0:0.1.0-alpha@jar'
-
-    vineDecompileTargets 'com.buuz135:MultipleHUD:1.0.6'
-    vineDecompileTargets 'curse.maven:partyinfo-1429469:7526614'
-    vineDecompileTargets 'curse.maven:partypro-1438292:7676014'
-    vineDecompileTargets 'curse.maven:hyui-1431415:7693755'
-    vineDecompileTargets 'curse.maven:automultihud-1451807:7650909'
-    vineDecompileTargets 'curse.maven:placeholderlib-1438208:7540696'
-    vineDecompileTargets 'at.helpch:placeholderapi-hytale:1.0.7'
-    vineDecompileTargets 'curse.maven:dynamictooltipslib-1459711:7702598'
-    vineDecompileTargets 'com.azuredoom.classescore:Classescore:0.+'
-    //vineDecompileTargets 'modtale:3e453e84-81af-46bf-9e7d-c7de99d9c4f0:0.1.0-alpha@jar'
+    vineImplementation 'com.buuz135:MultipleHUD:1.0.6'
+    vineCompileOnly 'curse.maven:partyinfo-1429469:7526614'
+    vineImplementation 'curse.maven:partypro-1438292:7735309'
+    vineImplementation 'curse.maven:hyui-1431415:7731691'
+    vineCompileOnly 'curse.maven:automultihud-1451807:7650909'
+    vineCompileOnly 'curse.maven:placeholderlib-1438208:7540696'
+    vineCompileOnly 'at.helpch:placeholderapi-hytale:1.0.7'
+    vineImplementation 'curse.maven:dynamictooltipslib-1459711:7782667'
+    vineCompileOnly 'com.azuredoom.classescore:Classescore:0.+'
+    //vineImplementation 'modtale:3e453e84-81af-46bf-9e7d-c7de99d9c4f0:0.1.0-alpha@jar'
 
     shadowBundle 'com.h2database:h2:2.4.240'
     shadowBundle('com.zaxxer:HikariCP:7.0.2') {
