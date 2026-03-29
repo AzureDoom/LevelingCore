@@ -38,7 +38,6 @@ public class XPBarHud extends CustomUIHud {
     @Override
     protected void build(@NonNullDecl UICommandBuilder uiCommandBuilder) {
         uiCommandBuilder.append("Huds/LevelingCore/xpbar.ui");
-        // update(uiCommandBuilder);
     }
 
     public void update(UICommandBuilder uiCommandBuilder) {
@@ -73,7 +72,7 @@ public class XPBarHud extends CustomUIHud {
         if (PluginManager.get().getPlugin(new PluginIdentifier("tsumori", "partypro")) != null) {
             PartyProCompat.showLvlOnHUD(uuid, levelServiceImpl);
         }
-        update(false, uiCommandBuilder); // false = don't clear existing UI
+        update(false, uiCommandBuilder);
     }
 
     public static void updateHud(@NonNullDecl PlayerRef playerRef) {
