@@ -1047,6 +1047,11 @@ public class GUIConfig {
         return blacklistedMobs;
     }
 
+    /**
+     * Determines whether the item stat requirement feature is enabled.
+     *
+     * @return true if the item stat requirement is enabled, false otherwise.
+     */
     public boolean isEnableItemStatRequirement() {
         return enableItemStatRequirement;
     }
