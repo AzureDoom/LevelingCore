@@ -1,7 +1,7 @@
 $Hotbar = "Hotbar.ui";
 Group {
   LayoutMode: Bottom;
-  Anchor: (Bottom: 36 + 74 + 24 + 6, Width: 634, Height: 12);
+  Anchor: (Bottom: 140, Width: 634, Height: 12);
 
   Label #Level {
     Anchor: (Left: 0, Width: 4, Height: 24, Right: 4, Top: -6);
