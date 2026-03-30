@@ -198,7 +198,7 @@ public class StatsScreen extends InteractiveCustomUIPage<StatsScreen.BindingData
         @Nonnull Store<EntityStore> store,
         @Nonnull BindingData data
     ) {
-        if (data == null || data.Type == null || data.Amount == null) {
+        if (data.Type == null || data.Amount == null) {
             return;
         }
 
