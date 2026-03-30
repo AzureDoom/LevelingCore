@@ -1,3 +1,7 @@
+v1.0.1
+- Added wildcard support to BlacklistedMobs config.
+- Added new config BlacklistedNameplateMobs, this is a list of mobs that will not have their level shown on their nameplate with Wildcard support.
+
 v1.0.0
 - Updated default lvl mapping with all current vanilla zones.
 - Fixed one log not properly being filled.
@@ -20,10 +24,10 @@ v0.9.11
 **Examples**
 
 | Base Level | Level Variance | Possible Final Levels |
-| :--- | :--- | :--- |
-| 5 | 0 | 5 (No change) |
-| 5 | 2 | 3, 4, 5, 6, or 7 |
-| 5 | 5 | 0–10 |
+|:-----------|:---------------|:----------------------|
+| 5          | 0              | 5 (No change)         |
+| 5          | 2              | 3, 4, 5, 6, or 7      |
+| 5          | 5              | 0–10                  |
 
 - Added add/remove/set stats commands.
 - Reverted DynamicTooltips lang usage due to an issue with global translated tooltips. Now uses the old method.
