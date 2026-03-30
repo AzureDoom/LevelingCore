@@ -820,7 +820,7 @@ public class GUIConfig {
     }
 
     /**
-     * Gets the sound identifier that is played when a player loses a level.
+     * Gets the sound identifier played when a player loses a level.
      *
      * @return the sound asset ID used for level-down events
      */
@@ -866,7 +866,7 @@ public class GUIConfig {
     }
 
     /**
-     * Determines whether stat points per level should be determined by a configured mapping instead of a fixed value.
+     * Determines whether a configured mapping should determine stat points per level instead of a fixed value.
      *
      * @return true if stat-per-level mapping is enabled
      */
@@ -985,7 +985,7 @@ public class GUIConfig {
     }
 
     /**
-     * Gets the base ranged damage value used for mobs. This value may be scaled further by the ranged damage
+     * Gets the base-ranged damage value used for mobs. This value may be scaled further by the ranged damage
      * multiplier.
      *
      * @return the base ranged damage applied to mobs
