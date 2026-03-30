@@ -46,14 +46,14 @@ hytaleTools {
 }
 
 dependencies {
-    implementation 'com.buuz135:MultipleHUD:1.0.6'
+    implementation 'com.buuz135:MultipleHUD:1.0.7'
     vineCompileOnly 'curse.maven:partyinfo-1429469:7526614'
-    vineImplementation 'curse.maven:partypro-1438292:7735309'
-    vineImplementation 'curse.maven:hyui-1431415:7731691'
-    vineCompileOnly 'curse.maven:automultihud-1451807:7650909'
+    vineImplementation 'curse.maven:partypro-1438292:7818004'
+    vineImplementation 'curse.maven:hyui-1431415:7820303'
+    vineCompileOnly 'curse.maven:automultihud-1451807:7825581'
     vineCompileOnly 'curse.maven:placeholderlib-1438208:7540696'
-    compileOnly 'at.helpch:placeholderapi-hytale:1.0.7'
-    vineImplementation 'curse.maven:dynamictooltipslib-1459711:7782667'
+    compileOnly 'at.helpch:placeholderapi-hytale:1.0.8'
+    vineImplementation 'curse.maven:dynamictooltipslib-1459711:7817318'
     compileOnly 'com.azuredoom.classescore:Classescore:0.+'
     //vineImplementation 'modtale:3e453e84-81af-46bf-9e7d-c7de99d9c4f0:0.1.0-alpha@jar'
 
