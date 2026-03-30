@@ -4,6 +4,8 @@ import com.hypixel.hytale.codec.Codec;
 import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 
+import java.util.regex.Pattern;
+
 /**
  * Represents the configuration for the Graphical User Interface (GUI) settings, particularly for managing experience
  * points (XP) and leveling mechanics. This class provides options to configure the behavior of experience loss, gain,
@@ -1048,11 +1050,78 @@ public class GUIConfig {
     }
 
     /**
+     * Checks if the provided mob type ID is blacklisted.
+     *
+     * @param npcTypeId the unique identifier of the mob type to be checked
+     * @return {@code true} if the mob type ID matches any pattern in the blacklist, {@code false} otherwise
+     */
+    public boolean isMobBlacklisted(String npcTypeId) {
+        return matchesAnyPattern(blacklistedMobs, npcTypeId);
+    }
+
+    /**
      * Determines whether the item stat requirement feature is enabled.
      *
      * @return true if the item stat requirement is enabled, false otherwise.
      */
     public boolean isEnableItemStatRequirement() {
         return enableItemStatRequirement;
+    }
+
+    /**
+     * Checks if the given value matches any of the patterns in the provided array.
+     *
+     * @param patterns an array of string patterns to match against, with possible use of wildcards
+     * @param value    the string value to be checked for matches against the patterns
+     * @return true if the value matches at least one pattern, false otherwise
+     */
+    private static boolean matchesAnyPattern(String[] patterns, String value) {
+        if (value == null || patterns == null) {
+            return false;
+        }
+
+        for (var pattern : patterns) {
+            if (pattern == null) {
+                continue;
+            }
+
+            var trimmed = pattern.trim();
+            if (trimmed.isEmpty()) {
+                continue;
+            }
+
+            if (wildcardMatch(trimmed, value)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks if the provided value matches the given pattern, where the pattern can include wildcard characters
+     * represented by asterisks (*) to match any sequence of characters.
+     *
+     * @param pattern the input pattern containing literal characters and wildcard symbols (*)
+     * @param value   the input string to be matched against the pattern
+     * @return true if the value matches the pattern, otherwise false
+     */
+    private static boolean wildcardMatch(String pattern, String value) {
+        if (pattern.indexOf('*') < 0) {
+            return pattern.equals(value);
+        }
+
+        var parts = pattern.split("\\*", -1);
+        var regex = new StringBuilder("^");
+
+        for (var i = 0; i < parts.length; i++) {
+            regex.append(Pattern.quote(parts[i]));
+            if (i < parts.length - 1) {
+                regex.append(".*");
+            }
+        }
+
+        regex.append("$");
+        return Pattern.compile(regex.toString()).matcher(value).matches();
     }
 }
