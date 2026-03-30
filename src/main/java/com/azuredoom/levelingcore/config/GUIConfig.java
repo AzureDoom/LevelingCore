@@ -321,6 +321,12 @@ public class GUIConfig {
             (exConfig, extraInfo) -> exConfig.enableItemStatRequirement
         )
         .add()
+        .append(
+            new KeyedCodec<>("BlacklistedNameplateMobs", Codec.STRING_ARRAY),
+            (exConfig, aStringArray, extraInfo) -> exConfig.blacklistedNameplateMobs = aStringArray,
+            (exConfig, extraInfo) -> exConfig.blacklistedNameplateMobs
+        )
+        .add()
         .build();
 
     private boolean enableXPLossOnDeath = false;
@@ -586,6 +592,10 @@ public class GUIConfig {
         "Warp",
         "Warrior_Quest",
         "Wraith_Lantern" };
+
+    private String[] blacklistedNameplateMobs = {
+        "HyCitizens_*"
+    };
 
     public GUIConfig() {}
 
@@ -1066,6 +1076,26 @@ public class GUIConfig {
      */
     public boolean isEnableItemStatRequirement() {
         return enableItemStatRequirement;
+    }
+
+    /**
+     * Retrieves the list of mob names that are blacklisted from having nameplates.
+     *
+     * @return An array of strings containing the names of blacklisted mobs.
+     */
+    public String[] getBlacklistedNameplateMobs() {
+        return blacklistedNameplateMobs;
+    }
+
+    /**
+     * Checks whether the given mob id matches any configured nameplate blacklist entry. Supports exact matches and
+     * wildcard patterns using '*'.
+     *
+     * @param npcTypeId the mob type id to check
+     * @return true if the mob is blacklisted from showing a nameplate
+     */
+    public boolean isNameplateMobBlacklisted(String npcTypeId) {
+        return matchesAnyPattern(blacklistedNameplateMobs, npcTypeId);
     }
 
     /**

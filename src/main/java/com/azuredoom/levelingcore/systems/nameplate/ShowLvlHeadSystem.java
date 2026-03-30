@@ -17,7 +17,6 @@ import com.hypixel.hytale.server.core.util.Config;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 import com.azuredoom.levelingcore.LevelingCore;
@@ -80,7 +79,6 @@ public class ShowLvlHeadSystem implements Runnable {
         var hasClassesCore = PluginManager.get()
             .getPlugin(new PluginIdentifier("com.azuredoom", "classescore")) != null;
 
-        var blacklisted = new java.util.HashSet<>(Arrays.asList(guiConfig.getBlacklistedMobs()));
         final String[] localeHolder = { "en-US" };
 
         store.forEachChunk(PlayerRef.getComponentType(), (chunk, commandBuffer) -> {
@@ -119,8 +117,9 @@ public class ShowLvlHeadSystem implements Runnable {
                 if (npc == null) {
                     continue;
                 }
+                var npcTypeId = npc.getNPCTypeId();
 
-                if (blacklisted.contains(npc.getNPCTypeId())) {
+                if (guiConfig.isMobBlacklisted(npcTypeId) || guiConfig.isNameplateMobBlacklisted(npcTypeId)) {
                     continue;
                 }
 
@@ -138,10 +137,10 @@ public class ShowLvlHeadSystem implements Runnable {
 
                 var npcRef = npc.getReference();
                 if (npcRef == null)
-                    return;
+                    continue;
                 var uuidComponent = commandBuffer.getComponent(npcRef, UUIDComponent.getComponentType());
                 if (uuidComponent == null)
-                    return;
+                    continue;
 
                 var npcUUID = uuidComponent.getUuid();
                 var lvl = LevelingCore.mobLevelRegistry.getOrCreateWithPersistence(
