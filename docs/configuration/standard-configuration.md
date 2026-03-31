@@ -485,6 +485,8 @@ This is typically used to exclude:
 > [!IMPORTANT]
 > Only add entities you explicitly want to exclude. Removing entries may cause unintended behavior such as projectiles or NPCs receiving mob levels.
 
+Wildcards are supported.
+
 #### Default Value
 ```
 [
@@ -662,6 +664,12 @@ When enabled, the [Item Stats Requirements](https://wiki.hytalemodding.dev/mod/l
 
 ---
 
+### `BlacklistedNameplateMobs` (List\<String\>)
+**Default:** `"[HyCitizens_*"]`
+
+Blacklisted mob names that will not display custom nameplates. Wildcards are supported.
+
+---
 ## Example Config Snippet
 
 ```json
@@ -879,6 +887,7 @@ When enabled, the [Item Stats Requirements](https://wiki.hytalemodding.dev/mod/l
     "Warrior_Quest",
     "Wraith_Lantern"
   ],
-  "EnableItemStatRequirement": false
+  "EnableItemStatRequirement": false,
+  "BlacklistedNameplateMobs": [],
 }
 ```
