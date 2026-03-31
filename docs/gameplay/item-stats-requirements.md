@@ -1,6 +1,6 @@
 ---
 title: "Item Stats Requirements"
-order: 9
+order: 10
 published: true
 draft: false
 ---
