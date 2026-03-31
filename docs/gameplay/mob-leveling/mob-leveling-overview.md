@@ -27,9 +27,5 @@ flowchart TD
     D1 --> I[Randomize]
     H --> I
 
-    I --> J{Instance Mode Active?}
-    J -- Yes --> K[Clamp to Instance Range with Variance]
-    J -- No --> L[Final Level]
-
-    K --> L
+    I --> L[Final Level]
 ```

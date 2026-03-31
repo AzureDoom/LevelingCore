@@ -119,14 +119,9 @@ public final class MobLevelingUtil {
             return randomizeLevel(commandBuffer, fallbackBase, npc);
         }
 
-        int combinedBaseLevel = combineWeightedLevels(weightedLevels);
-        int finalLevel = randomizeLevel(commandBuffer, combinedBaseLevel, npc);
+        var combinedBaseLevel = combineWeightedLevels(weightedLevels);
 
-        if (hasInstanceMode) {
-            finalLevel = clampToVarianceWindow(finalLevel, instanceBaseLevel);
-        }
-
-        return finalLevel;
+        return randomizeLevel(commandBuffer, combinedBaseLevel, npc);
     }
 
     /**
