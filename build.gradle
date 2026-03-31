@@ -48,7 +48,7 @@ hytaleTools {
 dependencies {
     implementation 'com.buuz135:MultipleHUD:1.0.7'
     vineCompileOnly 'curse.maven:partyinfo-1429469:7526614'
-    vineImplementation 'curse.maven:partypro-1438292:7818004'
+    compileOnly 'curse.maven:partypro-1438292:7818004'
     vineImplementation 'curse.maven:hyui-1431415:7820303'
     vineCompileOnly 'curse.maven:automultihud-1451807:7825581'
     vineCompileOnly 'curse.maven:placeholderlib-1438208:7540696'
