@@ -47,7 +47,7 @@ A player can spend Ability Points by using the command `/showstats` or using the
 
 A player can reset their Ability Points by crafting the `Reset Skills Potion` found in the `Alchemy bench`
 
-![reset_recipe](https://github.com/user-attachments/assets/2875d250-fbd6-4a36-8622-f7de7e7a2a2f")
+![reset_recipe](https://github.com/user-attachments/assets/2875d250-fbd6-4a36-8622-f7de7e7a2a2f)
 
 | Ingredient    | Amount |
 |---------------|--------|
