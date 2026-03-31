@@ -22,7 +22,7 @@ public class StatsUtils {
     private StatsUtils() {}
 
     private static @NullableDecl EntityStatMap getStatMap(@NonNullDecl Store<EntityStore> store, Player player) {
-        if (store == null || player == null || player.getReference() == null) {
+        if (player == null || player.getReference() == null) {
             return null;
         }
         return store.getComponent(player.getReference(), EntityStatMap.getComponentType());

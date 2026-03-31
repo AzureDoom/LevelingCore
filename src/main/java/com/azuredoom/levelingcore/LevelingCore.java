@@ -47,11 +47,7 @@ import com.azuredoom.levelingcore.level.itemlevellock.ItemToLevelMapping;
 import com.azuredoom.levelingcore.level.itemlevellock.WeaponStatRequirementMapping;
 import com.azuredoom.levelingcore.level.mobs.MobLevelPersistence;
 import com.azuredoom.levelingcore.level.mobs.MobLevelRegistry;
-import com.azuredoom.levelingcore.level.mobs.mapping.MobBiomeMapping;
-import com.azuredoom.levelingcore.level.mobs.mapping.MobEnvironmentMapping;
-import com.azuredoom.levelingcore.level.mobs.mapping.MobInstanceMapping;
-import com.azuredoom.levelingcore.level.mobs.mapping.MobOverrideMapping;
-import com.azuredoom.levelingcore.level.mobs.mapping.MobZoneMapping;
+import com.azuredoom.levelingcore.level.mobs.mapping.*;
 import com.azuredoom.levelingcore.level.objectives.ObjectivesXPMapping;
 import com.azuredoom.levelingcore.level.rewards.LevelRewards;
 import com.azuredoom.levelingcore.level.rewards.RewardEntry;
@@ -107,7 +103,7 @@ public class LevelingCore extends JavaPlugin {
 
     public static final StatsPerLevelMapping statsPerLevel = new StatsPerLevelMapping(LevelingCore.configPath);
 
-    public static final Map<String, Integer> mobInstanceMapping = MobInstanceMapping.loadOrCreate(
+    public static final List<MobInstanceMapping.InstanceRule> mobInstanceMapping = MobInstanceMapping.loadOrCreate(
         LevelingCore.configPath
     );
 
@@ -141,6 +137,10 @@ public class LevelingCore extends JavaPlugin {
     public static final ArmorBlockStatSystem equipBlockStatManager = new ArmorBlockStatSystem();
 
     public static final ItemStatBlockPacketManager itemStatBlockPacketManager = new ItemStatBlockPacketManager();
+
+    public static final List<MobBossMapping.BossRule> mobBossMapping = MobBossMapping.loadOrCreate(
+        LevelingCore.configPath
+    );
 
     /**
      * Constructs a new {@code LevelingCore} instance and initializes the core components of the leveling system. This

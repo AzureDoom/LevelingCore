@@ -232,8 +232,8 @@ public class GUIConfig {
         )
         .add()
         .append(
-            new KeyedCodec<>("LevelMode", Codec.STRING),
-            (exConfig, aString, extraInfo) -> exConfig.levelMode = aString,
+            new KeyedCodec<>("LevelModeArray", Codec.STRING_ARRAY),
+            (exConfig, aStringArray, extraInfo) -> exConfig.levelMode = aStringArray,
             (exConfig, extraInfo) -> exConfig.levelMode
         )
         .add()
@@ -467,7 +467,7 @@ public class GUIConfig {
 
     private float conStatMultiplier = 0.80F;
 
-    private String levelMode = "NEARBY_PLAYERS_MEAN";
+    private String[] levelMode = { "NEARBY_PLAYERS_MEAN", "INSTANCE" };
 
     private int levelVariance = 5;
 
@@ -1017,11 +1017,11 @@ public class GUIConfig {
     }
 
     /**
-     * Gets the leveling mode currently configured. This determines how player levels are calculated or applied.
+     * Retrieves the current level mode configuration.
      *
-     * @return the configured level mode identifier
+     * @return An array of strings representing the level mode.
      */
-    public String getLevelMode() {
+    public String[] getLevelMode() {
         return levelMode;
     }
 

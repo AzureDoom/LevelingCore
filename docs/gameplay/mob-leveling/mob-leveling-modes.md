@@ -7,7 +7,18 @@ draft: false
 
 Mob Leveling Modes define *how* a mob's level is dynamically calculated. These modes allow server owners to tailor difficulty based on players, geography, or instances.
 
-The active mode is controlled via the `LevelMode` configuration value.
+The active mode is controlled via the `LevelModeArray` configuration value.
+
+### Behavior
+
+- Levels are weighted
+  - INSTANCE -> 0.70
+  - ZONE -> 0.60
+  - NEARBY_PLAYERS_MEAN -> 0.10
+  - BIOME -> 0.40
+  - ENVIRONMENT -> 0.50
+  - SPAWN_ONLY -> 0.20
+- Levels are randomized with the variance defined in the `LevelVariance` configuration value
 
 ## SPAWN_ONLY
 
@@ -25,7 +36,7 @@ Mobs keep their original spawn level permanently.
 
 ---
 
-## NEARBY_PLAYERS_MEAN (Default)
+## NEARBY_PLAYERS_MEAN
 
 **Description:**  
 Mob level is based on the average level of nearby players.

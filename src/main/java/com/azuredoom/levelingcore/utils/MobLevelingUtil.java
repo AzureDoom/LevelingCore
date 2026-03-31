@@ -15,6 +15,8 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Level;
 import javax.annotation.Nonnull;
@@ -23,115 +25,162 @@ import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.level.mobs.CoreLevelMode;
+import com.azuredoom.levelingcore.level.mobs.mapping.MobBossMapping;
+import com.azuredoom.levelingcore.level.mobs.mapping.MobInstanceMapping;
 
-public class MobLevelingUtil {
+/**
+ * Utility class for computing levels for NPC entities in the game. This class provides methods to calculate dynamic
+ * levels, base levels, spawn levels, and override levels for NPCs, bosses, zones, biomes, and environments based on
+ * various game configurations, state data, and entity attributes.
+ */
+public final class MobLevelingUtil {
 
     public MobLevelingUtil() {}
 
     /**
-     * Computes the dynamic level of an NPC based on various factors such as configuration, nearby players, biome, zone,
-     * and other environmental aspects.
+     * Computes the dynamic level for an NPC entity based on various configuration modes, nearby entities, and potential
+     * level overrides.
      *
-     * @param config    The configuration instance that provides the current level mode settings.
-     * @param npc       The NPC entity for which the level is being computed.
-     * @param transform The transform component providing the NPC's positional data.
-     * @param store     The store containing entity data, used for retrieving relevant contextual information.
-     * @return The computed dynamic level of the NPC.
+     * @param config        the configuration instance for GUI settings, containing level mode preferences
+     * @param npc           the NPC entity for which the dynamic level is being calculated
+     * @param transform     the transform component representing the NPC's position and state
+     * @param store         the entity store containing entities that may influence the NPC's level
+     * @param commandBuffer the command buffer used for operations involving entity state changes or queries
+     * @return the computed dynamic level for the given NPC entity
      */
     public static int computeDynamicLevel(
-        Config<GUIConfig> config,
+            Config<GUIConfig> config,
+            NPCEntity npc,
+            TransformComponent transform,
+            Store<EntityStore> store,
+            @Nonnull CommandBuffer<EntityStore> commandBuffer
+    ) {
+        var overrideLevel = computeNPCOverrideLevel(npc);
+        if (overrideLevel != 0) {
+            return overrideLevel;
+        }
+
+        var bossOverrideLevel = computeBossOverrideLevel(store, npc);
+        if (bossOverrideLevel > 0) {
+            return bossOverrideLevel;
+        }
+        var instanceBaseLevel = computeInstanceBaseLevel(store);
+
+        if (instanceBaseLevel > 0) {
+            return randomizeLevel(commandBuffer, instanceBaseLevel, npc);
+        }
+
+        var modeStrings = config.get().getLevelMode();
+
+        if (modeStrings == null || modeStrings.length == 0) {
+            var fallbackBase = computeNearbyPlayersMeanBaseLevel(transform, store);
+            return randomizeLevel(commandBuffer, fallbackBase, npc);
+        }
+
+        List<WeightedLevel> weightedLevels = new ArrayList<>();
+        var hasInstanceMode = false;
+
+        for (var modeStr : modeStrings) {
+            if (modeStr == null || modeStr.isBlank()) {
+                continue;
+            }
+
+            modeStr = modeStr.trim();
+
+            var modeOpt = CoreLevelMode.fromString(modeStr);
+            if (modeOpt.isEmpty()) {
+                LevelingCore.LOGGER.at(Level.INFO)
+                        .log("Unknown level mode " + modeStr + ", skipping");
+                continue;
+            }
+
+            var mode = modeOpt.get();
+
+            var baseLevel = computeBaseLevelForMode(
+                    mode,
+                    npc,
+                    transform,
+                    store,
+                    commandBuffer
+            );
+
+            if (mode == CoreLevelMode.INSTANCE && baseLevel > 0) {
+                hasInstanceMode = true;
+                instanceBaseLevel = baseLevel;
+            }
+
+            if (baseLevel > 0) {
+                weightedLevels.add(new WeightedLevel(baseLevel, getModeWeight(mode)));
+            }
+        }
+
+        if (weightedLevels.isEmpty()) {
+            var fallbackBase = computeNearbyPlayersMeanBaseLevel(transform, store);
+            return randomizeLevel(commandBuffer, fallbackBase, npc);
+        }
+
+        int combinedBaseLevel = combineWeightedLevels(weightedLevels);
+        int finalLevel = randomizeLevel(commandBuffer, combinedBaseLevel, npc);
+
+        if (hasInstanceMode) {
+            finalLevel = clampToVarianceWindow(finalLevel, instanceBaseLevel);
+        }
+
+        return finalLevel;
+    }
+
+    /**
+     * Computes the base level for an NPC based on the specified CoreLevelMode.
+     *
+     * @param mode          The mode that determines the computation method for the NPC's base level.
+     * @param npc           The NPC entity for which the base level is being computed.
+     * @param transform     The transform component of the NPC, providing positional and orientation data.
+     * @param store         The entity store used in certain level computations.
+     * @param commandBuffer A buffer for issuing commands that may be needed during computation, such as
+     *                      spawning-related actions.
+     * @return The computed base level for the NPC based on the given mode.
+     */
+    private static int computeBaseLevelForMode(
+        CoreLevelMode mode,
         NPCEntity npc,
         TransformComponent transform,
         Store<EntityStore> store,
         @Nonnull CommandBuffer<EntityStore> commandBuffer
     ) {
-        var modeStr = config.get().getLevelMode();
-        var overrideLevel = computeNPCOverrideLevel(npc);
-
-        if (overrideLevel != 0) {
-            return overrideLevel;
-        }
-
-        if (modeStr == null) {
-            return computeNearbyPlayersMeanLevel(commandBuffer, transform, store, npc);
-        }
-
-        return CoreLevelMode.fromString(modeStr)
-            .map(mode -> switch (mode) {
-                case SPAWN_ONLY -> computeSpawnLevel(commandBuffer, npc);
-                case NEARBY_PLAYERS_MEAN -> computeNearbyPlayersMeanLevel(commandBuffer, transform, store, npc);
-                case BIOME -> computeBiomeLevel(commandBuffer, store, npc);
-                case ZONE -> computeZoneLevel(commandBuffer, store, npc);
-                case ENVIRONMENT -> computeEnvironmentLevel(commandBuffer, transform, store, npc);
-                case INSTANCE -> computeInstanceLevel(commandBuffer, store, npc);
-            })
-            .orElseGet(() -> {
-                LevelingCore.LOGGER.at(Level.INFO)
-                    .log("Unknown level mode " + modeStr + " defaulting to NEARBY_PLAYERS_MEAN");
-                return computeNearbyPlayersMeanLevel(commandBuffer, transform, store, npc);
-            });
+        return switch (mode) {
+            case SPAWN_ONLY -> computeSpawnBaseLevel(commandBuffer, npc);
+            case NEARBY_PLAYERS_MEAN -> computeNearbyPlayersMeanBaseLevel(transform, store);
+            case BIOME -> computeBiomeBaseLevel(store);
+            case ZONE -> computeZoneBaseLevel(store);
+            case ENVIRONMENT -> computeEnvironmentBaseLevel(transform, store);
+            case INSTANCE -> computeInstanceBaseLevel(store);
+        };
     }
 
     /**
-     * Applies level-based scaling to the health of a given NPC entity by modifying its internal stat map. The scaling
-     * is determined by the provided configuration and level.
+     * Computes the spawn base level for a given NPCEntity based on its unique identifier. If the NPCEntity has no
+     * reference or UUID component, the method defaults the base level to 1.
      *
-     * @param config The configuration object containing GUI and gameplay settings. This is used to retrieve the mob
-     *               health multiplier.
-     * @param npc    The NPC entity to which level-based scaling will be applied. Must have a valid reference.
-     * @param level  The level of the NPC, used to calculate the scaling factor for health.
-     * @param store  The entity store providing access to external data and components needed for applying the scaling.
-     * @return {@code true} if mob scaling was successfully applied; {@code false} if the NPC reference is invalid or no
-     *         action could be performed.
+     * @param commandBuffer the command buffer used to retrieve components for the NPCEntity
+     * @param npc           the NPCEntity for which the spawn base level is to be computed
+     * @return the computed spawn base level, which is a random integer within the range [1, 10] based on the UUID of
+     *         the NPCEntity, or 1 if the reference or UUID component is not available
      */
-    public static boolean applyMobScaling(
-        Config<GUIConfig> config,
-        NPCEntity npc,
-        int level,
-        Store<EntityStore> store
-    ) {
-        if (npc.getReference() == null || !npc.getReference().isValid())
-            return false;
-
-        store.getExternalData().getWorld().execute(() -> {
-            var healthMulti = Math.max(1f, (float) level * config.get().getMobHealthMultiplier());
-            var stats = store.getComponent(npc.getReference(), EntityStatMap.getComponentType());
-            if (stats == null)
-                return;
-            var healthIndex = DefaultEntityStatTypes.getHealth();
-            var modifier = new StaticModifier(
-                Modifier.ModifierTarget.MAX,
-                StaticModifier.CalculationType.ADDITIVE,
-                healthMulti
-            );
-            stats.putModifier(healthIndex, "LevelingCore_mob_health", modifier);
-            stats.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getHealth());
-            stats.update();
-        });
-
-        return true;
-    }
-
-    /**
-     * Computes the spawn level for a given NPC entity. The level is determined using the UUID of the NPC as a seed for
-     * randomization. If the NPC's UUID is null, the method returns a default level of 1. Otherwise, a random level
-     * between 1 and 10 (inclusive) is generated.
-     *
-     * @param npc The NPC entity for which the spawn level is being computed. The UUID of the NPC is used to generate a
-     *            consistent randomized level. If the UUID is null, a default value of 1 is returned.
-     * @return The computed spawn level for the NPC. The result is a value between 1 and 10, inclusive. If the UUID is
-     *         null, the method returns 1.
-     */
-    public static int computeSpawnLevel(@Nonnull CommandBuffer<EntityStore> commandBuffer, NPCEntity npc) {
+    public static int computeSpawnBaseLevel(@Nonnull CommandBuffer<EntityStore> commandBuffer, NPCEntity npc) {
         var npcRef = npc.getReference();
-        if (npcRef == null)
+        if (npcRef == null) {
             return 1;
+        }
+
         var uuidComponent = commandBuffer.getComponent(npcRef, UUIDComponent.getComponentType());
-        if (uuidComponent == null)
+        if (uuidComponent == null) {
             return 1;
+        }
+
         var npcUUID = uuidComponent.getUuid();
         var seed = npcUUID.getMostSignificantBits() ^ npcUUID.getLeastSignificantBits();
         var rng = new Random(seed);
+
         final var spawnMin = 1;
         final var spawnMax = 10;
 
@@ -139,53 +188,32 @@ public class MobLevelingUtil {
     }
 
     /**
-     * Computes the instance level for a given NPC entity based on the name of the instance retrieved from the world
-     * data. The base level for the instance is determined using a predefined mapping. If the instance name is blank or
-     * null, a default level of 0 is returned. The resulting level is then randomized using the NPC entity's
-     * information.
+     * Computes the base level of an instance by using the provided store.
      *
-     * @param store The entity store providing access to the game's external data, including the world state and other
-     *              related information.
-     * @param npc   The NPC entity for which the instance level is being computed. The NPC's information is used during
-     *              the randomization process.
-     * @return The computed level for the NPC based on the instance data and adjusted by the randomization logic.
-     *         Returns 0 if the instance name is blank or null.
+     * @param store the store containing the external data and world instance details
+     * @return the computed base level of the instance; returns -1 if the instance name is blank
      */
-    public static int computeInstanceLevel(
-        @Nonnull CommandBuffer<EntityStore> commandBuffer,
-        Store<EntityStore> store,
-        NPCEntity npc
-    ) {
+    public static int computeInstanceBaseLevel(Store<EntityStore> store) {
         var world = store.getExternalData().getWorld();
         var instanceName = world.getName();
-        var instanceMapping = LevelingCore.mobInstanceMapping;
-
         if (instanceName.isBlank()) {
-            LevelingCore.LOGGER.at(Level.WARNING).log("World instance name was null/blank; defaulting to 0");
-            return 0;
+            return -1;
         }
 
-        var baseLevel = instanceMapping.getOrDefault(instanceName.toLowerCase(), 1);
-        return randomizeLevel(commandBuffer, baseLevel, npc);
+        return MobInstanceMapping.findLevel(LevelingCore.mobInstanceMapping, instanceName);
     }
 
     /**
-     * Computes the zone level for a given NPC entity by determining the current zone from the world data and mapping it
-     * to a predefined set of zone-based level mappings. If the current zone is null, a default value of 0 is returned.
-     * The computed zone-based level is then randomized based on the NPC's unique information to ensure variability.
+     * Computes the base level for the current zone based on player data and a predefined zone mapping. This method
+     * retrieves the current zone from the first available valid player and maps the zone name to a corresponding base
+     * level. If no valid players or zones are found, a default level is returned.
      *
-     * @param store The entity store providing access to the game's external data, including the world state and
-     *              associated players.
-     * @param npc   The NPC entity for which the zone level is being computed. The NPC's information is used in the
-     *              randomization process to provide consistent variability.
-     * @return The computed level for the NPC based on the current zone and the NPC-specific randomization. Returns 0 if
-     *         the current zone information is unavailable or null.
+     * @param store The entity store that provides access to the world data, including player references, entity
+     *              components, and zone information.
+     * @return The computed base level for the current zone. Returns 0 if no valid players or zones are found, or a
+     *         default value based on the zone mapping.
      */
-    public static int computeZoneLevel(
-        @Nonnull CommandBuffer<EntityStore> commandBuffer,
-        @Nonnull Store<EntityStore> store,
-        NPCEntity npc
-    ) {
+    public static int computeZoneBaseLevel(@Nonnull Store<EntityStore> store) {
         var world = store.getExternalData().getWorld();
         var playerRefs = world.getPlayerRefs();
         if (playerRefs.isEmpty()) {
@@ -205,31 +233,24 @@ public class MobLevelingUtil {
 
         var worldMapTracker = player.getWorldMapTracker();
         var currentZone = worldMapTracker.getCurrentZone();
-        if (currentZone == null)
+        if (currentZone == null) {
             return 0;
-        var zoneMapping = LevelingCore.mobZoneMapping;
+        }
 
-        var baseLevel = zoneMapping.getOrDefault(currentZone.zoneName().toLowerCase(), 1);
-        return randomizeLevel(commandBuffer, baseLevel, npc);
+        var zoneMapping = LevelingCore.mobZoneMapping;
+        return zoneMapping.getOrDefault(currentZone.zoneName().toLowerCase(), 1);
     }
 
     /**
-     * Computes the biome-based level for a given NPC entity by mapping the current biome from the world data to a
-     * predefined set of biome mappings. If no valid biome is found, a default value of 6 is returned. The resulting
-     * level is further randomized based on the NPC entity's information.
+     * Computes the base level for a biome based on the entity data and the current biome's name. If no players are
+     * found or the biome name is unavailable, a default level is returned.
      *
-     * @param store The entity store providing access to the game's external data, including the world state and
-     *              associated players.
-     * @param npc   The NPC entity for which the biome level is being computed. The entity's information is used in the
-     *              randomization process to ensure consistency.
-     * @return The computed level based on the current biome and NPC randomization. Returns a value of 6 if the biome
-     *         information is unavailable or null.
+     * @param store The entity store that provides access to the game's world data and entity components. It is used to
+     *              fetch player references, biome information, and mapping data.
+     * @return The computed biome base level. Returns 0 if no valid players are found or the entity reference is
+     *         invalid, 6 if the current biome name is null, or a default value based on the biome mapping.
      */
-    public static int computeBiomeLevel(
-        @Nonnull CommandBuffer<EntityStore> commandBuffer,
-        Store<EntityStore> store,
-        NPCEntity npc
-    ) {
+    public static int computeBiomeBaseLevel(Store<EntityStore> store) {
         var world = store.getExternalData().getWorld();
         var playerRefs = world.getPlayerRefs();
         if (playerRefs.isEmpty()) {
@@ -249,107 +270,89 @@ public class MobLevelingUtil {
 
         var worldMapTracker = player.getWorldMapTracker();
         var currentBiome = worldMapTracker.getCurrentBiomeName();
-
-        if (currentBiome == null)
+        if (currentBiome == null) {
             return 6;
+        }
 
         var biomeMapping = LevelingCore.mobBiomeMapping;
-        var baseLevel = biomeMapping.getOrDefault(currentBiome.toLowerCase(), 1);
-        return randomizeLevel(commandBuffer, baseLevel, npc);
+        return biomeMapping.getOrDefault(currentBiome.toLowerCase(), 1);
     }
 
     /**
-     * Computes the environment level for an NPC entity based on its position and the environment data retrieved from
-     * the game's world and asset system. The method evaluates the entity's current position to determine its associated
-     * environment and maps it to a base level using predefined mappings. If any data necessary for the computation is
-     * missing or invalid, a default level of 1 is returned.
+     * Computes the base level of the environment surrounding an entity based on the entity's position and the
+     * environment data in memory. If the environment is not found or invalid, a default value of 1 is returned.
      *
-     * @param transform The transform component of the NPC entity, used to determine its position in the game world.
-     * @param store     The entity store providing access to external data, including the world and its chunks.
-     * @param npc       The NPC entity for which the environment level is being computed. The entity's information may
-     *                  be used in the randomization process.
-     * @return The computed environment-based level for the NPC. Returns the default level of 1 if any required data is
-     *         unavailable or mismatched.
+     * @param transform The transform component of the entity, providing access to its position.
+     * @param store     The entity store containing data about the game's world and loaded chunks.
+     * @return The computed base level of the environment as an integer. Defaults to 1 if the environment or related
+     *         data is unavailable or invalid.
      */
-    public static int computeEnvironmentLevel(
-        @Nonnull CommandBuffer<EntityStore> commandBuffer,
+    public static int computeEnvironmentBaseLevel(
         TransformComponent transform,
-        Store<EntityStore> store,
-        NPCEntity npc
+        Store<EntityStore> store
     ) {
         var world = store.getExternalData().getWorld();
         var mobPos = transform.getPosition();
         var chunk = world.getChunkIfInMemory(ChunkUtil.indexChunkFromBlock((int) mobPos.x, (int) mobPos.z));
 
         if (chunk == null) {
-            LevelingCore.LOGGER.at(Level.WARNING)
-                .log(
-                    "Chunk not in memory; defaulting to 1"
-                );
+            LevelingCore.LOGGER.at(Level.WARNING).log("Chunk not in memory; defaulting to 1");
             return 1;
         }
 
         var blockChunk = chunk.getBlockChunk();
         if (blockChunk == null) {
-            LevelingCore.LOGGER.at(Level.WARNING)
-                .log(
-                    "Block chunk not found; defaulting to 1"
-                );
+            LevelingCore.LOGGER.at(Level.WARNING).log("Block chunk not found; defaulting to 1");
             return 1;
         }
+
         var envID = blockChunk.getEnvironment(mobPos);
         var envAsset = Environment.getAssetMap().getAsset(envID);
         if (envAsset == null) {
             LevelingCore.LOGGER.at(Level.WARNING)
-                .log(
-                    "Environment id " + envID + " does not exist in asset registry; defaulting to 1"
-                );
+                .log("Environment id " + envID + " does not exist in asset registry; defaulting to 1");
             return 1;
         }
-        var envName = envAsset.getId();
 
+        var envName = envAsset.getId();
         if (envName == null) {
             LevelingCore.LOGGER.at(Level.WARNING)
-                .log(
-                    "Environment does not exist in asset registry; defaulting to 1"
-                );
+                .log("Environment does not exist in asset registry; defaulting to 1");
             return 1;
         }
 
         var environmentMapping = LevelingCore.mobEnvironmentMapping;
-        var baseLevel = environmentMapping.getOrDefault(envName.toLowerCase(), 1);
-        return randomizeLevel(commandBuffer, baseLevel, npc);
+        return environmentMapping.getOrDefault(envName.toLowerCase(), 1);
     }
 
     /**
-     * Calculates the mean level of players within a specific radius around a given NPC entity. The levels are
-     * determined using the leveling service, and only players within the radius contribute to the mean calculation. If
-     * no players are nearby, a default base level is returned. The computed mean level is then randomized to ensure
-     * variability before returning.
+     * Calculates the mean base level of players located within a specific radius of the given entity's position. If no
+     * players are found, a default value of 5 is returned.
      *
-     * @param transform The transform component of the NPC entity, used to determine its position in the game world.
-     * @param store     The entity store containing access to external data, including the world and its players.
-     * @param npc       The NPC entity for which the mean level of nearby players is being computed.
-     * @return The mean level of nearby players, randomized for variability. If no players are nearby, a default level
-     *         of 5 is returned.
+     * @param transform The transform component of the entity whose nearby players are being considered. It provides
+     *                  access to the entity's position.
+     * @param store     The entity store that provides access to the game's world data, including player references.
+     * @return The mean base level of nearby players as an integer. Returns 5 if no players are found or if the leveling
+     *         service is unavailable.
      */
-    public static int computeNearbyPlayersMeanLevel(
-        @Nonnull CommandBuffer<EntityStore> commandBuffer,
+    public static int computeNearbyPlayersMeanBaseLevel(
         TransformComponent transform,
-        Store<EntityStore> store,
-        NPCEntity npc
+        Store<EntityStore> store
     ) {
         var world = store.getExternalData().getWorld();
         var mobPos = transform.getPosition();
         var playerRefs = world.getPlayerRefs();
         var sum = 0;
         var count = 0;
+
         final var nearbyRadius = 40f;
-        final float nearbyRadiusSq = nearbyRadius * nearbyRadius;
+        final var nearbyRadiusSq = nearbyRadius * nearbyRadius;
+
         var lvlOpt = LevelingCoreApi.getLevelServiceIfPresent();
         if (lvlOpt.isEmpty()) {
             return 5;
         }
+
         var lvlService = lvlOpt.get();
 
         for (var playerRefComponent : playerRefs) {
@@ -366,22 +369,33 @@ public class MobLevelingUtil {
             }
         }
 
-        if (count == 0)
+        if (count == 0) {
             return 5;
+        }
 
-        var mean = (double) sum / (double) count;
-        var baseLevel = (int) Math.round(mean);
-        return randomizeLevel(commandBuffer, baseLevel, npc);
+        return (int) Math.round((double) sum / (double) count);
     }
 
     /**
-     * Computes the override level for a given NPC entity using the predefined mapping. The override level is determined
-     * based on the NPC's type identifier and a mapping that associates type identifiers with specific override levels.
+     * Computes the spawn level for an NPC by first determining its base spawn level and then applying randomization to
+     * introduce level variance.
      *
-     * @param npc The NPC entity for which the override level is being computed. The entity's type identifier is used to
-     *            look up the associated override level.
-     * @return The override level for the NPC entity. If no override mapping is found for the entity's type identifier,
-     *         a default value of 0 is returned.
+     * @param commandBuffer The command buffer used to query and modify entity components. Must not be null.
+     * @param npc           The NPC entity for which the spawn level is being computed. Must have a valid reference.
+     * @return The computed spawn level for the NPC. The level is randomized and no less than 1.
+     */
+    public static int computeSpawnLevel(@Nonnull CommandBuffer<EntityStore> commandBuffer, NPCEntity npc) {
+        return randomizeLevel(commandBuffer, computeSpawnBaseLevel(commandBuffer, npc), npc);
+    }
+
+    /**
+     * Computes the override level for an NPC based on its type identifier and a predefined override mapping. If the NPC
+     * type identifier does not exist in the mapping, a default level of 0 is returned.
+     *
+     * @param npc The NPC entity for which the override level is being computed. It must provide a valid type
+     *            identifier.
+     * @return An integer representing the override level of the NPC. Returns 0 if the NPC type identifier is not found
+     *         in the override mapping.
      */
     public static int computeNPCOverrideLevel(NPCEntity npc) {
         var npcTypeID = npc.getNPCTypeId();
@@ -391,24 +405,58 @@ public class MobLevelingUtil {
     }
 
     /**
-     * Randomizes the level of an NPC entity based on a base level and a predefined variance. The variance is determined
-     * from the configuration settings and is used to calculate a randomized level within a specific range. This method
-     * ensures the randomized level is always at least 1, even if the base level or variance is low.
+     * Computes the override level for a boss-type NPC based on the current world instance and the specific boss type.
+     * This method uses the instance name of the world and the NPC's type identifier to determine the boss's level from
+     * a predefined mapping. If the instance name or boss name is invalid, a default value of -1 is returned.
      *
-     * @param baseLevel The base level from which the randomization starts. This represents the NPC's default or
-     *                  starting level.
-     * @param npc       The NPC entity for which the level is being randomized. The UUID of the NPC is used as a seed to
-     *                  generate consistent randomization for the same entity.
-     * @return The randomized level for the NPC, adjusted based on the variance. The result is ensured to be no less
-     *         than 1.
+     * @param store The entity store containing external data for retrieving the world instance. Must provide access to
+     *              the current world context.
+     * @param npc   The NPC entity representing the boss. Must have a valid type identifier to compute the override
+     *              level.
+     * @return An integer representing the boss override level. Returns -1 if the instance name or boss identifier is
+     *         invalid or unavailable.
+     */
+    public static int computeBossOverrideLevel(Store<EntityStore> store, NPCEntity npc) {
+        var world = store.getExternalData().getWorld();
+        var instanceName = world.getName();
+        if (instanceName.isBlank()) {
+            return -1;
+        }
+
+        var bossName = npc.getNPCTypeId();
+        if (bossName == null || bossName.isBlank()) {
+            return -1;
+        }
+
+        return MobBossMapping.findLevel(
+            LevelingCore.mobBossMapping,
+            instanceName,
+            bossName
+        );
+    }
+
+    /**
+     * Randomizes the level of an NPC based on its unique identifier and a specified level variance. If the NPC does not
+     * have a valid reference or required components are missing, the base level is returned.
+     *
+     * @param commandBuffer The command buffer used to query and modify entity components. Must not be null.
+     * @param baseLevel     The initial base level of the NPC that serves as the basis for randomization.
+     * @param npc           The NPC entity whose level is to be randomized. Must have a valid reference to function
+     *                      correctly.
+     * @return The randomized level value, which is no less than 1 and adjusted by the configured level variance.
+     *         Returns the base level if the NPC does not have a valid reference or required components are missing.
      */
     public static int randomizeLevel(@Nonnull CommandBuffer<EntityStore> commandBuffer, int baseLevel, NPCEntity npc) {
         var npcRef = npc.getReference();
-        if (npcRef == null)
+        if (npcRef == null) {
             return baseLevel;
+        }
+
         var uuidComponent = commandBuffer.getComponent(npcRef, UUIDComponent.getComponentType());
-        if (uuidComponent == null)
+        if (uuidComponent == null) {
             return baseLevel;
+        }
+
         var entityUuid = uuidComponent.getUuid();
 
         var variance = LevelingCore.getConfig().get().getLevelVariance();
@@ -421,4 +469,120 @@ public class MobLevelingUtil {
 
         return Math.max(1, baseLevel - variance + rng.nextInt(variance * 2 + 1));
     }
+
+    /**
+     * Applies scaling modifiers to a given NPC's statistics based on its level and configuration settings.
+     *
+     * @param config Configuration object that provides access to GUI-specific settings, including scaling multipliers.
+     * @param npc    The NPC entity to which scaling will be applied. This must have a valid reference.
+     * @param level  The level of the NPC, used to determine the size of scaling.
+     * @param store  The entity store that provides world context and access to components required for applying
+     *               scaling.
+     * @return Returns {@code true} if scaling was successfully applied, or {@code false} if the NPC's reference is
+     *         invalid or modifications could not be performed.
+     */
+    public static boolean applyMobScaling(
+        Config<GUIConfig> config,
+        NPCEntity npc,
+        int level,
+        Store<EntityStore> store
+    ) {
+        if (npc.getReference() == null || !npc.getReference().isValid()) {
+            return false;
+        }
+
+        store.getExternalData().getWorld().execute(() -> {
+            var healthMulti = Math.max(1f, (float) level * config.get().getMobHealthMultiplier());
+            var stats = store.getComponent(npc.getReference(), EntityStatMap.getComponentType());
+            if (stats == null) {
+                return;
+            }
+
+            var healthIndex = DefaultEntityStatTypes.getHealth();
+            var modifier = new StaticModifier(
+                Modifier.ModifierTarget.MAX,
+                StaticModifier.CalculationType.ADDITIVE,
+                healthMulti
+            );
+            stats.putModifier(healthIndex, "LevelingCore_mob_health", modifier);
+            stats.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getHealth());
+            stats.update();
+        });
+
+        return true;
+    }
+
+    /**
+     * Clamps the specified level to a variance window based on the given base level.
+     * The variance window is determined by the configured level variance,
+     * ensuring the resulting level stays within the allowed range.
+     *
+     * @param level the level to be clamped
+     * @param baseLevel the base level used to calculate the variance window
+     * @return the clamped level within the range of [baseLevel - variance, baseLevel + variance]
+     */
+    private static int clampToVarianceWindow(int level, int baseLevel) {
+        var variance = LevelingCore.getConfig().get().getLevelVariance();
+        var min = Math.max(1, baseLevel - variance);
+        var max = Math.max(min, baseLevel + variance);
+        return Math.clamp(level, min, max);
+    }
+
+    /**
+     * Determines the weight corresponding to a given CoreLevelMode.
+     *
+     * @param mode The CoreLevelMode for which the weight is to be determined.
+     * @return The weight value associated with the provided CoreLevelMode.
+     */
+    private static double getModeWeight(CoreLevelMode mode) {
+        return switch (mode) {
+            case INSTANCE -> 0.70;
+            case NEARBY_PLAYERS_MEAN -> 0.10;
+            case ZONE -> 0.60;
+            case BIOME -> 0.40;
+            case ENVIRONMENT -> 0.50;
+            case SPAWN_ONLY -> 0.20;
+        };
+    }
+
+    /**
+     * Combines a list of weighted levels and calculates the weighted average level.
+     *
+     * @param levels the list of WeightedLevel objects, where each object contains a level and its associated weight. A
+     *               null or empty list will result in a return value of 0. Entries with non-positive weights are
+     *               ignored.
+     * @return the weighted average level as an integer. If no valid entries are available, or the total weight is
+     *         non-positive, the method returns 0.
+     */
+    private static int combineWeightedLevels(List<WeightedLevel> levels) {
+        if (levels == null || levels.isEmpty()) {
+            return 0;
+        }
+
+        var weightedSum = 0.0;
+        var totalWeight = 0.0;
+
+        for (var entry : levels) {
+            if (entry.weight() <= 0) {
+                continue;
+            }
+
+            weightedSum += entry.level() * entry.weight();
+            totalWeight += entry.weight();
+        }
+
+        if (totalWeight <= 0.0) {
+            return 0;
+        }
+
+        return (int) Math.round(weightedSum / totalWeight);
+    }
+
+    /**
+     * Immutable data class representing a level with an associated weight.
+     */
+    private record WeightedLevel(
+        int level,
+        double weight
+    ) {}
 }

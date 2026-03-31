@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.level.formulas.loader.LevelTableLoader;
+import com.azuredoom.levelingcore.level.mobs.PersistedMobLevel;
 import com.azuredoom.levelingcore.utils.MobLevelingUtil;
 import com.azuredoom.levelingcore.utils.PendingUpdate;
 
@@ -101,6 +102,17 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
             nowMs,
             LevelingCore.mobLevelPersistence
         );
+
+        var bossLevel = MobLevelingUtil.computeBossOverrideLevel(store, npc);
+        if (bossLevel > 0 && !data.locked) {
+            data.level = bossLevel;
+            data.locked = true;
+
+            LevelingCore.mobLevelPersistence.put(
+                entityUuid,
+                new PersistedMobLevel(bossLevel, true)
+            );
+        }
         if (data.locked)
             return;
         var last = data.lastRecalcMs;
@@ -147,12 +159,10 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
                 if (data.locked)
                     continue;
 
-                var newLevel = Math.max(
-                    1,
-                    Math.min(
-                        mobMaxLevel,
-                        MobLevelingUtil.computeDynamicLevel(config, npc, transform, store, commandBuffer)
-                    )
+                var newLevel = Math.clamp(
+                        MobLevelingUtil.computeDynamicLevel(config, npc, transform, store, commandBuffer),
+                        1,
+                        mobMaxLevel
                 );
 
                 if (newLevel != data.level) {
@@ -160,12 +170,10 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
                 }
 
                 if (!data.locked) {
-                    data.level = Math.max(
-                        1,
-                        Math.min(
-                            mobMaxLevel,
-                            MobLevelingUtil.computeDynamicLevel(config, npc, transform, store, commandBuffer)
-                        )
+                    data.level = Math.clamp(
+                            MobLevelingUtil.computeDynamicLevel(config, npc, transform, store, commandBuffer),
+                            1,
+                            mobMaxLevel
                     );
                 }
 

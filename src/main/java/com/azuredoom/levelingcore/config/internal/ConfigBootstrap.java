@@ -10,6 +10,8 @@ import com.azuredoom.levelingcore.database.JdbcLevelRepository;
 import com.azuredoom.levelingcore.exceptions.LevelingCoreException;
 import com.azuredoom.levelingcore.level.LevelServiceImpl;
 import com.azuredoom.levelingcore.level.itemlevellock.ItemStatRequirement;
+import com.azuredoom.levelingcore.level.mobs.mapping.MobBossMapping;
+import com.azuredoom.levelingcore.level.mobs.mapping.MobInstanceMapping;
 import com.azuredoom.levelingcore.level.rewards.RewardEntry;
 import com.azuredoom.levelingcore.level.stats.StatsPerLevelMapping;
 
@@ -35,13 +37,14 @@ public final class ConfigBootstrap {
         Map<String, Integer> xpMapping,
         Map<Integer, List<RewardEntry>> levelRewardMapping,
         Map<String, Integer> itemLevelMapping,
-        Map<String, Integer> mobInstanceMapping,
+        List<MobInstanceMapping.InstanceRule> mobInstanceMapping,
         Map<String, Integer> mobZoneMapping,
         Map<String, Integer> mobBiomeMapping,
         Map<String, Integer> mobEnvironmentMapping,
         Map<String, Integer> mobOverrideMapping,
         Map<String, Integer> objectiveXPMapping,
         Map<String, ItemStatRequirement> weaponStatRequirements,
+        List<MobBossMapping.BossRule> mobBossMapping,
         AutoCloseable closeable
     ) {}
 
@@ -83,6 +86,7 @@ public final class ConfigBootstrap {
         var mobOverrideMapping = LevelingCore.mobOverrideMapping;
         var objectiveXPMapping = LevelingCore.objectiveXPMapping;
         var weaponStatRequirements = LevelingCore.itemStatRequirements;
+        var mobBossMapping = LevelingCore.mobBossMapping;
 
         return new Bootstrap(
             service,
@@ -97,6 +101,7 @@ public final class ConfigBootstrap {
             mobOverrideMapping,
             objectiveXPMapping,
             weaponStatRequirements,
+            mobBossMapping,
             repo::close
         );
     }
