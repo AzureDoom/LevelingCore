@@ -49,11 +49,11 @@ public final class MobLevelingUtil {
      * @return the computed dynamic level for the given NPC entity
      */
     public static int computeDynamicLevel(
-            Config<GUIConfig> config,
-            NPCEntity npc,
-            TransformComponent transform,
-            Store<EntityStore> store,
-            @Nonnull CommandBuffer<EntityStore> commandBuffer
+        Config<GUIConfig> config,
+        NPCEntity npc,
+        TransformComponent transform,
+        Store<EntityStore> store,
+        @Nonnull CommandBuffer<EntityStore> commandBuffer
     ) {
         var overrideLevel = computeNPCOverrideLevel(npc);
         if (overrideLevel != 0) {
@@ -90,18 +90,18 @@ public final class MobLevelingUtil {
             var modeOpt = CoreLevelMode.fromString(modeStr);
             if (modeOpt.isEmpty()) {
                 LevelingCore.LOGGER.at(Level.INFO)
-                        .log("Unknown level mode " + modeStr + ", skipping");
+                    .log("Unknown level mode " + modeStr + ", skipping");
                 continue;
             }
 
             var mode = modeOpt.get();
 
             var baseLevel = computeBaseLevelForMode(
-                    mode,
-                    npc,
-                    transform,
-                    store,
-                    commandBuffer
+                mode,
+                npc,
+                transform,
+                store,
+                commandBuffer
             );
 
             if (mode == CoreLevelMode.INSTANCE && baseLevel > 0) {
@@ -513,11 +513,10 @@ public final class MobLevelingUtil {
     }
 
     /**
-     * Clamps the specified level to a variance window based on the given base level.
-     * The variance window is determined by the configured level variance,
-     * ensuring the resulting level stays within the allowed range.
+     * Clamps the specified level to a variance window based on the given base level. The variance window is determined
+     * by the configured level variance, ensuring the resulting level stays within the allowed range.
      *
-     * @param level the level to be clamped
+     * @param level     the level to be clamped
      * @param baseLevel the base level used to calculate the variance window
      * @return the clamped level within the range of [baseLevel - variance, baseLevel + variance]
      */

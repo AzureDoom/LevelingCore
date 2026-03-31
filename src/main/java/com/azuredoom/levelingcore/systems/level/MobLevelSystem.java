@@ -160,9 +160,9 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
                     continue;
 
                 var newLevel = Math.clamp(
-                        MobLevelingUtil.computeDynamicLevel(config, npc, transform, store, commandBuffer),
-                        1,
-                        mobMaxLevel
+                    MobLevelingUtil.computeDynamicLevel(config, npc, transform, store, commandBuffer),
+                    1,
+                    mobMaxLevel
                 );
 
                 if (newLevel != data.level) {
@@ -171,9 +171,9 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
 
                 if (!data.locked) {
                     data.level = Math.clamp(
-                            MobLevelingUtil.computeDynamicLevel(config, npc, transform, store, commandBuffer),
-                            1,
-                            mobMaxLevel
+                        MobLevelingUtil.computeDynamicLevel(config, npc, transform, store, commandBuffer),
+                        1,
+                        mobMaxLevel
                     );
                 }
 
