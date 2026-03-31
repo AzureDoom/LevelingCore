@@ -670,6 +670,84 @@ When enabled, the [Item Stats Requirements](https://wiki.hytalemodding.dev/mod/l
 Blacklisted mob names that will not display custom nameplates. Wildcards are supported.
 
 ---
+
+### `EnableLeaderboardScreen` (boolean)
+**Default:** `false`
+
+When enabled, the [Leaderboard Screen](https://wiki.hytalemodding.dev/mod/levelingcore/leaderboard-screen) is shown.
+
+---
+
+### `RankOneRankColor` (string)
+**Default:** `#FFD700`
+
+Controls the color of the first place rank on the leaderboard screen.
+
+---
+
+### `RankOneNameColor` (string)
+**Default:** `#FFF4B0`
+
+Controls the color of the first place name on the leaderboard screen.
+
+---
+
+### `RankTwoRankColor` (string)
+**Default:** `#C0C0C0`
+
+Controls the color of the second place rank on the leaderboard screen.
+
+---
+
+### `RankTwoNameColor` (string)
+**Default:** `#F2F2F2`
+
+Controls the color of the second place name on the leaderboard screen.
+
+---
+
+### `RankThreeRankColor` (string)
+**Default:** `#CD7F32`
+
+Controls the color of the third place rank on the leaderboard screen.
+
+---
+
+### `RankThreeNameColor` (string)
+**Default:** `#FFE1C4`
+
+Controls the color of the third place name on the leaderboard screen.
+
+---
+
+### `ViewersRankColor` (string)
+**Default:** `#9fe3ff`
+
+Controls the color belonging to the rank of the viewer on the leaderboard screen.
+
+---
+
+### `ViewersNameColor` (string)
+**Default:** `#ffffff`
+
+Controls the color belonging to the name of the viewer on the leaderboard screen.
+
+---
+
+### `DefaultRankColor` (string)
+**Default:** `#FFD700`
+
+Controls the color non-top three players are shown in the leaderboard screen, not including the viewer.
+
+---
+
+### `DefaultNameColor` (string)
+**Default:** `#ffffff`
+
+Controls the color non-top three players are shown in the leaderboard screen, not including the viewer.
+
+---
+
 ## Example Config Snippet
 
 ```json
@@ -889,5 +967,16 @@ Blacklisted mob names that will not display custom nameplates. Wildcards are sup
   ],
   "EnableItemStatRequirement": false,
   "BlacklistedNameplateMobs": [],
+  "EnableLeaderboardScreen": true,
+  "RankOneRankColor": "#FFD700",
+  "RankOneNameColor": "#FFF4B0",
+  "RankTwoRankColor": "#C0C0C0",
+  "RankTwoNameColor": "#F2F2F2",
+  "RankThreeRankColor": "#CD7F32",
+  "RankThreeNameColor": "#FFE1C4",
+  "ViewersRankColor": "#9fe3ff",
+  "ViewersNameColor": "#ffffff",
+  "DefaultRankColor": "#FFD700",
+  "DefaultNameColor": "#ffffff"
 }
 ```

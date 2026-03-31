@@ -1,0 +1,188 @@
+$C = "../../Common.ui";
+
+@HeaderTitleStyle = LabelStyle(
+    FontSize: 15,
+    RenderUppercase: true,
+    RenderBold: true,
+    VerticalAlignment: Center,
+    TextColor: #b4c8c9,
+    FontName: "Default",
+    LetterSpacing: 0.5
+);
+
+@NavButtonLabelStyle = LabelStyle(
+    FontSize: 16,
+    TextColor: #ffffff,
+    RenderBold: true,
+    HorizontalAlignment: Center,
+    VerticalAlignment: Center
+);
+
+@NavButtonStyle = TextButtonStyle(
+    Default: (
+        Background: PatchStyle(TexturePath: "../../Common/Buttons/Primary_Square.png"),
+        LabelStyle: @NavButtonLabelStyle
+    ),
+    Hovered: (
+        Background: PatchStyle(TexturePath: "../../Common/Buttons/Primary_Square_Pressed.png"),
+        LabelStyle: @NavButtonLabelStyle
+    ),
+    Pressed: (
+        Background: PatchStyle(TexturePath: "../../Common/Buttons/Primary_Square_Pressed.png"),
+        LabelStyle: @NavButtonLabelStyle
+    ),
+    Disabled: (
+        Background: PatchStyle(TexturePath: "../../Common/Buttons/Primary_Square.png"),
+        LabelStyle: @NavButtonLabelStyle
+    )
+);
+
+@NavButton = TextButton {
+    Style: @NavButtonStyle;
+    Anchor: (Width: 110, Height: 34);
+};
+
+$C.@PageOverlay {
+    $C.@DecoratedContainer {
+        Anchor: (Width: 700, Height: 650);
+        Padding: (Full: 0);
+        Background: #737d85;
+
+        #Title {
+            Group {
+                LayoutMode: Left;
+                Group { FlexWeight: 1; }
+                Label #LeaderboardTitle {
+                    Style: @HeaderTitleStyle;
+                    Text: "Leaderboard";
+                }
+                Group { FlexWeight: 1; }
+            }
+        }
+
+        #Content {
+            LayoutMode: Top;
+            Padding: (Full: 10);
+
+            Group {
+                LayoutMode: Left;
+                Anchor: (Width: 660, Height: 40);
+
+                @NavButton #PrevButton { Text: "Prev"; }
+                Group { Anchor: (Width: 12); }
+                @NavButton #RefreshButton { Text: "Refresh"; }
+                Group { FlexWeight: 1; }
+
+                Label #YourRankLabel {
+                    Style: (
+                        FontSize: 15,
+                        TextColor: #9fe3ff,
+                        RenderBold: true,
+                        VerticalAlignment: Center
+                    );
+                    Text: "Your Rank: Unranked";
+                }
+                Group { FlexWeight: 1; }
+
+                Label #PageLabel {
+                    Style: (
+                        FontSize: 15,
+                        TextColor: #FFD700,
+                        RenderBold: true,
+                        VerticalAlignment: Center
+                    );
+                    Text: "Showing 1 - 0";
+                }
+
+                Group { Anchor: (Width: 12); }
+                @NavButton #NextButton { Text: "Next"; }
+            }
+
+            Group {
+                Anchor: (Height: 8);
+            }
+
+            Group #LeaderboardRows {
+                FlexWeight: 1;
+                LayoutMode: TopScrolling;
+                Padding: (Left: 4, Right: 12, Top: 4, Bottom: 4);
+                ScrollbarStyle: $C.@DefaultScrollbarStyle;
+
+                Group {
+                    LayoutMode: Top;
+
+                    Group #Row1 {
+                        Anchor: (Width: 650, Height: 52, Bottom: 4);
+                        LayoutMode: Left;
+                        Background: #1e2d3d(0.65);
+                        Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10);
+                        Label #Rank1 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#1"; }
+                        Label #Name1 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; }
+                        Group { FlexWeight: 1; }
+                        Label #Level1 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; }
+                        Label #Xp1 { Style: (FontSize: 15, TextColor: #cccccc, RenderBold: false); Anchor: (Width: 160); Text: "XP: 0"; }
+                    }
+
+                    Group #Row2  { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank2  { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#2"; } Label #Name2  { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level2  { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp2  { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row3  { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank3  { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#3"; } Label #Name3  { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level3  { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp3  { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row4  { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank4  { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#4"; } Label #Name4  { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level4  { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp4  { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row5  { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank5  { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#5"; } Label #Name5  { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level5  { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp5  { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+
+                    Group #Row6  { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank6  { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#6"; } Label #Name6  { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level6  { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp6  { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row7  { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank7  { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#7"; } Label #Name7  { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level7  { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp7  { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row8  { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank8  { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#8"; } Label #Name8  { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level8  { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp8  { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row9  { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank9  { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#9"; } Label #Name9  { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level9  { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp9  { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row10 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank10 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#10"; } Label #Name10 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level10 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp10 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+
+                    Group #Row11 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank11 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#11"; } Label #Name11 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level11 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp11 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row12 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank12 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#12"; } Label #Name12 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level12 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp12 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row13 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank13 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#13"; } Label #Name13 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level13 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp13 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row14 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank14 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#14"; } Label #Name14 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level14 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp14 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row15 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank15 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#15"; } Label #Name15 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level15 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp15 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+
+                    Group #Row16 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank16 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#16"; } Label #Name16 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level16 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp16 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row17 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank17 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#17"; } Label #Name17 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level17 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp17 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row18 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank18 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#18"; } Label #Name18 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level18 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp18 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row19 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank19 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#19"; } Label #Name19 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level19 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp19 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row20 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank20 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#20"; } Label #Name20 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level20 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp20 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+
+                    Group #Row21 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank21 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#21"; } Label #Name21 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level21 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp21 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row22 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank22 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#22"; } Label #Name22 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level22 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp22 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row23 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank23 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#23"; } Label #Name23 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level23 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp23 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row24 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank24 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#24"; } Label #Name24 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level24 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp24 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row25 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank25 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#25"; } Label #Name25 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level25 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp25 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+
+                    Group #Row26 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank26 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#26"; } Label #Name26 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level26 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp26 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row27 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank27 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#27"; } Label #Name27 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level27 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp27 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row28 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank28 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#28"; } Label #Name28 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level28 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp28 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row29 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank29 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#29"; } Label #Name29 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level29 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp29 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row30 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank30 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#30"; } Label #Name30 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level30 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp30 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+
+                    Group #Row31 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank31 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#31"; } Label #Name31 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level31 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp31 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row32 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank32 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#32"; } Label #Name32 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level32 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp32 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row33 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank33 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#33"; } Label #Name33 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level33 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp33 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row34 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank34 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#34"; } Label #Name34 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level34 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp34 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row35 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank35 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#35"; } Label #Name35 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level35 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp35 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+
+                    Group #Row36 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank36 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#36"; } Label #Name36 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level36 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp36 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row37 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank37 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#37"; } Label #Name37 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level37 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp37 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row38 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank38 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#38"; } Label #Name38 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level38 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp38 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row39 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank39 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#39"; } Label #Name39 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level39 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp39 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row40 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank40 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#40"; } Label #Name40 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level40 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp40 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+
+                    Group #Row41 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank41 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#41"; } Label #Name41 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level41 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp41 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row42 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank42 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#42"; } Label #Name42 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level42 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp42 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row43 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank43 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#43"; } Label #Name43 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level43 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp43 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row44 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank44 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#44"; } Label #Name44 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level44 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp44 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row45 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank45 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#45"; } Label #Name45 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level45 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp45 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+
+                    Group #Row46 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank46 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#46"; } Label #Name46 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level46 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp46 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row47 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank47 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#47"; } Label #Name47 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level47 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp47 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row48 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank48 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#48"; } Label #Name48 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level48 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp48 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row49 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank49 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#49"; } Label #Name49 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level49 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp49 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                    Group #Row50 { Anchor: (Width: 650, Height: 52, Bottom: 4); LayoutMode: Left; Background: #1e2d3d(0.65); Padding: (Left: 12, Right: 12, Top: 10, Bottom: 10); Label #Rank50 { Style: (FontSize: 16, TextColor: #FFD700, RenderBold: true); Anchor: (Width: 60); Text: "#50"; } Label #Name50 { Style: (FontSize: 16, TextColor: #ffffff, RenderBold: true); Anchor: (Width: 250); Text: "Player"; } Group { FlexWeight: 1; } Label #Level50 { Style: (FontSize: 16, TextColor: #9fe3ff, RenderBold: true); Anchor: (Width: 110); Text: "Lv. 1"; } Label #Xp50 { Style: (FontSize: 15, TextColor: #cccccc); Anchor: (Width: 160); Text: "XP: 0"; } }
+                }
+            }
+        }
+    }
+}

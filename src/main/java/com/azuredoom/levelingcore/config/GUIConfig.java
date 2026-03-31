@@ -327,6 +327,72 @@ public class GUIConfig {
             (exConfig, extraInfo) -> exConfig.blacklistedNameplateMobs
         )
         .add()
+        .append(
+            new KeyedCodec<>("EnableLeaderboardScreen", Codec.BOOLEAN),
+            (exConfig, aBoolean, extraInfo) -> exConfig.enableLeaderboardScreen = aBoolean,
+            (exConfig, extraInfo) -> exConfig.enableLeaderboardScreen
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("RankOneRankColor", Codec.STRING),
+            (exConfig, aString, extraInfo) -> exConfig.rankOneRankColor = aString,
+            (exConfig, extraInfo) -> exConfig.rankOneRankColor
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("RankOneNameColor", Codec.STRING),
+            (exConfig, aString, extraInfo) -> exConfig.rankOneNameColor = aString,
+            (exConfig, extraInfo) -> exConfig.rankOneNameColor
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("RankTwoRankColor", Codec.STRING),
+            (exConfig, aString, extraInfo) -> exConfig.rankTwoRankColor = aString,
+            (exConfig, extraInfo) -> exConfig.rankTwoRankColor
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("RankTwoNameColor", Codec.STRING),
+            (exConfig, aString, extraInfo) -> exConfig.rankTwoNameColor = aString,
+            (exConfig, extraInfo) -> exConfig.rankTwoNameColor
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("RankThreeRankColor", Codec.STRING),
+            (exConfig, aString, extraInfo) -> exConfig.rankThreeRankColor = aString,
+            (exConfig, extraInfo) -> exConfig.rankThreeRankColor
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("RankThreeNameColor", Codec.STRING),
+            (exConfig, aString, extraInfo) -> exConfig.rankThreeNameColor = aString,
+            (exConfig, extraInfo) -> exConfig.rankThreeNameColor
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("ViewersRankColor", Codec.STRING),
+            (exConfig, aString, extraInfo) -> exConfig.viewersRankColor = aString,
+            (exConfig, extraInfo) -> exConfig.viewersRankColor
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("ViewersNameColor", Codec.STRING),
+            (exConfig, aString, extraInfo) -> exConfig.viewersNameColor = aString,
+            (exConfig, extraInfo) -> exConfig.viewersNameColor
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("DefaultRankColor", Codec.STRING),
+            (exConfig, aString, extraInfo) -> exConfig.defaultRankColor = aString,
+            (exConfig, extraInfo) -> exConfig.defaultRankColor
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("DefaultNameColor", Codec.STRING),
+            (exConfig, aString, extraInfo) -> exConfig.defaultNameColor = aString,
+            (exConfig, extraInfo) -> exConfig.defaultNameColor
+        )
+        .add()
         .build();
 
     private boolean enableXPLossOnDeath = false;
@@ -596,6 +662,28 @@ public class GUIConfig {
     private String[] blacklistedNameplateMobs = {
         "HyCitizens_*"
     };
+
+    private boolean enableLeaderboardScreen = true;
+
+    private String rankOneRankColor = "#FFD700";
+
+    private String rankOneNameColor = "#FFF4B0";
+
+    private String rankTwoRankColor = "#C0C0C0";
+
+    private String rankTwoNameColor = "#F2F2F2";
+
+    private String rankThreeRankColor = "#CD7F32";
+
+    private String rankThreeNameColor = "#FFE1C4";
+
+    private String viewersRankColor = "#9fe3ff";
+
+    private String viewersNameColor = "#ffffff";
+
+    private String defaultRankColor = "#FFD700";
+
+    private String defaultNameColor = "#ffffff";
 
     public GUIConfig() {}
 
@@ -1085,6 +1173,105 @@ public class GUIConfig {
      */
     public String[] getBlacklistedNameplateMobs() {
         return blacklistedNameplateMobs;
+    }
+
+    /**
+     * Determines if the leaderboard screen feature is enabled.
+     *
+     * @return true if the leaderboard screen is enabled; false otherwise.
+     */
+    public boolean isEnableLeaderboardScreen() {
+        return enableLeaderboardScreen;
+    }
+
+    /**
+     * Retrieves the color associated with the rank one rank.
+     *
+     * @return the color of the rank one rank as a String
+     */
+    public String getRankOneRankColor() {
+        return rankOneRankColor;
+    }
+
+    /**
+     * Retrieves the color associated with the rank one name.
+     *
+     * @return A string representing the color of the rank one name.
+     */
+    public String getRankOneNameColor() {
+        return rankOneNameColor;
+    }
+
+    /**
+     * Retrieves the color associated with rank two of a rank.
+     *
+     * @return a String representing the color associated with rank two.
+     */
+    public String getRankTwoRankColor() {
+        return rankTwoRankColor;
+    }
+
+    /**
+     * Retrieves the color associated with the rank two name.
+     *
+     * @return a string representing the color assigned to the rank two name.
+     */
+    public String getRankTwoNameColor() {
+        return rankTwoNameColor;
+    }
+
+    /**
+     * Retrieves the color associated with rank three.
+     *
+     * @return the color of rank three as a String.
+     */
+    public String getRankThreeRankColor() {
+        return rankThreeRankColor;
+    }
+
+    /**
+     * Retrieves the color associated with rank three names.
+     *
+     * @return A string representing the color for rank three names.
+     */
+    public String getRankThreeNameColor() {
+        return rankThreeNameColor;
+    }
+
+    /**
+     * Retrieves the color associated with the viewer's rank.
+     *
+     * @return a string representing the color of the viewer's rank.
+     */
+    public String getViewersRankColor() {
+        return viewersRankColor;
+    }
+
+    /**
+     * Retrieves the color associated with the viewer's name.
+     *
+     * @return A string representing the color of the viewer's name.
+     */
+    public String getViewersNameColor() {
+        return viewersNameColor;
+    }
+
+    /**
+     * Retrieves the default rank color.
+     *
+     * @return The default rank color as a String.
+     */
+    public String getDefaultRankColor() {
+        return defaultRankColor;
+    }
+
+    /**
+     * Retrieves the default name color.
+     *
+     * @return the default name color as a String
+     */
+    public String getDefaultNameColor() {
+        return defaultNameColor;
     }
 
     /**

@@ -11,6 +11,13 @@ Opens the player stats GUI, allowing players to view their current leveling stat
 ### Usage
 `/showstats`
 
+## `/leaderboard`
+
+Opens the leaderboard GUI, allowing players to view level rankings of all the players in the server.
+
+### Usage
+`/leaderboard`
+
 ### Permission
 `levelingcore.showstats`
 

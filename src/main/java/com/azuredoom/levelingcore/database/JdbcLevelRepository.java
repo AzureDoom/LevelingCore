@@ -72,6 +72,9 @@ public class JdbcLevelRepository {
             stmt.execute(
                 "ALTER TABLE player_levels ADD COLUMN IF NOT EXISTS used_ability_points INT DEFAULT 0 NOT NULL"
             );
+            stmt.execute(
+                "ALTER TABLE player_levels ADD COLUMN IF NOT EXISTS player_name VARCHAR(64)"
+            );
         } catch (Exception e) {
             throw new LevelingCoreException("Failed to create player_levels table", e);
         }
@@ -319,13 +322,13 @@ public class JdbcLevelRepository {
         var updateSql =
             """
                     UPDATE player_levels
-                    SET xp = ?, str = ?, agi = ?, per = ?, vit = ?, intelligence = ?, con = ?, ability_points = ?, used_ability_points = ?
+                    SET xp = ?, str = ?, agi = ?, per = ?, vit = ?, intelligence = ?, con = ?, ability_points = ?, used_ability_points = ?, player_name = ?
                     WHERE player_id = ?
                 """;
         var insertSql = """
-                INSERT INTO player_levels
-                (player_id, xp, str, agi, per, vit, intelligence, con, ability_points, used_ability_points)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO player_levels
+            (player_id, xp, str, agi, per, vit, intelligence, con, ability_points, used_ability_points, player_name)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """;
 
         try (Connection connection = dataSource.getConnection()) {
@@ -340,7 +343,8 @@ public class JdbcLevelRepository {
                 ps.setInt(7, data.getCon());
                 ps.setInt(8, data.getAbilityPoints());
                 ps.setInt(9, data.getUsedAbilityPoints());
-                ps.setString(10, data.getPlayerId().toString());
+                ps.setString(10, data.getPlayerName());
+                ps.setString(11, data.getPlayerId().toString());
                 updated = ps.executeUpdate();
             }
 
@@ -356,6 +360,7 @@ public class JdbcLevelRepository {
                     ps.setInt(8, data.getCon());
                     ps.setInt(9, data.getAbilityPoints());
                     ps.setInt(10, data.getUsedAbilityPoints());
+                    ps.setString(11, data.getPlayerName());
                     ps.executeUpdate();
                 }
             }
@@ -377,7 +382,7 @@ public class JdbcLevelRepository {
      */
     public PlayerLevelData load(UUID id) {
         var sql = """
-                SELECT xp, str, agi, per, vit, intelligence, con, ability_points, used_ability_points
+                SELECT xp, str, agi, per, vit, intelligence, con, ability_points, used_ability_points, player_name
                 FROM player_levels
                 WHERE player_id = ?
             """;
@@ -401,6 +406,7 @@ public class JdbcLevelRepository {
                 data.setCon(rs.getInt("con"));
                 data.setAbilityPoints(rs.getInt("ability_points"));
                 data.setUsedAbilityPoints(rs.getInt("used_ability_points"));
+                data.setPlayerName(rs.getString("player_name"));
                 return data;
             }
             return null;
@@ -452,4 +458,129 @@ public class JdbcLevelRepository {
             throw new LevelingCoreException("Failed to close JDBC datasource", e);
         }
     }
+
+    /**
+     * Loads a page of leaderboard rows ordered by experience points (XP) in descending order, then by player ID in
+     * ascending order for tiebreaking.
+     *
+     * @param limit  the maximum number of rows to retrieve
+     * @param offset the number of rows to skip before starting to fetch results
+     * @return a list of {@code LeaderboardRow} objects representing the leaderboard entries
+     * @throws LevelingCoreException if an error occurs while loading the leaderboard data
+     */
+    public java.util.List<LeaderboardRow> loadLeaderboardPage(int limit, int offset) {
+        var sql = """
+            SELECT player_id, xp, player_name
+            FROM player_levels
+            ORDER BY xp DESC, player_id ASC
+            LIMIT ? OFFSET ?
+            """;
+
+        var rows = new java.util.ArrayList<LeaderboardRow>();
+
+        try (
+            Connection connection = dataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+            ps.setInt(1, limit);
+            ps.setInt(2, offset);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    rows.add(
+                        new LeaderboardRow(
+                            UUID.fromString(rs.getString("player_id")),
+                            rs.getLong("xp"),
+                            rs.getString("player_name")
+                        )
+                    );
+                }
+            }
+
+            return rows;
+        } catch (Exception e) {
+            throw new LevelingCoreException("Failed to load leaderboard page", e);
+        }
+    }
+
+    /**
+     * Retrieves the total number of players from the player_levels table.
+     * <p>
+     * Executes a SQL query to count the number of rows in the player_levels database table, which represents the total
+     * number of players.
+     *
+     * @return the total number of players in the database
+     * @throws LevelingCoreException if an error occurs while accessing the database
+     */
+    public int countPlayers() {
+        var sql = "SELECT COUNT(*) FROM player_levels";
+
+        try (
+            Connection connection = dataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()
+        ) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+            return 0;
+        } catch (Exception e) {
+            throw new LevelingCoreException("Failed to count leaderboard players", e);
+        }
+    }
+
+    /**
+     * Retrieves the rank of a player based on their experience points (XP). The rank is determined by comparing the XP
+     * of the specified player with the XP of other players in the system. Players with higher XP are ranked above those
+     * with lower XP. In the case of a tie in XP, players are ranked based on their player ID in ascending order.
+     *
+     * @param playerId the unique identifier of the player whose rank is to be determined
+     * @return the rank of the player as an integer, where 1 is the highest rank. Returns -1 if the player does not
+     *         exist or if an error occurs during the query.
+     */
+    public int getPlayerRank(UUID playerId) {
+        if (!exists(playerId)) {
+            return -1;
+        }
+
+        var sql = """
+            SELECT 1 + COUNT(*)
+            FROM player_levels p
+            WHERE
+                p.xp > (SELECT xp FROM player_levels WHERE player_id = ?)
+                OR (
+                    p.xp = (SELECT xp FROM player_levels WHERE player_id = ?)
+                    AND p.player_id < ?
+                )
+            """;
+
+        try (
+            Connection connection = dataSource.getConnection();
+            PreparedStatement ps = connection.prepareStatement(sql)
+        ) {
+            ps.setString(1, playerId.toString());
+            ps.setString(2, playerId.toString());
+            ps.setString(3, playerId.toString());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getInt(1) : -1;
+            }
+        } catch (Exception e) {
+            throw new LevelingCoreException("Failed to get player rank", e);
+        }
+    }
+
+    /**
+     * Represents a row in a leaderboard containing information about a player's unique identifier and their experience
+     * points (XP).
+     *
+     * @param playerId   Unique identifier for the player.
+     * @param xp         Experience points associated with the player.
+     * @param playerName Name of the player.
+     */
+    public record LeaderboardRow(
+        UUID playerId,
+        long xp,
+        String playerName
+    ) {}
 }

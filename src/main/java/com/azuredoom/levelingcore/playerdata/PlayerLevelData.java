@@ -11,6 +11,8 @@ public class PlayerLevelData {
 
     private final UUID playerId;
 
+    private String playerName;
+
     private long xp;
 
     private int str;
@@ -41,6 +43,25 @@ public class PlayerLevelData {
      */
     public UUID getPlayerId() {
         return playerId;
+    }
+
+    /**
+     * Retrieves the name of the player.
+     *
+     * @return The player's name as a string.
+     */
+    public String getPlayerName() {
+        return playerName;
+    }
+
+    /**
+     * Updates the player's name with the specified value.
+     *
+     * @param playerName The name to assign to the player. This should be a non-null string representing the player's
+     *                   name.
+     */
+    public void setPlayerName(String playerName) {
+        this.playerName = playerName;
     }
 
     /**

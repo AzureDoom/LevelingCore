@@ -1,5 +1,7 @@
 package com.azuredoom.levelingcore.level;
 
+import com.hypixel.hytale.server.core.universe.Universe;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -677,6 +679,78 @@ public class LevelServiceImpl {
      */
     private void setDataXP(PlayerLevelData data, long xp) {
         data.setXp(xp);
+        var playerRef = Universe.get().getPlayer(data.getPlayerId());
+        if (playerRef != null) {
+            data.setPlayerName(playerRef.getUsername());
+        }
         repository.save(data);
     }
+
+    /**
+     * Retrieves a paginated list of leaderboard entries based on the specified limit and offset. Each entry includes
+     * player information and their leaderboard rankings.
+     *
+     * @param limit  the maximum number of entries to return in the page
+     * @param offset the starting position in the leaderboard from which to retrieve entries
+     * @return a list of {@code LeaderboardEntry} objects representing the leaderboard page
+     */
+    public List<LeaderboardEntry> getLeaderboardPage(int limit, int offset) {
+        return repository.loadLeaderboardPage(limit, offset)
+            .stream()
+            .map(row -> {
+                var playerRef = Universe.get().getPlayer(row.playerId());
+
+                String name;
+                if (playerRef != null) {
+                    name = playerRef.getUsername(); // live override
+                } else if (row.playerName() != null) {
+                    name = row.playerName(); // DB fallback
+                } else {
+                    name = row.playerId().toString(); // last fallback
+                }
+
+                return new LeaderboardEntry(
+                    row.playerId(),
+                    name,
+                    formula.getLevelForXp(row.xp()),
+                    row.xp()
+                );
+            })
+            .toList();
+    }
+
+    /**
+     * Retrieves the total count of players on the leaderboard.
+     *
+     * @return the number of players currently recorded in the leaderboard.
+     */
+    public int getLeaderboardCount() {
+        return repository.countPlayers();
+    }
+
+    /**
+     * Retrieves the rank of a player based on their unique identifier.
+     *
+     * @param playerId the unique identifier of the player whose rank is to be retrieved
+     * @return the rank of the player as an integer
+     */
+    public int getPlayerRank(UUID playerId) {
+        return repository.getPlayerRank(playerId);
+    }
+
+    /**
+     * Immutable record representing an entry in a leaderboard. Each entry holds information about a player's
+     * performance and identity.
+     *
+     * @param playerId The unique identifier of the player.
+     * @param name     The name of the player.
+     * @param level    The current level of the player.
+     * @param xp       The total experience points accumulated by the player.
+     */
+    public record LeaderboardEntry(
+        UUID playerId,
+        String name,
+        int level,
+        long xp
+    ) {}
 }

@@ -323,6 +323,7 @@ public class LevelingCore extends JavaPlugin {
         getCommandRegistry().registerCommand(new RemoveLevelCommand(config));
         getCommandRegistry().registerCommand(new RemoveXpCommand(config));
         getCommandRegistry().registerCommand(new ShowStatsCommand(config));
+        getCommandRegistry().registerCommand(new ShowLeaderboardCommand());
         getCommandRegistry().registerCommand(new AddStatsCommand());
         getCommandRegistry().registerCommand(new RemoveStatsCommand());
         getCommandRegistry().registerCommand(new SetStatsCommand());
