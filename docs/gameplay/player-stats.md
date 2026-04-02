@@ -93,6 +93,71 @@ Increases **Maximum Mana** and **Mana Regeneration**.
 
 ## Combat Calculations
 
+```mermaid
+flowchart TD
+    A[Damage Event Triggered] --> B{Target is Player?}
+    B -- Yes --> X1[Return]
+    B -- No --> C{Victim has NPCEntity ref?}
+
+    C -- No --> X2[Return]
+    C -- Yes --> D{Damage source is EntitySource?}
+
+    D -- No --> X3[Return]
+    D -- Yes --> E{Attacker ref is valid?}
+
+    E -- No --> X4[Return]
+    E -- Yes --> F{Attacker has PlayerRef?}
+
+    F -- No --> X5[Return]
+    F -- Yes --> G{Attacker has Player + Inventory?}
+
+    G -- No --> X6[Return]
+    G -- Yes --> H{Level service present?}
+
+    H -- No --> X7[Return]
+    H -- Yes --> I[Get UUID, STR, PER]
+
+    I --> J{Incoming damage > 0?}
+    J -- No --> X8[Return]
+    J -- Yes --> K{Damage cause exists?}
+
+    K -- No --> X9[Return]
+    K -- Yes --> L{Is Projectile?}
+
+    %% Projectile branch
+    L -- Yes --> P1[Fetch mob damage threshold]
+    P1 --> P2[Use PER stat + PER multiplier]
+    P2 --> P3[Compute diminishing stat bonus]
+    P3 --> P4[finalDamage = incoming * threshold * bonus]
+
+    %% Melee branch
+    L -- No --> M1[Fetch mob damage threshold]
+    M1 --> M2[Use STR stat + STR multiplier]
+    M2 --> M3[Compute diminishing stat bonus]
+    M3 --> M4[finalDamage = incoming * threshold * bonus]
+
+    %% Merge
+    P4 --> Z[Set damage amount]
+    M4 --> Z
+    Z --> END[End]
+
+    %% Classes
+    classDef start fill:#4A90E2,color:#fff,stroke:#2C5FA3,stroke-width:2px;
+    classDef decision fill:#F5A623,color:#000,stroke:#C97A00,stroke-width:2px;
+    classDef lookup fill:#9013FE,color:#fff,stroke:#5E0CB2,stroke-width:2px;
+    classDef compute fill:#27AE60,color:#fff,stroke:#1E8449,stroke-width:2px;
+    classDef final fill:#E74C3C,color:#fff,stroke:#A93226,stroke-width:2px;
+    classDef exit fill:#7F8C8D,color:#fff,stroke:#626567,stroke-width:2px;
+
+    %% Apply classes
+    class A start;
+    class B,C,D,E,F,G,H,J,K,L decision;
+    class I,P1,P2,M1,M2 lookup;
+    class P3,P4,M3,M4 compute;
+    class Z,END final;
+    class X1,X2,X3,X4,X5,X6,X7,X8,X9 exit;
+```
+
 ### Strength (STR) – Melee Damage
 
 Applied when the player performs a **melee attack**.
@@ -122,6 +187,74 @@ Applied when the player **receives damage**.
 -   Applies to both melee and projectile damage
 -   Lower final values mean less damage taken
 -   Default base multiplier: `0.80`
+
+```mermaid
+flowchart TD
+    A[Damage Event Triggered] --> B{Target is Player?}
+    B -- No --> X1[Return]
+    B -- Yes --> C{Victim has PlayerRef?}
+
+    C -- No --> X2[Return]
+    C -- Yes --> D{Damage source is EntitySource?}
+
+    D -- No --> X3[Return]
+    D -- Yes --> E{Attacker ref is valid?}
+
+    E -- No --> X4[Return]
+    E -- Yes --> F{Attacker has NPCEntity?}
+
+    F -- No --> X5[Return]
+    F -- Yes --> G{NPC attacker reference exists?}
+
+    G -- No --> X6[Return]
+    G -- Yes --> H{Level service present?}
+
+    H -- No --> X7[Return]
+    H -- Yes --> I{Incoming damage > 0?}
+
+    I -- No --> X8[Return]
+    I -- Yes --> J{Damage cause exists?}
+
+    J -- No --> X9[Return]
+    J -- Yes --> K{Is Projectile?}
+
+    K --> L{NPC UUIDComponent exists?}
+    L -- No --> X10[Return]
+    L -- Yes --> M[Fetch mob level data]
+
+    %% Projectile branch
+    K -- Yes --> P1[Use ranged base damage]
+    P1 --> P2[Use ranged level multiplier]
+    P2 --> N
+
+    %% Melee branch
+    K -- No --> M1[Use melee base damage]
+    M1 --> M2[Use melee level multiplier]
+    M2 --> N
+
+    %% Shared damage computation
+    M --> N[Get player CON]
+    N --> O[Compute mitigation factor from CON]
+    O --> Q[Compute scaled damage from base damage, multiplier, and mob level]
+    Q --> R[Apply incoming damage times mitigation times scaled damage times mob damage multiplier]
+    R --> S[Set damage amount]
+    S --> Z[End]
+
+    %% Classes
+    classDef start fill:#4A90E2,color:#fff,stroke:#2C5FA3,stroke-width:2px;
+    classDef decision fill:#F5A623,color:#000,stroke:#C97A00,stroke-width:2px;
+    classDef lookup fill:#9013FE,color:#fff,stroke:#5E0CB2,stroke-width:2px;
+    classDef compute fill:#27AE60,color:#fff,stroke:#1E8449,stroke-width:2px;
+    classDef final fill:#E74C3C,color:#fff,stroke:#A93226,stroke-width:2px;
+    classDef exit fill:#7F8C8D,color:#fff,stroke:#626567,stroke-width:2px;
+
+    class A start;
+    class B,C,D,E,F,G,H,I,J,K,L decision;
+    class M,N,P1,P2,M1,M2 lookup;
+    class O,Q,R compute;
+    class S,Z final;
+    class X1,X2,X3,X4,X5,X6,X7,X8,X9,X10 exit;
+```
 
 ## Configuration Defaults
 
