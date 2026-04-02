@@ -5,27 +5,27 @@ published: true
 draft: false
 ---
 
-## `/showstats`
+## `/levelingcore showstats`
 Opens the player stats GUI, allowing players to view their current leveling stats. This command is only available if the leveling system is initialized and stat points are enabled in the configuration.
 
 ### Usage
-`/showstats`
+`/levelingcore showstats`
 
-## `/leaderboard`
+## `/levelingcore leaderboard`
 
 Opens the leaderboard GUI, allowing players to view level rankings of all the players in the server.
 
 ### Usage
-`/leaderboard`
+`/levelingcore leaderboard`
 
 ### Permission
 `levelingcore.showstats`
 
-## `/setlevel`
+## `/levelingcore setlevel`
 Sets a player’s level to an exact value. This directly overwrites the player’s current level.
 
 ### Usage
-`/setlevel player level`
+`/levelingcore setlevel player level`
 
 ### Required Arguments
 `player` — Target player
@@ -35,11 +35,11 @@ Sets a player’s level to an exact value. This directly overwrites the player�
 ### Permission
 `levelingcore.setlevel`
 
-## `/addlevel`
+## `/levelingcore addlevel`
 Adds a specified number of levels to a player.
 
 ### Usage
-`/addlevel <player> <level>`
+`/levelingcore addlevel <player> <level>`
 
 ### Required Arguments
 `player` — Target player
@@ -49,11 +49,11 @@ Adds a specified number of levels to a player.
 ### Permission
 `levelingcore.addlevel`
 
-## `/removelevel`
+## `/levelingcore removelevel`
 Removes a specified number of levels from a player.
 
 ### Usage
-`/removelevel player level`
+`/levelingcore removelevel player level`
 
 ### Required Arguments
 `player` — Target player
@@ -63,11 +63,11 @@ Removes a specified number of levels from a player.
 ### Permission
 `levelingcore.removelevel`
 
-## `/addxp`
+## `/levelingcore addxp`
 Adds experience points (XP) to a player and recalculates their level accordingly.
 
 ### Usage
-`/addxp player xpvalue`
+`/levelingcore addxp player xpvalue`
 
 ### Required Arguments
 `player` — Target player
@@ -77,11 +77,11 @@ Adds experience points (XP) to a player and recalculates their level accordingly
 ### Permission
 `levelingcore.addxp`
 
-## `/removexp`
+## `/levelingcore removexp`
 Removes experience points (XP) from a player and updates their level if necessary.
 
 ### Usage
-`/removexp player xpvalue`
+`/levelingcore removexp player xpvalue`
 
 ### Required Arguments
 `player` — Target player
@@ -90,11 +90,11 @@ Removes experience points (XP) from a player and updates their level if necessar
 ### Permission
 `levelingcore.removexp`
 
-## `/addstats`
+## `/levelingcore addstats`
 Adds a specified amount of stat value to a player.
 
 ### Usage
-`/addstats player stat value`
+`/levelingcore addstats player stat value`
 
 ### Required Arguments
 `player` — The target player who will receive the stat points.
@@ -112,11 +112,11 @@ Adds a specified amount of stat value to a player.
 ### Permission
 `levelingcore.addstats`
 
-## `/removestats`
+## `/levelingcore removestats`
 Removes a specified amount of stat value from a player.
 
 ### Usage
-`/removestats player stat value`
+`/levelingcore removestats player stat value`
 
 ### Required Arguments
 `player` — The target player who will lose the stat points.
@@ -134,11 +134,11 @@ Removes a specified amount of stat value from a player.
 ### Permission
 `levelingcore.removestats`
 
-## `/setstats`
+## `/levelingcore setstats`
 Sets a specified amount of stat value to a player.
 
 ### Usage
-`/setstats player stat value`
+`/levelingcore setstats player stat value`
 
 ### Required Arguments
 `player` — The target player who will receive the stat points.
