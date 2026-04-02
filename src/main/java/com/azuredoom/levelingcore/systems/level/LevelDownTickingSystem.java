@@ -2,11 +2,9 @@ package com.azuredoom.levelingcore.systems.level;
 
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
-import com.hypixel.hytale.component.Holder;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
-import com.hypixel.hytale.server.core.entity.EntityUtils;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
@@ -33,13 +31,20 @@ public class LevelDownTickingSystem extends EntityTickingSystem<EntityStore> {
         @NonNullDecl Store<EntityStore> store,
         @NonNullDecl CommandBuffer<EntityStore> commandBuffer
     ) {
-        final Holder<EntityStore> holder = EntityUtils.toHolder(index, archetypeChunk);
-        final Player player = holder.getComponent(Player.getComponentType());
-        final PlayerRef playerRef = holder.getComponent(PlayerRef.getComponentType());
-        if (player == null || playerRef == null) {
+        final var player = archetypeChunk.getComponent(index, Player.getComponentType());
+        if (player == null) {
             return;
         }
-        LevelDownListenerRegistrar.ensureRegistered(store, player, playerRef, config);
+        var playerRef = player.getReference();
+        if (playerRef == null) {
+            return;
+        }
+        var playerRefComponent = playerRef.getStore()
+            .getComponent(playerRef, PlayerRef.getComponentType());
+        if (playerRefComponent == null) {
+            return;
+        }
+        LevelDownListenerRegistrar.ensureRegistered(store, player, playerRefComponent, config);
     }
 
     @NullableDecl

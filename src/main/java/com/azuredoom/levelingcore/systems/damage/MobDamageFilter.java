@@ -2,7 +2,6 @@ package com.azuredoom.levelingcore.systems.damage;
 
 import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
-import com.hypixel.hytale.server.core.entity.EntityUtils;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.EntityModule;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
@@ -18,8 +17,10 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
+import com.azuredoom.levelingcore.utils.MobLevelingUtil;
 
 public class MobDamageFilter extends DamageEventSystem {
 
@@ -41,10 +42,14 @@ public class MobDamageFilter extends DamageEventSystem {
         if (isPlayer)
             return;
 
-        var holder = EntityUtils.toHolder(index, archetypeChunk);
-        var victimNPCRef = holder.getComponent(Objects.requireNonNull(NPCEntity.getComponentType()));
-        if (victimNPCRef == null)
+        final var victim = archetypeChunk.getComponent(index, Objects.requireNonNull(NPCEntity.getComponentType()));
+        if (victim == null) {
             return;
+        }
+        var victimNPCRef = victim.getReference();
+        if (victimNPCRef == null) {
+            return;
+        }
 
         if (!(damage.getSource() instanceof Damage.EntitySource entitySource))
             return;

@@ -5,7 +5,6 @@ import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
-import com.hypixel.hytale.server.core.entity.EntityUtils;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.inventory.InventoryComponent;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
@@ -37,10 +36,10 @@ public class HandStatGateTickingSystem extends EntityTickingSystem<EntityStore> 
         if (!LevelingCore.getConfig().get().isEnableItemStatRequirement()) {
             return;
         }
-        var holder = EntityUtils.toHolder(index, chunk);
-        var player = holder.getComponent(Player.getComponentType());
-        if (player == null)
+        final var player = chunk.getComponent(index, Player.getComponentType());
+        if (player == null) {
             return;
+        }
         var playerRef = player.getReference();
         if (playerRef == null) {
             return;

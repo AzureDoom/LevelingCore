@@ -5,8 +5,8 @@ import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.SystemGroup;
 import com.hypixel.hytale.component.query.Query;
-import com.hypixel.hytale.server.core.entity.EntityUtils;
 import com.hypixel.hytale.server.core.entity.UUIDComponent;
+import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entity.EntityModule;
 import com.hypixel.hytale.server.core.modules.entity.damage.Damage;
 import com.hypixel.hytale.server.core.modules.entity.damage.DamageCause;
@@ -45,10 +45,19 @@ public class PlayerDamageFilter extends DamageEventSystem {
         var isPlayer = archetypeChunk.getArchetype().contains(EntityModule.get().getPlayerComponentType());
         if (!isPlayer)
             return;
-        var holder = EntityUtils.toHolder(index, archetypeChunk);
-        var victimPlayerRef = holder.getComponent(PlayerRef.getComponentType());
-        if (victimPlayerRef == null)
+        final var victim = archetypeChunk.getComponent(index, Player.getComponentType());
+        if (victim == null) {
             return;
+        }
+        var victimPlayerRef = victim.getReference();
+        if (victimPlayerRef == null) {
+            return;
+        }
+        var playerRefComponent = victimPlayerRef.getStore()
+            .getComponent(victimPlayerRef, PlayerRef.getComponentType());
+        if (playerRefComponent == null) {
+            return;
+        }
         if (!(damage.getSource() instanceof Damage.EntitySource entitySource))
             return;
         var attackerRef = entitySource.getRef();

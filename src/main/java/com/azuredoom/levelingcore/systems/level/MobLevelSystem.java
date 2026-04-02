@@ -5,7 +5,6 @@ import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.tick.EntityTickingSystem;
-import com.hypixel.hytale.server.core.entity.EntityUtils;
 import com.hypixel.hytale.server.core.entity.UUIDComponent;
 import com.hypixel.hytale.server.core.modules.entity.component.TransformComponent;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
@@ -64,10 +63,10 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
             }
         }
 
-        final var holder = EntityUtils.toHolder(index, archetypeChunk);
-        final var npc = holder.getComponent(Objects.requireNonNull(NPCEntity.getComponentType()));
-        if (npc == null)
+        final var npc = archetypeChunk.getComponent(index, Objects.requireNonNull(NPCEntity.getComponentType()));
+        if (npc == null) {
             return;
+        }
         var npcRef = npc.getReference();
         if (npcRef == null)
             return;
@@ -82,7 +81,7 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
         if (healthValue.get() <= 0)
             return;
 
-        final var transform = holder.getComponent(TransformComponent.getComponentType());
+        final var transform = store.getComponent(npcRef, TransformComponent.getComponentType());
         if (transform == null)
             return;
 

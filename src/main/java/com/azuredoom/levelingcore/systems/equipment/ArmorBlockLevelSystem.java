@@ -4,7 +4,6 @@ import com.hypixel.hytale.component.*;
 import com.hypixel.hytale.component.query.Query;
 import com.hypixel.hytale.component.system.EntityEventSystem;
 import com.hypixel.hytale.server.core.HytaleServer;
-import com.hypixel.hytale.server.core.entity.EntityUtils;
 import com.hypixel.hytale.server.core.entity.ItemUtils;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.inventory.InventoryChangeEvent;
@@ -45,8 +44,7 @@ public class ArmorBlockLevelSystem extends EntityEventSystem<EntityStore, Invent
         @NotNull CommandBuffer<EntityStore> commandBuffer,
         @NotNull InventoryChangeEvent event
     ) {
-        final Holder<EntityStore> holder = EntityUtils.toHolder(index, archetypeChunk);
-        final Player player = holder.getComponent(Player.getComponentType());
+        final var player = archetypeChunk.getComponent(index, Player.getComponentType());
         if (player == null) {
             return;
         }
