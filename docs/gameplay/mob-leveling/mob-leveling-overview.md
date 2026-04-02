@@ -28,4 +28,18 @@ flowchart TD
     H --> I
 
     I --> L[Final Level]
+
+    %% Classes
+    classDef start fill:#4A90E2,color:#fff,stroke:#2C5FA3,stroke-width:2px;
+    classDef decision fill:#F5A623,color:#000,stroke:#C97A00,stroke-width:2px;
+    classDef override fill:#9013FE,color:#fff,stroke:#5E0CB2,stroke-width:2px;
+    classDef compute fill:#27AE60,color:#fff,stroke:#1E8449,stroke-width:2px;
+    classDef final fill:#E74C3C,color:#fff,stroke:#A93226,stroke-width:2px;
+
+    %% Apply classes
+    class A start;
+    class B,C,D decision;
+    class B1,C1 override;
+    class E,F,G,H,D1,I compute;
+    class L final;
 ```
