@@ -32,7 +32,10 @@ public class HudPlayerReady {
             if (playerRef == null)
                 return;
             var xpHud = new XPBarHud(playerRef, levelService1, config);
-            // TODO: Update 5 removes the need for MultipleHud/AutoMultiHud and setCustomHud will be addCustomHud instead
+            // TODO: Update 5 removes the need for MultipleHud/AutoMultiHud and setCustomHud -> addCustomHud with keyed
+            // huds
+            // instead
+            // player.getHudManager().addCustomHud(playerRef, xpHud);
             if (PluginManager.get().getPlugin(new PluginIdentifier("Buuz135", "MultipleHUD")) != null) {
                 MultipleHudCompat.showHud(player, playerRef, xpHud);
             } else {
