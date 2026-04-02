@@ -1,14 +1,5 @@
-v1.0.2
-- Added /leaderboard command to display the top players on the server based on their level and experience (XP).
-- Added a leaderboard screen that displays the top players on the server.
-- Added new configuration options for the leaderboard.
-  - Enabled/Disabled the leaderboard.
-  - Set the rank and name color for the top three players on the leaderboard. (Separate colors for each rank/color)
-  - Set the rank and name color for the screen viewers' own spot on the leaderboard.
-  - Set the rank and name color for the rest of the players on the leaderboard.
-- Added the missing icon image to the mod section screen.
-- Rewrote the Mob leveling system, now supports multiple level modes.
-  - This now removes the old LevelMode config to now LevelModeArray.
-  - It's recommended to edit /mods/com.azuredoom_leveling/data/config/mobinstancemapping.csv to remove the default instance entry for existing installations.
-  - Please see the wiki for more information.
-- Implemented Boss stat increases.
+v1.0.3
+- Cleans up mob leveling for left over instance check. 
+- Adds support for marking mobs as elites.
+- Added new configuration options for normal, elite and boss mob health, damage, damage resistance and xp drop.
+- All commands now require the prefix /levelingcore
