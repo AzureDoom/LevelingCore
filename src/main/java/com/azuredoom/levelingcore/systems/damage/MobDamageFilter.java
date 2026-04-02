@@ -82,11 +82,19 @@ public class MobDamageFilter extends DamageEventSystem {
         var causeIdLower = causeId == null ? "" : causeId.toLowerCase();
         var isProjectile = causeIdLower.contains("projectile") || causeIdLower.contains("arrow");
 
-        if (isProjectile) {
-            damage.setAmount(Math.round((float) (incoming * (1.0 + per * config.get().getPerStatMultiplier()))));
-        } else {
-            damage.setAmount(Math.round((float) (incoming * (1.0 + str * config.get().getStrStatMultiplier()))));
-        }
+        var mobData = LevelingCore.mobLevelRegistry.getOrCreate(
+            uuid,
+            () -> MobLevelingUtil.computeSpawnLevel(commandBuffer, victim)
+        );
+        var mobDamageThreshold = mobData.damageThreshold;
+        var statMultiplier = isProjectile
+            ? config.get().getPerStatMultiplier()
+            : config.get().getStrStatMultiplier();
+
+        var statValue = isProjectile ? per : str;
+        var statBonus = 1.0 + ((statValue * statMultiplier / 100.0) / (1.0 + statValue / 100.0));
+
+        damage.setAmount((float) (incoming * mobDamageThreshold * statBonus));
     }
 
     @Nullable

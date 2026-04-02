@@ -99,7 +99,7 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
         var data = LevelingCore.mobLevelRegistry.getOrCreateWithPersistence(
             entityUuid,
             () -> MobLevelingUtil.computeSpawnLevel(commandBuffer, npc),
-            nowMs,
+            () -> LevelingCore.mobEncounterProfileResolver.resolve(store, npc),
             LevelingCore.mobLevelPersistence
         );
 
@@ -110,7 +110,15 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
 
             LevelingCore.mobLevelPersistence.put(
                 entityUuid,
-                new PersistedMobLevel(bossLevel, true)
+                new PersistedMobLevel(
+                    bossLevel,
+                    true,
+                    data.profileId,
+                    data.tier.name(),
+                    data.healthMultiplier,
+                    data.damageMultiplier,
+                    data.xpMultiplier
+                )
             );
         }
         if (data.locked)
@@ -178,7 +186,7 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
                 }
 
                 if (data.level != data.lastAppliedLevel) {
-                    if (MobLevelingUtil.applyMobScaling(config, npc, data.level, store)) {
+                    if (MobLevelingUtil.applyMobScaling(config, npc, data.level, data.healthMultiplier, store)) {
                         data.lastAppliedLevel = data.level;
                     }
                 }

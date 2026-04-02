@@ -393,6 +393,84 @@ public class GUIConfig {
             (exConfig, extraInfo) -> exConfig.defaultNameColor
         )
         .add()
+        .append(
+            new KeyedCodec<>("NormalMobHealthMultiplier", Codec.FLOAT),
+            (exConfig, aString, extraInfo) -> exConfig.normalMobHealthMultiplier = aString,
+            (exConfig, extraInfo) -> exConfig.normalMobHealthMultiplier
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("NormalMobDamageMultiplier", Codec.FLOAT),
+            (exConfig, aString, extraInfo) -> exConfig.normalMobDamageMultiplier = aString,
+            (exConfig, extraInfo) -> exConfig.normalMobDamageMultiplier
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("NormalMobDamageThreshold", Codec.FLOAT),
+            (exConfig, aString, extraInfo) -> exConfig.normalMobDamageThreshold = aString,
+            (exConfig, extraInfo) -> exConfig.normalMobDamageThreshold
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("NormalMobXPMultiplier", Codec.FLOAT),
+            (exConfig, aString, extraInfo) -> exConfig.normalMobXPMultiplier = aString,
+            (exConfig, extraInfo) -> exConfig.normalMobXPMultiplier
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("EliteMobHealthMultiplier", Codec.FLOAT),
+            (exConfig, aString, extraInfo) -> exConfig.eliteMobHealthMultiplier = aString,
+            (exConfig, extraInfo) -> exConfig.eliteMobHealthMultiplier
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("EliteMobDamageMultiplier", Codec.FLOAT),
+            (exConfig, aString, extraInfo) -> exConfig.eliteMobDamageMultiplier = aString,
+            (exConfig, extraInfo) -> exConfig.eliteMobDamageMultiplier
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("EliteMobDamageThreshold", Codec.FLOAT),
+            (exConfig, aString, extraInfo) -> exConfig.eliteMobDamageThreshold = aString,
+            (exConfig, extraInfo) -> exConfig.eliteMobDamageThreshold
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("EliteMobXPMultiplier", Codec.FLOAT),
+            (exConfig, aString, extraInfo) -> exConfig.eliteMobXPMultiplier = aString,
+            (exConfig, extraInfo) -> exConfig.eliteMobXPMultiplier
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("BossMobHealthMultiplier", Codec.FLOAT),
+            (exConfig, aString, extraInfo) -> exConfig.bossMobHealthMultiplier = aString,
+            (exConfig, extraInfo) -> exConfig.bossMobHealthMultiplier
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("BossMobDamageMultiplier", Codec.FLOAT),
+            (exConfig, aString, extraInfo) -> exConfig.bossMobDamageMultiplier = aString,
+            (exConfig, extraInfo) -> exConfig.bossMobDamageMultiplier
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("BossMobDamageThreshold", Codec.FLOAT),
+            (exConfig, aString, extraInfo) -> exConfig.bossMobDamageThreshold = aString,
+            (exConfig, extraInfo) -> exConfig.bossMobDamageThreshold
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("BossMobXPMultiplier", Codec.FLOAT),
+            (exConfig, aString, extraInfo) -> exConfig.bossMobXPMultiplier = aString,
+            (exConfig, extraInfo) -> exConfig.bossMobXPMultiplier
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("EliteMobs", Codec.STRING_ARRAY),
+            (exConfig, aStringArray, extraInfo) -> exConfig.eliteMobs = aStringArray,
+            (exConfig, extraInfo) -> exConfig.eliteMobs
+        )
+        .add()
         .build();
 
     private boolean enableXPLossOnDeath = false;
@@ -684,6 +762,40 @@ public class GUIConfig {
     private String defaultRankColor = "#FFD700";
 
     private String defaultNameColor = "#ffffff";
+
+    private float normalMobHealthMultiplier = 1.0F;
+
+    private float normalMobDamageMultiplier = 1.0F;
+
+    private float normalMobDamageThreshold = 1.0F;
+
+    private float normalMobXPMultiplier = 1.0F;
+
+    private float eliteMobHealthMultiplier = 1.75F;
+
+    private float eliteMobDamageMultiplier = 1.15F;
+
+    private float eliteMobDamageThreshold = 0.8F;
+
+    private float eliteMobXPMultiplier = 1.4F;
+
+    private float bossMobHealthMultiplier = 2.0F;
+
+    private float bossMobDamageMultiplier = 1.5F;
+
+    private float bossMobDamageThreshold = 0.7F;
+
+    private float bossMobXPMultiplier = 1.8F;
+
+    private String[] eliteMobs = {
+        "Crawler_Void",
+        "Dragon_Void",
+        "Eye_Void",
+        "Golem_Guardian_Void",
+        "Larva_Void",
+        "Necromancer_Void",
+        "Spawn_Void",
+        "Spectre_Void" };
 
     public GUIConfig() {}
 
@@ -1274,6 +1386,54 @@ public class GUIConfig {
         return defaultNameColor;
     }
 
+    public float getNormalMobHealthMultiplier() {
+        return normalMobHealthMultiplier;
+    }
+
+    public float getNormalMobDamageMultiplier() {
+        return normalMobDamageMultiplier;
+    }
+
+    public float getNormalMobDamageThreshold() {
+        return normalMobDamageThreshold;
+    }
+
+    public float getNormalMobXPMultiplier() {
+        return normalMobXPMultiplier;
+    }
+
+    public float getEliteMobHealthMultiplier() {
+        return eliteMobHealthMultiplier;
+    }
+
+    public float getEliteMobDamageMultiplier() {
+        return eliteMobDamageMultiplier;
+    }
+
+    public float getEliteMobDamageThreshold() {
+        return eliteMobDamageThreshold;
+    }
+
+    public float getEliteMobXPMultiplier() {
+        return eliteMobXPMultiplier;
+    }
+
+    public float getBossMobHealthMultiplier() {
+        return bossMobHealthMultiplier;
+    }
+
+    public float getBossMobDamageMultiplier() {
+        return bossMobDamageMultiplier;
+    }
+
+    public float getBossMobDamageThreshold() {
+        return bossMobDamageThreshold;
+    }
+
+    public float getBossMobXPMultiplier() {
+        return bossMobXPMultiplier;
+    }
+
     /**
      * Checks whether the given mob id matches any configured nameplate blacklist entry. Supports exact matches and
      * wildcard patterns using '*'.
@@ -1283,6 +1443,10 @@ public class GUIConfig {
      */
     public boolean isNameplateMobBlacklisted(String npcTypeId) {
         return matchesAnyPattern(blacklistedNameplateMobs, npcTypeId);
+    }
+
+    public boolean isEliteMob(String npcTypeId) {
+        return matchesAnyPattern(eliteMobs, npcTypeId);
     }
 
     /**

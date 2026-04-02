@@ -25,7 +25,9 @@
         "HelpChat:PlaceholderAPI": ">= 1.0.4",
         "PlaceholderLib:PlaceholderLib": "*",
         "org.herolias:DynamicTooltipsLib": "*",
-        "IwakuraEnterprises:Voile": "*"
+        "IwakuraEnterprises:Voile": "*",
+        "Cedeli:EliteMobs": "*",
+        "Frotty27:RPGMobs": "*"
     },
     "DisabledByDefault": false,
     "Main": "com.azuredoom.levelingcore.LevelingCore",

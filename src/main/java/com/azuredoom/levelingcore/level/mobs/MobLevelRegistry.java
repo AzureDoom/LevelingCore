@@ -3,6 +3,7 @@ package com.azuredoom.levelingcore.level.mobs;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.IntSupplier;
+import java.util.function.Supplier;
 
 public final class MobLevelRegistry {
 
@@ -22,7 +23,7 @@ public final class MobLevelRegistry {
     public MobLevelData getOrCreateWithPersistence(
         UUID entityId,
         IntSupplier spawnLevelSupplier,
-        long nowTick,
+        Supplier<MobEncounterProfile> profileSupplier,
         MobLevelPersistence persistence
     ) {
         return levels.computeIfAbsent(entityId, id -> {
@@ -34,9 +35,23 @@ public final class MobLevelRegistry {
                 return data;
             }
             var spawnLevel = spawnLevelSupplier.getAsInt();
-            persistence.put(id, new PersistedMobLevel(spawnLevel, false));
 
-            return new MobLevelData(spawnLevel);
+            var profile = profileSupplier.get();
+            var data = MobLevelData.from(spawnLevel, profile);
+            persistence.put(
+                id,
+                new PersistedMobLevel(
+                    data.level,
+                    data.locked,
+                    data.profileId,
+                    data.tier.name(),
+                    data.healthMultiplier,
+                    data.damageMultiplier,
+                    data.xpMultiplier
+                )
+            );
+
+            return data;
         });
     }
 

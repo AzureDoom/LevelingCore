@@ -748,6 +748,90 @@ Controls the color non-top three players are shown in the leaderboard screen, no
 
 ---
 
+### `NormalMobHealthMultiplier` (float)
+**Default:** `1.0`
+
+Controls the health multiplier applied to mobs that are not elite or boss mobs.
+
+---
+
+### `NormalMobDamageMultiplier` (float)
+**Default:** `1.0`
+
+Controls the damage multiplier applied to mobs that are not elite or boss mobs.
+
+---
+
+### `NormalMobDamageThreshold` (float)
+**Default:** `1.0`
+
+Controls the damage threshold applied to mobs that are not elite or boss mobs.
+
+---
+
+### `NormalMobXPMultiplier` (float)
+**Default:** `1.0`
+
+Controls the XP multiplier applied to mobs that are not elite or boss mobs.
+
+---
+
+### `EliteMobHealthMultiplier` (float)
+**Default:** 1.75`
+
+Controls the health multiplier applied to elite mobs.
+
+---
+
+### `EliteMobDamageMultiplier` (float)
+**Default:** `1.149999976158142`
+
+Controls the damage multiplier applied to elite mobs.
+
+---
+
+### `EliteMobDamageThreshold` (float)
+**Default:** `0.800000011920929`
+
+Controls the damage threshold applied to elite mobs.
+
+---
+
+### `EliteMobXPMultiplier` (float)
+**Default:** `1.399999976158142`
+
+Controls the XP multiplier applied to elite mobs.
+
+---
+
+### `BossMobHealthMultiplier` (float)
+**Default:** `2.0`
+
+Controls the health multiplier applied to boss mobs.
+
+---
+
+### `BossMobDamageMultiplier` (float)
+**Default:** `1.5`
+
+Controls the damage multiplier applied to boss mobs.
+
+---
+
+### `BossMobDamageThreshold` (float)
+**Default:** `0.699999988079071`
+
+Controls the damage threshold applied to boss mobs.
+
+---
+
+### `BossMobXPMultiplier` (float)
+**Default:** `1.7999999523162842`
+
+Controls the XP multiplier applied to boss mobs.
+
+---
+
 ## Example Config Snippet
 
 ```json
@@ -980,6 +1064,18 @@ Controls the color non-top three players are shown in the leaderboard screen, no
   "ViewersRankColor": "#9fe3ff",
   "ViewersNameColor": "#ffffff",
   "DefaultRankColor": "#FFD700",
-  "DefaultNameColor": "#ffffff"
+  "DefaultNameColor": "#ffffff",
+  "NormalMobHealthMultiplier": 1.0,
+  "NormalMobDamageMultiplier": 1.0,
+  "NormalMobDamageThreshold": 1.0,
+  "NormalMobXPMultiplier": 1.0,
+  "EliteMobHealthMultiplier": 1.75,
+  "EliteMobDamageMultiplier": 1.149999976158142,
+  "EliteMobDamageThreshold": 0.800000011920929,
+  "EliteMobXPMultiplier": 1.399999976158142,
+  "BossMobHealthMultiplier": 2.0,
+  "BossMobDamageMultiplier": 1.5,
+  "BossMobDamageThreshold": 0.699999988079071,
+  "BossMobXPMultiplier": 1.7999999523162842
 }
 ```

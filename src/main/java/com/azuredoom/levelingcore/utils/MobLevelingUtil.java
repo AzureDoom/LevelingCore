@@ -64,6 +64,7 @@ public final class MobLevelingUtil {
         if (bossOverrideLevel > 0) {
             return bossOverrideLevel;
         }
+
         var instanceBaseLevel = computeInstanceBaseLevel(store);
 
         if (instanceBaseLevel > 0) {
@@ -78,7 +79,6 @@ public final class MobLevelingUtil {
         }
 
         List<WeightedLevel> weightedLevels = new ArrayList<>();
-        var hasInstanceMode = false;
 
         for (var modeStr : modeStrings) {
             if (modeStr == null || modeStr.isBlank()) {
@@ -103,11 +103,6 @@ public final class MobLevelingUtil {
                 store,
                 commandBuffer
             );
-
-            if (mode == CoreLevelMode.INSTANCE && baseLevel > 0) {
-                hasInstanceMode = true;
-                instanceBaseLevel = baseLevel;
-            }
 
             if (baseLevel > 0) {
                 weightedLevels.add(new WeightedLevel(baseLevel, getModeWeight(mode)));
@@ -480,6 +475,7 @@ public final class MobLevelingUtil {
         Config<GUIConfig> config,
         NPCEntity npc,
         int level,
+        float healthTierMulti,
         Store<EntityStore> store
     ) {
         if (npc.getReference() == null || !npc.getReference().isValid()) {
@@ -487,7 +483,7 @@ public final class MobLevelingUtil {
         }
 
         store.getExternalData().getWorld().execute(() -> {
-            var healthMulti = Math.max(1f, (float) level * config.get().getMobHealthMultiplier());
+            var healthMulti = Math.max(1f, (float) level * config.get().getMobHealthMultiplier() * healthTierMulti);
             var stats = store.getComponent(npc.getReference(), EntityStatMap.getComponentType());
             if (stats == null) {
                 return;
@@ -505,21 +501,6 @@ public final class MobLevelingUtil {
         });
 
         return true;
-    }
-
-    /**
-     * Clamps the specified level to a variance window based on the given base level. The variance window is determined
-     * by the configured level variance, ensuring the resulting level stays within the allowed range.
-     *
-     * @param level     the level to be clamped
-     * @param baseLevel the base level used to calculate the variance window
-     * @return the clamped level within the range of [baseLevel - variance, baseLevel + variance]
-     */
-    private static int clampToVarianceWindow(int level, int baseLevel) {
-        var variance = LevelingCore.getConfig().get().getLevelVariance();
-        var min = Math.max(1, baseLevel - variance);
-        var max = Math.max(min, baseLevel + variance);
-        return Math.clamp(level, min, max);
     }
 
     /**

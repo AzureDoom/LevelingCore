@@ -146,7 +146,7 @@ public class ShowLvlHeadSystem implements Runnable {
                 var lvl = LevelingCore.mobLevelRegistry.getOrCreateWithPersistence(
                     npcUUID,
                     () -> MobLevelingUtil.computeSpawnLevel(commandBuffer, npc),
-                    0,
+                    () -> LevelingCore.mobEncounterProfileResolver.resolve(store, npc),
                     LevelingCore.mobLevelPersistence
                 );
                 if (lvl == null) {

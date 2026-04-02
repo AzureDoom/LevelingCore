@@ -111,7 +111,7 @@ public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
                 var mobLevel = LevelingCore.mobLevelRegistry.getOrCreateWithPersistence(
                     entityUuid,
                     () -> MobLevelingUtil.computeSpawnLevel(commandBuffer, entity),
-                    0,
+                    () -> LevelingCore.mobEncounterProfileResolver.resolve(store, entity),
                     LevelingCore.mobLevelPersistence
                 );
                 if (mobLevel == null)
@@ -123,7 +123,8 @@ public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
                 var base = config.get().isUseConfigXPMappingsInsteadOfHealthDefaults()
                     ? (long) (getXPMapping)
                     : xpAmountHealth;
-                var xpAmount = Math.round(base * levelScale);
+                var xpScale = Math.pow(mobLevel.xpMultiplier, config.get().getMobLevelMultiplier());
+                var xpAmount = Math.round(base * levelScale * xpScale);
                 if (xpAmount <= 0)
                     return;
                 store.getExternalData().getWorld().execute(() -> {

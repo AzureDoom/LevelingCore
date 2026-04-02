@@ -89,19 +89,16 @@ public class PlayerDamageFilter extends DamageEventSystem {
             () -> MobLevelingUtil.computeSpawnLevel(commandBuffer, npcAttacker)
         );
         var mobLevel = mobLevelData.level;
-        var baseMelee = config.get().getMobBaseDamage();
-        var meleeMulti = config.get().getMobDamageMultiplier();
-        var baseProjectile = config.get().getMobBaseRangeDamage();
-        var projectileMulti = config.get().getMobRangeDamageMultiplier();
+        var mobDamageMultiplier = mobLevelData.damageMultiplier;
+        var baseDamage = isProjectile ? config.get().getMobBaseRangeDamage() : config.get().getMobBaseDamage();
+        var multiplier = isProjectile
+            ? config.get().getMobRangeDamageMultiplier()
+            : config.get().getMobDamageMultiplier();
 
-        var con = levelService.getCon(victimPlayerRef.getUuid());
-        var mult = conDamageMultiplier(con);
+        var con = levelService.getCon(playerRefComponent.getUuid());
+        var mitigationFactor = conDamageMultiplier(con);
 
-        if (isProjectile) {
-            damage.setAmount(incoming * mult * (baseMelee + projectileMulti * mobLevel));
-        } else {
-            damage.setAmount(incoming * mult * (baseProjectile + meleeMulti * mobLevel));
-        }
+        damage.setAmount(incoming * mitigationFactor * (baseDamage + multiplier * mobLevel) * mobDamageMultiplier);
     }
 
     @Nullable
@@ -116,8 +113,17 @@ public class PlayerDamageFilter extends DamageEventSystem {
         return EntityModule.get().getPlayerComponentType();
     }
 
+    /**
+     * Calculates the damage multiplier based on the Constitution (Con) stat. The formula applies a scale factor to the
+     * Constitution stat and reduces the effective damage by a calculated percentage, which is indirectly proportional
+     * to the Constitution stat value.
+     *
+     * @param con the Constitution stat value of the player or entity
+     * @return the damage multiplier derived from the Constitution stat
+     */
     private float conDamageMultiplier(int con) {
-        var reduction = (float) Math.min(config.get().getConStatMultiplier(), Math.max(0.0, con));
+        var scale = config.get().getConStatMultiplier();
+        var reduction = (con * scale) / (con + 100.0f);
         return 1.0f - reduction;
     }
 }

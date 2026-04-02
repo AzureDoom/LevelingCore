@@ -45,6 +45,7 @@ import com.azuredoom.levelingcore.level.LevelServiceImpl;
 import com.azuredoom.levelingcore.level.itemlevellock.ItemStatRequirement;
 import com.azuredoom.levelingcore.level.itemlevellock.ItemToLevelMapping;
 import com.azuredoom.levelingcore.level.itemlevellock.WeaponStatRequirementMapping;
+import com.azuredoom.levelingcore.level.mobs.MobEncounterProfileResolver;
 import com.azuredoom.levelingcore.level.mobs.MobLevelPersistence;
 import com.azuredoom.levelingcore.level.mobs.MobLevelRegistry;
 import com.azuredoom.levelingcore.level.mobs.mapping.*;
@@ -140,6 +141,10 @@ public class LevelingCore extends JavaPlugin {
 
     public static final List<MobBossMapping.BossRule> mobBossMapping = MobBossMapping.loadOrCreate(
         LevelingCore.configPath
+    );
+
+    public static final MobEncounterProfileResolver mobEncounterProfileResolver = new MobEncounterProfileResolver(
+        mobBossMapping
     );
 
     /**
@@ -314,6 +319,10 @@ public class LevelingCore extends JavaPlugin {
 
     public static Config<GUIConfig> getConfig() {
         return config;
+    }
+
+    public static MobEncounterProfileResolver getMobEncounterProfileResolver() {
+        return mobEncounterProfileResolver;
     }
 
     public void registerAllCommands() {

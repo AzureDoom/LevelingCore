@@ -56,6 +56,8 @@ dependencies {
     vineImplementation 'curse.maven:dynamictooltipslib-1459711:7817318'
     compileOnly 'com.azuredoom.classescore:Classescore:0.+'
     vineImplementation 'curse.maven:endgame-1431338:7826907'
+    vineCompileOnly 'curse.maven:rpgmobs-1444529:7845829'
+    vineCompileOnly 'curse.maven:elite-1441945:7566545'
     //vineImplementation 'modtale:3e453e84-81af-46bf-9e7d-c7de99d9c4f0:0.1.0-alpha@jar'
 
     shadowBundle 'com.h2database:h2:2.4.240'
@@ -215,7 +217,9 @@ if (keyPropsFile.exists()) {
                     "placeholder-api",
                     "placeholderlib",
                     "dynamictooltipslib",
-                    "docs"
+                    "docs",
+                    "rpgmobs",
+                    "elite-mobs"
             ]
 
             def dependencies = []
