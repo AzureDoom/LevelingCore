@@ -39,7 +39,10 @@ public class ShowStatsCommand extends AbstractPlayerCommand {
         @NonNullDecl PlayerRef playerRef,
         @NonNullDecl World world
     ) {
-        var player = commandContext.senderAs(Player.class);
+        var player = store.getComponent(ref, Player.getComponentType());
+        if (player == null) {
+            return;
+        }
 
         if (config.get().isDisableStatPointGainOnLevelUp()) {
             playerRef.sendMessage(CommandLang.STATS_DISABLED);

@@ -76,14 +76,14 @@ public class LossXPEventSystem extends DeathSystems.OnDeathSystem {
                     if (xpLoss <= 0)
                         return;
                     levelService.removeXp(playerUuid, xpLoss);
-                    player.sendMessage(CommandLang.XP_LOST.param("xp", xpLoss));
+                    playerRefComponent.sendMessage(CommandLang.XP_LOST.param("xp", xpLoss));
                     var levelAfter = levelService.getLevel(playerUuid);
                     if (levelAfter < currentLevel) {
-                        player.sendMessage(CommandLang.LEVEL_DOWN.param("level", levelAfter));
+                        playerRefComponent.sendMessage(CommandLang.LEVEL_DOWN.param("level", levelAfter));
                     }
                 } else if (this.config.get().isEnableAllLevelsLostOnDeath()) {
                     levelService.setLevel(playerUuid, 1);
-                    player.sendMessage(CommandLang.DEATH_ALL_LEVELS);
+                    playerRefComponent.sendMessage(CommandLang.DEATH_ALL_LEVELS);
                 } else if (this.config.get().getMinLevelForLevelDown() <= currentLevel) {
                     var levelFloorXp = levelService.getXpForLevel(currentLevel);
                     var xpLoss = (long) (currentXp * this.config.get().getXpLossPercentage());
@@ -91,11 +91,11 @@ public class LossXPEventSystem extends DeathSystems.OnDeathSystem {
                     var actualLoss = currentXp - newXp;
 
                     if (actualLoss <= 0) {
-                        player.sendMessage(CommandLang.MIN_LEVEL_DEATH.param("level", currentLevel));
+                        playerRefComponent.sendMessage(CommandLang.MIN_LEVEL_DEATH.param("level", currentLevel));
                         return;
                     }
                     levelService.setXp(playerUuid, newXp);
-                    player.sendMessage(CommandLang.XP_LOST.param("xp", actualLoss));
+                    playerRefComponent.sendMessage(CommandLang.XP_LOST.param("xp", actualLoss));
                 }
                 XPBarHud.updateHud(playerRefComponent);
             }));

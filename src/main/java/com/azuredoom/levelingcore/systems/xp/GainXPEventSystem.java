@@ -165,7 +165,7 @@ public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
                         var levelAfter = levelService.getLevel(playerUUID);
                         if (levelAfter > levelBefore) {
                             if (config.get().isEnableLevelChatMsgs())
-                                player.sendMessage(CommandLang.LEVEL_UP.param("level", levelAfter));
+                                playerRefComponent.sendMessage(CommandLang.LEVEL_UP.param("level", levelAfter));
                         }
                     });
                 });

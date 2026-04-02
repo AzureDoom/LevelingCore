@@ -36,7 +36,7 @@ public class HudPlayerReady {
                 MultipleHudCompat.showHud(player, playerRef, xpHud);
             } else {
                 if (PluginManager.get().getPlugin(new PluginIdentifier("AutoMultiHud", "AutoMultiHud")) == null) {
-                    player.sendMessage(CommandLang.MISSING_MULTIPLE_HUD);
+                    playerRef.sendMessage(CommandLang.MISSING_MULTIPLE_HUD);
                     LevelingCore.LOGGER.at(Level.WARNING).log(CommandLang.MISSING_MULTIPLE_HUD.getRawText());
                 }
                 player.getHudManager().setCustomHud(playerRef, xpHud);

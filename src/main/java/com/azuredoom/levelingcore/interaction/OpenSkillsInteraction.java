@@ -62,6 +62,6 @@ public class OpenSkillsInteraction extends SimpleInstantInteraction {
             context.getState().state = InteractionState.Failed;
             return;
         }
-        CompletableFuture.runAsync(() -> CommandManager.get().handleCommand(player, "levelingcore showstats"));
+        CompletableFuture.runAsync(() -> CommandManager.get().handleCommand(playerRef, "levelingcore showstats"));
     }
 }

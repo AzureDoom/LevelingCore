@@ -46,7 +46,10 @@ public class ShowLeaderboardCommand extends AbstractPlayerCommand {
             return;
         }
 
-        var player = commandContext.senderAs(Player.class);
+        var player = store.getComponent(ref, Player.getComponentType());
+        if (player == null) {
+            return;
+        }
 
         if (player.getPageManager().getCustomPage() == null) {
             var page = new LeaderboardScreen(
