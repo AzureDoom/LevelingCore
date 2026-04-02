@@ -1,6 +1,6 @@
 ---
 title: "Mob Leveling Modes"
-order: 16
+order: 17
 published: true
 draft: false
 ---
