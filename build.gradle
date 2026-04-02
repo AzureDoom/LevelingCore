@@ -54,7 +54,7 @@ dependencies {
     vineCompileOnly 'curse.maven:placeholderlib-1438208:7540696'
     compileOnly 'at.helpch:placeholderapi-hytale:1.0.8'
     vineImplementation 'curse.maven:dynamictooltipslib-1459711:7817318'
-    compileOnly 'com.azuredoom.classescore:Classescore:0.+'
+    compileOnly 'com.azuredoom.classescore:Classescore:0.0.1-beta.1'
     vineImplementation 'curse.maven:endgame-1431338:7826907'
     vineCompileOnly 'curse.maven:rpgmobs-1444529:7845829'
     vineCompileOnly 'curse.maven:elite-1441945:7566545'
