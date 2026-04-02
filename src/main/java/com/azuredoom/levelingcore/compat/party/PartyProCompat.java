@@ -76,6 +76,7 @@ public class PartyProCompat {
             var killerPos = killerPlayer.getTransform().getPosition();
             var otherPos = otherPlayer.getTransform().getPosition();
 
+            // TODO: Update changes to JOML so this will be distance
             var distance = killerPos.distanceTo(otherPos);
             if (distance <= cfg.getPartyXPDistanceBlocks()) {
                 eligible.add(uuid);
