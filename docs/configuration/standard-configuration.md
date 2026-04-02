@@ -295,9 +295,9 @@ Enables compatibility with the [Party Plugin](https://www.curseforge.com/hytale/
 
 ---
 
-### `LevelMode` (string)
+### `LevelModeArray` (List\<String\>)
 
-**Default:** NEARBY_PLAYERS_MEAN
+**Default:** NEARBY_PLAYERS_MEAN, INSTANCE
 
 **Possible options:**
 - `NEARBY_PLAYERS_MEAN`
@@ -306,7 +306,7 @@ Enables compatibility with the [Party Plugin](https://www.curseforge.com/hytale/
 - `ZONE`
 - `SPAWN_ONLY`
 
-Determines how player level is calculated, based on nearby players.
+Determines how mob level is calculated.
 
 ---
 
@@ -788,7 +788,10 @@ Controls the color non-top three players are shown in the leaderboard screen, no
   "KillerGetsFullXp": true,
   "EnablePartyXPDistanceCheck": false,
   "PartyXPDistanceBlocks": -1.0,
-  "LevelMode": "NEARBY_PLAYERS_MEAN",
+  "LevelModeArray": [
+    "NEARBY_PLAYERS_MEAN",
+    "INSTANCE"
+  ],
   "LevelVariance": 0,
   "MobHealthMultiplier": 2.0999999046325684,
   "MobDamageMultiplier": 0.25,
