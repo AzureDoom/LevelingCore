@@ -11,6 +11,7 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,8 +38,10 @@ public class LevelDownListenerRegistrar {
             return;
 
         var world = player.getWorld();
-        var world_store = world.getEntityStore();
-        var leveldown_sound = SoundEvent.getAssetMap().getIndex(config.get().getLevelDownSound());
+        if (world == null)
+            return;
+        var worldStore = world.getEntityStore();
+        var levelDownSound = SoundEvent.getAssetMap().getIndex(config.get().getLevelDownSound());
 
         LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService1 -> {
             LevelUpRewardsUtil.clear(playerUUID);
@@ -49,14 +52,21 @@ public class LevelDownListenerRegistrar {
                         StatsUtils.resetStats(store, player);
                         StatsUtils.applyAllStats(store, player, newLevel, config);
                         world.execute(() -> {
-                            var transform = world_store.getStore()
-                                .getComponent(playerRef.getReference(), EntityModule.get().getTransformComponentType());
+                            var transform = worldStore.getStore()
+                                .getComponent(
+                                    Objects.requireNonNull(
+                                        store.getExternalData().getWorld().getEntityRef(playerUUID)
+                                    ),
+                                    EntityModule.get().getTransformComponentType()
+                                );
+                            if (transform == null)
+                                return;
                             SoundUtil.playSoundEvent3dToPlayer(
                                 player.getReference(),
-                                leveldown_sound,
+                                levelDownSound,
                                 SoundCategory.UI,
                                 transform.getPosition(),
-                                world_store.getStore()
+                                worldStore.getStore()
                             );
                         });
                         if (!config.get().isDisableStatPointGainOnLevelUp()) {

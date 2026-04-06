@@ -38,8 +38,10 @@ public final class LevelUpListenerRegistrar {
             return;
 
         var world = player.getWorld();
+        if (world == null)
+            return;
         var worldStore = world.getEntityStore();
-        var levelupSound = SoundEvent.getAssetMap().getIndex(config.get().getLevelUpSound());
+        var levelUpSound = SoundEvent.getAssetMap().getIndex(config.get().getLevelUpSound());
 
         LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService -> {
             if (!config.get().isEnableStatLeveling())
@@ -63,16 +65,18 @@ public final class LevelUpListenerRegistrar {
                                 ),
                                 EntityModule.get().getTransformComponentType()
                             );
+                        if (transform == null)
+                            return;
                         SoundUtil.playSoundEvent3dToPlayer(
                             player.getReference(),
-                            levelupSound,
+                            levelUpSound,
                             SoundCategory.UI,
                             transform.getPosition(),
                             worldStore.getStore()
                         );
                     });
                     if (config.get().isEnableLevelUpRewardsConfig()) {
-                        for (int lvl = oldLevel + 1; lvl <= newLevel; lvl++) {
+                        for (var lvl = oldLevel + 1; lvl <= newLevel; lvl++) {
                             LevelUpRewardsUtil.giveRewards(lvl, player);
                         }
                     }
