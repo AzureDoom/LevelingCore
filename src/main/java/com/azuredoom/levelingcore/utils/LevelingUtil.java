@@ -9,6 +9,13 @@ public class LevelingUtil {
 
     private LevelingUtil() {}
 
+    /**
+     * Computes the maximum level based on the leveling configuration and formula type. The formula type determines
+     * which specific logic and configuration are used to calculate the maximum level.
+     *
+     * @return the computed maximum level as an integer. The value depends on the formula type specified in the
+     *         configuration (e.g., LINEAR, TABLE, CUSTOM, or EXPONENTIAL).
+     */
     public static int computeMaxLevel() {
         var internalConfig = LevelingCore.levelingCoreConfig;
         var type = internalConfig.formula.type.trim().toUpperCase(Locale.ROOT);

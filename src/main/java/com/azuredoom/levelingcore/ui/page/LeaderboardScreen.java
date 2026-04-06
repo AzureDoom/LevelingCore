@@ -73,6 +73,15 @@ public class LeaderboardScreen extends InteractiveCustomUIPage<LeaderboardScreen
         update(uiCommandBuilder);
     }
 
+    /**
+     * Updates the leaderboard display using the provided {@code UICommandBuilder}.
+     * <p>
+     * This method fetches leaderboard data, including player rankings, total entries, and viewer-specific details like
+     * their rank. It updates the UI with player information, navigation controls, and corresponding visibility states.
+     * The entries are styled dynamically based on their rank and whether the player is the viewer.
+     *
+     * @param uiCommandBuilder the command builder used to update the UI components of the leaderboard
+     */
     public void update(UICommandBuilder uiCommandBuilder) {
         var totalEntries = levelServiceImpl.getLeaderboardCount();
         var entries = levelServiceImpl.getLeaderboardPage(pageSize, currentOffset);
@@ -124,6 +133,17 @@ public class LeaderboardScreen extends InteractiveCustomUIPage<LeaderboardScreen
         }
     }
 
+    /**
+     * Handles data events triggered by changes in the leaderboard screen.
+     * <p>
+     * This method processes different types of data events such as "MyRank", "PrevPage", "NextPage", and "Refresh".
+     * Depending on the provided data type, it adjusts internal states like the current page offset or recalculates
+     * ranks for the viewer. After processing the event, the user interface is refreshed to reflect the updated state.
+     *
+     * @param ref   a reference to the entity store involved in the event
+     * @param store the entity store instance containing relevant data
+     * @param data  the binding data associated with the event, identifying the type of operation or update to process
+     */
     @Override
     public void handleDataEvent(
         @Nonnull Ref<EntityStore> ref,
@@ -151,12 +171,32 @@ public class LeaderboardScreen extends InteractiveCustomUIPage<LeaderboardScreen
         refreshUI();
     }
 
+    /**
+     * Refreshes the user interface of the leaderboard screen.
+     * <p>
+     * This method rebuilds the UI by creating a new instance of {@code UICommandBuilder}, updating it with the
+     * necessary data, and then sending the updated commands for rendering. It ensures the displayed data is in sync
+     * with the current state of the leaderboard.
+     * <p>
+     * The method relies on the {@link #update(UICommandBuilder)} method to populate the command builder with the
+     * appropriate leaderboard data, such as player ranks and navigation controls. Finally, the updated commands are
+     * sent for rendering via {@code sendUpdate}.
+     */
     private void refreshUI() {
         var builder = new UICommandBuilder();
         update(builder);
         sendUpdate(builder);
     }
 
+    /**
+     * Applies styling to the rank and name text for a specific row in the leaderboard based on the player's rank and
+     * viewer status.
+     *
+     * @param uiCommandBuilder the command builder used to set the styling properties
+     * @param rowIndex         the index of the row to apply the styling to
+     * @param rank             the rank of the player corresponding to the row
+     * @param isViewer         whether the player associated with the row is the viewer
+     */
     private void applyRankStyling(UICommandBuilder uiCommandBuilder, int rowIndex, int rank, boolean isViewer) {
         String rankColor;
         String nameColor;

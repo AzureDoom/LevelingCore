@@ -31,6 +31,12 @@ public class NotificationsUtil {
         );
     }
 
+    /**
+     * Sends a notification to a player indicating that they have gained a specific number of experience points (XP).
+     *
+     * @param playerRef The reference object representing the target player to receive the notification.
+     * @param xpAmount  The number of experience points gained by the player.
+     */
     public static void sendXPGainNotification(PlayerRef playerRef, long xpAmount) {
         sendNotification(
             playerRef,
@@ -38,6 +44,14 @@ public class NotificationsUtil {
         );
     }
 
+    /**
+     * Sends a notification to a player indicating that they do not meet the required level to use a specific item.
+     *
+     * @param playerRef     The reference object representing the target player.
+     * @param requiredLevel The minimum level required to use the item.
+     * @param item          The item for which the level requirement applies.
+     * @param playerLevel   The current level of the player attempting to use the item.
+     */
     public static void sendLevelRequirementNotification(
         PlayerRef playerRef,
         int requiredLevel,
@@ -59,6 +73,13 @@ public class NotificationsUtil {
         );
     }
 
+    /**
+     * Sends a notification to a player indicating that they do not meet the required stat requirements to use a
+     * specific item.
+     *
+     * @param playerRef The reference object representing the target player.
+     * @param item      The item for which the stat requirement applies.
+     */
     public static void sendStatRequirementNotification(PlayerRef playerRef, ItemStack item) {
         var itemTranslatedName = I18nModule.get()
             .getMessage(

@@ -19,6 +19,14 @@ public class HudPlayerReady {
 
     private HudPlayerReady() {}
 
+    /**
+     * Handles the initialization of the XP bar HUD when a player is ready. Checks whether the XP bar UI is enabled in
+     * the configuration and sets up the appropriate HUD display based on the availability of external compatibility
+     * plugins.
+     *
+     * @param event  the event triggered when a player is ready; contains information about the player
+     * @param config the configuration object providing GUI-related settings, including HUD enablement
+     */
     public static void ready(PlayerReadyEvent event, Config<GUIConfig> config) {
         var player = event.getPlayer();
         var ref = event.getPlayerRef();

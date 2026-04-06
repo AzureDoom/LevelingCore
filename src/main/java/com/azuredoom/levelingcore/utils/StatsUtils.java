@@ -28,6 +28,14 @@ public class StatsUtils {
         return store.getComponent(player.getReference(), EntityStatMap.getComponentType());
     }
 
+    /**
+     * Increases the player's maximum health by applying a health modifier using the specified multiplier.
+     *
+     * @param store            The store from which the player's statistical data can be retrieved.
+     * @param player           The player whose health is to be increased.
+     * @param healthMultiplier The multiplier value that determines the amount by which the player's maximum health is
+     *                         increased.
+     */
     public static void doHealthIncrease(Store<EntityStore> store, Player player, float healthMultiplier) {
         var playerStatMap = StatsUtils.getStatMap(store, player);
         if (playerStatMap == null)
@@ -42,6 +50,14 @@ public class StatsUtils {
         playerStatMap.putModifier(healthIndex, modifierKey, modifier);
     }
 
+    /**
+     * Applies a stamina modifier to increase the player's maximum stamina by the specified multiplier.
+     *
+     * @param store             The store from which the player's statistical data can be retrieved.
+     * @param player            The player whose stamina is to be increased.
+     * @param staminaMultiplier The multiplier value used to determine the amount by which the player's maximum stamina
+     *                          is increased.
+     */
     public static void doStaminaIncrease(Store<EntityStore> store, Player player, float staminaMultiplier) {
         var playerStatMap = StatsUtils.getStatMap(store, player);
         if (playerStatMap == null)
@@ -56,6 +72,14 @@ public class StatsUtils {
         playerStatMap.putModifier(staminaIndex, modifierKey, modifier);
     }
 
+    /**
+     * Increases the player's maximum mana by applying a mana modifier using the specified multiplier.
+     *
+     * @param store          The store from which the player's statistical data can be retrieved.
+     * @param player         The player whose mana is to be increased.
+     * @param manaMultiplier The multiplier value used to determine the amount by which the player's maximum mana is
+     *                       increased.
+     */
     public static void doManaIncrease(Store<EntityStore> store, Player player, float manaMultiplier) {
         var playerStatMap = StatsUtils.getStatMap(store, player);
         if (playerStatMap == null)
@@ -70,6 +94,13 @@ public class StatsUtils {
         playerStatMap.putModifier(manaIndex, modifierKey, modifier);
     }
 
+    /**
+     * Resets the player's statistics to their default values by removing specific stat modifiers and resetting the
+     * values of health, stamina, and mana.
+     *
+     * @param store  The data store from which the player's statistical data is retrieved.
+     * @param player The player whose stats are to be reset.
+     */
     public static void resetStats(Store<EntityStore> store, Player player) {
         var playerStatMap = StatsUtils.getStatMap(store, player);
         if (playerStatMap == null)
@@ -90,6 +121,15 @@ public class StatsUtils {
         playerStatMap.resetStatValue(manaIndex);
     }
 
+    /**
+     * Updates the player's stats, including health, stamina, and mana, based on their new level and configuration
+     * parameters. Optionally fully heals the player's stats if enabled in the configuration.
+     *
+     * @param store    The data store from which the player's statistical data can be retrieved.
+     * @param player   The player whose stats are to be updated.
+     * @param newLevel The player's new level used to calculate stat modifications.
+     * @param config   The configuration that provides multipliers for stat increases and healing options.
+     */
     public static void applyAllStats(
         Store<EntityStore> store,
         Player player,
@@ -111,6 +151,12 @@ public class StatsUtils {
             healMaxStat(store, player);
     }
 
+    /**
+     * Maximizes the player's health, stamina, and mana to their respective maximum values.
+     *
+     * @param store  The data store containing the player's statistical data.
+     * @param player The player whose stats are to be fully healed.
+     */
     private static void healMaxStat(Store<EntityStore> store, Player player) {
         var playerStatMap = StatsUtils.getStatMap(store, player);
         if (playerStatMap == null)
@@ -120,6 +166,13 @@ public class StatsUtils {
         playerStatMap.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getMana());
     }
 
+    /**
+     * Formats a numeric experience value into a human-readable string representation. Values are scaled and suffixed,
+     * using "B" for billions, "M" for millions, and "k" for thousands.
+     *
+     * @param value The numeric experience value to be formatted.
+     * @return A formatted string representing the experience value with appropriate scaling and suffix.
+     */
     public static String formatXp(double value) {
         if (value >= 1_000_000_000)
             return String.format("%.2fB", value / 1_000_000_000);
