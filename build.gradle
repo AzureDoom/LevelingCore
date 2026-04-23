@@ -261,4 +261,44 @@ if (keyPropsFile.exists()) {
             )
         }
     }
+    tasks.register("publishToModifold", Exec) {
+        group = "publishing"
+        description = "Publishes the built jar and changelog to Modifold."
+        dependsOn tasks.named("build")
+
+        def curlExe = org.gradle.internal.os.OperatingSystem.current().isWindows()
+                ? "C:/Windows/System32/curl.exe"
+                : "curl"
+
+        doFirst {
+            def releaseProp = new Properties()
+            releaseProp.load(new FileInputStream(keyPropsFile))
+
+            def apiKey = releaseProp.getProperty("modifoldKey")
+            def projectSlug = releaseProp.getProperty("modifoldProjectId")
+
+            if (!apiKey) throw new GradleException("Missing modifoldKey in key.properties")
+            if (!projectSlug) throw new GradleException("Missing modifoldProjectId in key.properties")
+
+            def jarFile = layout.buildDirectory
+                    .file("libs/${project.name}-${project.version}.jar")
+                    .get().asFile
+
+            def changelogText = rootProject.file("changelog.md").text
+
+            commandLine(
+                    curlExe,
+                    "-sS",
+                    "-X", "POST",
+                    "https://api.modifold.com/projects/${projectSlug}/versions",
+                    "-H", "Authorization: Bearer ${apiKey}",
+                    "-F", "file=@${jarFile.absolutePath}",
+                    "-F", "version_number=${project.version}",
+                    "-F", "release_channel=${project.release_type.toString().toLowerCase()}",
+                    "-F", 'game_versions=["Early Access"]',
+                    "-F", 'loaders=["vanilla"]',
+                    "-F", "changelog=${changelogText}"
+            )
+        }
+    }
 }
