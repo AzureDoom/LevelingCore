@@ -93,6 +93,15 @@ shadowJar {
                 'Main-Class': 'com.azuredoom.levelingcore.LevelingCore'
         )
     }
+
+    relocate 'org.h2', 'com.azuredoom.levelingcore.libs.h2'
+    relocate 'com.zaxxer.hikari', 'com.azuredoom.levelingcore.libs.hikari'
+    relocate 'org.slf4j', 'com.azuredoom.levelingcore.libs.slf4j'
+    relocate 'org.yaml.snakeyaml', 'com.azuredoom.levelingcore.libs.snakeyaml'
+    relocate 'net.objecthunter.exp4j', 'com.azuredoom.levelingcore.libs.exp4j'
+    relocate 'com.mysql', 'com.azuredoom.levelingcore.libs.mysql'
+    relocate 'org.mariadb', 'com.azuredoom.levelingcore.libs.mariadb'
+    relocate 'org.postgresql', 'com.azuredoom.levelingcore.libs.postgresql'
 }
 
 tasks.build {
