@@ -17,7 +17,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.azuredoom.levelingcore.LevelingCore;
-import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.lang.CommandLang;
 import com.azuredoom.levelingcore.ui.hud.XPBarHud;
@@ -42,69 +41,67 @@ public final class LevelUpListenerRegistrar {
             return;
         var worldStore = world.getEntityStore();
         var levelUpSound = SoundEvent.getAssetMap().getIndex(config.get().getLevelUpSound());
+        if (!config.get().isEnableStatLeveling())
+            return;
+        var levelService = LevelingCore.getLevelService();
 
-        LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService -> {
-            if (!config.get().isEnableStatLeveling())
-                return;
+        store.getExternalData()
+            .getWorld()
+            .execute(() -> levelService.registerLevelUpListener((playerId, oldLevel, newLevel) -> {
+                if (!playerId.equals(playerUUID))
+                    return;
 
-            store.getExternalData()
-                .getWorld()
-                .execute(() -> levelService.registerLevelUpListener((playerId, oldLevel, newLevel) -> {
-                    if (!playerId.equals(playerUUID))
+                StatsUtils.applyAllStats(store, player, newLevel, config);
+
+                world.execute(() -> {
+                    if (player.getReference() == null)
                         return;
-
-                    StatsUtils.applyAllStats(store, player, newLevel, config);
-
-                    world.execute(() -> {
-                        if (player.getReference() == null)
-                            return;
-                        var transform = worldStore.getStore()
-                            .getComponent(
-                                Objects.requireNonNull(
-                                    store.getExternalData().getWorld().getEntityRef(playerUUID)
-                                ),
-                                EntityModule.get().getTransformComponentType()
-                            );
-                        if (transform == null)
-                            return;
-                        SoundUtil.playSoundEvent3dToPlayer(
-                            player.getReference(),
-                            levelUpSound,
-                            SoundCategory.UI,
-                            transform.getPosition(),
-                            worldStore.getStore()
+                    var transform = worldStore.getStore()
+                        .getComponent(
+                            Objects.requireNonNull(
+                                store.getExternalData().getWorld().getEntityRef(playerUUID)
+                            ),
+                            EntityModule.get().getTransformComponentType()
                         );
-                    });
-                    if (config.get().isEnableLevelUpRewardsConfig()) {
-                        for (var lvl = oldLevel + 1; lvl <= newLevel; lvl++) {
-                            LevelUpRewardsUtil.giveRewards(lvl, player);
-                        }
+                    if (transform == null)
+                        return;
+                    SoundUtil.playSoundEvent3dToPlayer(
+                        player.getReference(),
+                        levelUpSound,
+                        SoundCategory.UI,
+                        transform.getPosition(),
+                        worldStore.getStore()
+                    );
+                });
+                if (config.get().isEnableLevelUpRewardsConfig()) {
+                    for (var lvl = oldLevel + 1; lvl <= newLevel; lvl++) {
+                        LevelUpRewardsUtil.giveRewards(lvl, player);
                     }
-                    if (!config.get().isDisableStatPointGainOnLevelUp()) {
-                        int pointsPerLevel;
-                        if (config.get().isUseStatsPerLevelMapping()) {
-                            pointsPerLevel = LevelingCore.statsPerLevel.getAddedStatsForLevel(
-                                newLevel,
-                                config.get().getStatsPerLevel()
-                            );
-                        } else {
-                            pointsPerLevel = config.get().getStatsPerLevel();
-                        }
-                        var totalFromLeveling = Math.max(0, newLevel * pointsPerLevel);
-
-                        levelService.setAbilityPoints(playerId, totalFromLeveling);
-
-                        playerRef.sendMessage(
-                            CommandLang.ABILITY_POINTS.param(
-                                "ability_points",
-                                levelService.getAvailableAbilityPoints(playerId)
-                            )
+                }
+                if (!config.get().isDisableStatPointGainOnLevelUp()) {
+                    int pointsPerLevel;
+                    if (config.get().isUseStatsPerLevelMapping()) {
+                        pointsPerLevel = LevelingCore.statsPerLevel.getAddedStatsForLevel(
+                            newLevel,
+                            config.get().getStatsPerLevel()
                         );
+                    } else {
+                        pointsPerLevel = config.get().getStatsPerLevel();
                     }
-                    LevelDownListenerRegistrar.clear(playerId);
-                    XPBarHud.updateHud(playerRef);
-                }));
-        });
+                    var totalFromLeveling = Math.max(0, newLevel * pointsPerLevel);
+
+                    levelService.setAbilityPoints(playerId, totalFromLeveling);
+
+                    playerRef.sendMessage(
+                        CommandLang.ABILITY_POINTS.param(
+                            "ability_points",
+                            levelService.getAvailableAbilityPoints(playerId)
+                        )
+                    );
+                }
+                LevelDownListenerRegistrar.clear(playerId);
+                XPBarHud.updateHud(playerRef);
+            }));
     }
 
     public static void clear(UUID playerId) {

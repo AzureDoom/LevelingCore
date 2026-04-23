@@ -15,7 +15,6 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import java.util.logging.Level;
 
 import com.azuredoom.levelingcore.LevelingCore;
-import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.lang.CommandLang;
 import com.azuredoom.levelingcore.utils.StatsUtils;
 
@@ -24,7 +23,7 @@ public class HyUICompat {
     private HyUICompat() {}
 
     public static void showStats(PlayerRef playerRef, Store<EntityStore> store, Ref<EntityStore> ref) {
-        var levelService = LevelingCoreApi.getLevelServiceIfPresent().orElse(null);
+        var levelService = LevelingCore.getLevelService();
         if (levelService == null) {
             LevelingCore.LOGGER.at(Level.INFO).log("Opened stats page for player");
             return;

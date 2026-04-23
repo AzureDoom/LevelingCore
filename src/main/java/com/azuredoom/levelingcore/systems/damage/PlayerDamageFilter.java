@@ -22,7 +22,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.azuredoom.levelingcore.LevelingCore;
-import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.utils.MobLevelingUtil;
 
@@ -71,11 +70,7 @@ public class PlayerDamageFilter extends DamageEventSystem {
         if (npcAttackerRef == null)
             return;
 
-        var levelServiceOpt = LevelingCoreApi.getLevelServiceIfPresent();
-        if (levelServiceOpt.isEmpty())
-            return;
-
-        var levelService = levelServiceOpt.get();
+        var levelService = LevelingCore.getLevelService();
 
         var incoming = damage.getAmount();
         if (incoming <= 0f)

@@ -17,7 +17,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.azuredoom.levelingcore.LevelingCore;
-import com.azuredoom.levelingcore.api.LevelingCoreApi;
 
 public class ObjectivesSystem extends EntityTickingSystem<EntityStore> {
 
@@ -35,7 +34,7 @@ public class ObjectivesSystem extends EntityTickingSystem<EntityStore> {
             return;
         }
 
-        var levelService = LevelingCoreApi.getLevelServiceIfPresent().orElse(null);
+        var levelService = LevelingCore.getLevelService();
         if (levelService == null) {
             return;
         }

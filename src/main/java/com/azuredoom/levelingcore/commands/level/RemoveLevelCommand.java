@@ -15,7 +15,7 @@ import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import javax.annotation.Nonnull;
 
-import com.azuredoom.levelingcore.api.LevelingCoreApi;
+import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.lang.CommandLang;
 
@@ -53,7 +53,7 @@ public class RemoveLevelCommand extends AbstractPlayerCommand {
         @NonNullDecl PlayerRef playerRef,
         @NonNullDecl World world
     ) {
-        var levelService = LevelingCoreApi.getLevelServiceIfPresent().orElse(null);
+        var levelService = LevelingCore.getLevelService();
         if (levelService == null) {
             commandContext.sendMessage(CommandLang.NOT_INITIALIZED);
             return;

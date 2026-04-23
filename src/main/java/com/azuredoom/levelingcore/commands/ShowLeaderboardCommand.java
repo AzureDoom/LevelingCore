@@ -14,7 +14,6 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
 import com.azuredoom.levelingcore.LevelingCore;
-import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.ui.page.LeaderboardScreen;
 
 public class ShowLeaderboardCommand extends AbstractPlayerCommand {
@@ -33,7 +32,7 @@ public class ShowLeaderboardCommand extends AbstractPlayerCommand {
         @NonNullDecl PlayerRef playerRef,
         @NonNullDecl World world
     ) {
-        var levelService = LevelingCoreApi.getLevelServiceIfPresent().orElse(null);
+        var levelService = LevelingCore.getLevelService();
         if (levelService == null) {
             return;
         }

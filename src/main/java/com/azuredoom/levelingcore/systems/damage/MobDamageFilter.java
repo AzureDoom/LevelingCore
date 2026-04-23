@@ -18,7 +18,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.azuredoom.levelingcore.LevelingCore;
-import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.utils.MobLevelingUtil;
 
@@ -66,10 +65,7 @@ public class MobDamageFilter extends DamageEventSystem {
         if (playerComponent == null || playerComponent.getInventory() == null)
             return;
 
-        var levelServiceOpt = LevelingCoreApi.getLevelServiceIfPresent();
-        if (levelServiceOpt.isEmpty())
-            return;
-        var levelService = levelServiceOpt.get();
+        var levelService = LevelingCore.getLevelService();
 
         var uuid = playerRefAttacker.getUuid();
         var str = levelService.getStr(uuid);

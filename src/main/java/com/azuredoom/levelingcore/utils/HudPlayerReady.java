@@ -9,7 +9,6 @@ import com.hypixel.hytale.server.core.util.Config;
 import java.util.logging.Level;
 
 import com.azuredoom.levelingcore.LevelingCore;
-import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.compat.MultipleHudCompat;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.lang.CommandLang;
@@ -35,11 +34,12 @@ public class HudPlayerReady {
 
         if (!config.get().isEnableXPBarUI())
             return;
-        world.execute(() -> LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService1 -> {
+        world.execute(() -> {
+            var levelService = LevelingCore.getLevelService();
             var playerRef = store.getComponent(ref, PlayerRef.getComponentType());
             if (playerRef == null)
                 return;
-            var xpHud = new XPBarHud(playerRef, levelService1, config);
+            var xpHud = new XPBarHud(playerRef, levelService, config);
             // TODO: Update 5 removes the need for MultipleHud/AutoMultiHud and setCustomHud -> addCustomHud with keyed
             // huds
             // instead
@@ -54,6 +54,6 @@ public class HudPlayerReady {
                 player.getHudManager().setCustomHud(playerRef, xpHud);
             }
             XPBarHud.updateHud(playerRef);
-        }));
+        });
     }
 }

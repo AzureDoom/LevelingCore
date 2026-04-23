@@ -3,14 +3,14 @@ package com.azuredoom.levelingcore.compat.placeholderlib;
 import com.snoxium.placeholderlib.PlaceholderLib;
 import com.snoxium.placeholderlib.api.SimplePlaceholder;
 
-import com.azuredoom.levelingcore.api.LevelingCoreApi;
+import com.azuredoom.levelingcore.LevelingCore;
 
 public class PlaceholderLibCompat {
 
     private PlaceholderLibCompat() {}
 
     public static void register() {
-        var levelService = LevelingCoreApi.getLevelServiceIfPresent().orElse(null);
+        var levelService = LevelingCore.getLevelService();
         if (levelService == null)
             return;
         PlaceholderLib.getRegistry()

@@ -17,7 +17,6 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.azuredoom.levelingcore.LevelingCore;
-import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.lang.CommandLang;
 import com.azuredoom.levelingcore.ui.hud.XPBarHud;
@@ -42,67 +41,66 @@ public class LevelDownListenerRegistrar {
             return;
         var worldStore = world.getEntityStore();
         var levelDownSound = SoundEvent.getAssetMap().getIndex(config.get().getLevelDownSound());
+        var levelService = LevelingCore.getLevelService();
 
-        LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService1 -> {
-            LevelUpRewardsUtil.clear(playerUUID);
-            if (config.get().isEnableStatLeveling()) {
-                store.getExternalData()
-                    .getWorld()
-                    .execute(() -> levelService1.registerLevelDownListener(((playerId, oldLevel, newLevel) -> {
-                        StatsUtils.resetStats(store, player);
-                        StatsUtils.applyAllStats(store, player, newLevel, config);
-                        world.execute(() -> {
-                            var transform = worldStore.getStore()
-                                .getComponent(
-                                    Objects.requireNonNull(
-                                        store.getExternalData().getWorld().getEntityRef(playerUUID)
-                                    ),
-                                    EntityModule.get().getTransformComponentType()
-                                );
-                            if (transform == null)
-                                return;
-                            SoundUtil.playSoundEvent3dToPlayer(
-                                player.getReference(),
-                                levelDownSound,
-                                SoundCategory.UI,
-                                transform.getPosition(),
-                                worldStore.getStore()
+        LevelUpRewardsUtil.clear(playerUUID);
+        if (config.get().isEnableStatLeveling()) {
+            store.getExternalData()
+                .getWorld()
+                .execute(() -> levelService.registerLevelDownListener(((playerId, oldLevel, newLevel) -> {
+                    StatsUtils.resetStats(store, player);
+                    StatsUtils.applyAllStats(store, player, newLevel, config);
+                    world.execute(() -> {
+                        var transform = worldStore.getStore()
+                            .getComponent(
+                                Objects.requireNonNull(
+                                    store.getExternalData().getWorld().getEntityRef(playerUUID)
+                                ),
+                                EntityModule.get().getTransformComponentType()
                             );
-                        });
-                        if (!config.get().isDisableStatPointGainOnLevelUp()) {
-                            int pointsPerLevel;
-                            if (config.get().isUseStatsPerLevelMapping()) {
-                                pointsPerLevel = LevelingCore.statsPerLevel.getAddedStatsForLevel(
-                                    newLevel,
-                                    config.get().getStatsPerLevel()
-                                );
-                            } else {
-                                pointsPerLevel = config.get().getStatsPerLevel();
-                            }
-                            var totalFromLeveling = Math.max(0, newLevel * pointsPerLevel);
-
-                            levelService1.setAbilityPoints(playerId, totalFromLeveling);
-                            levelService1.setUsedAbilityPoints(playerId, 0);
-                            levelService1.setStr(playerId, 0);
-                            levelService1.setAgi(playerId, 0);
-                            levelService1.setPer(playerId, 0);
-                            levelService1.setVit(playerId, 0);
-                            levelService1.setInt(playerId, 0);
-                            playerRef.sendMessage(
-                                CommandLang.ABILITY_POINTS.param("ability_points", totalFromLeveling)
+                        if (transform == null)
+                            return;
+                        SoundUtil.playSoundEvent3dToPlayer(
+                            player.getReference(),
+                            levelDownSound,
+                            SoundCategory.UI,
+                            transform.getPosition(),
+                            worldStore.getStore()
+                        );
+                    });
+                    if (!config.get().isDisableStatPointGainOnLevelUp()) {
+                        int pointsPerLevel;
+                        if (config.get().isUseStatsPerLevelMapping()) {
+                            pointsPerLevel = LevelingCore.statsPerLevel.getAddedStatsForLevel(
+                                newLevel,
+                                config.get().getStatsPerLevel()
                             );
+                        } else {
+                            pointsPerLevel = config.get().getStatsPerLevel();
                         }
+                        var totalFromLeveling = Math.max(0, newLevel * pointsPerLevel);
 
-                        // Need to clear out mapping whenever a player levels down as well
-                        LevelUpListenerRegistrar.clear(playerUUID);
-                        XPBarHud.updateHud(playerRef);
-                        if (config.get().isEnableItemLevelRestriction())
-                            LevelingCore.equipBlockManager.validateArmorOnReady(player);
-                        if (config.get().isEnableItemStatRequirement())
-                            LevelingCore.equipBlockStatManager.validateArmorOnReady(player);
-                    })));
-            }
-        });
+                        levelService.setAbilityPoints(playerId, totalFromLeveling);
+                        levelService.setUsedAbilityPoints(playerId, 0);
+                        levelService.setStr(playerId, 0);
+                        levelService.setAgi(playerId, 0);
+                        levelService.setPer(playerId, 0);
+                        levelService.setVit(playerId, 0);
+                        levelService.setInt(playerId, 0);
+                        playerRef.sendMessage(
+                            CommandLang.ABILITY_POINTS.param("ability_points", totalFromLeveling)
+                        );
+                    }
+
+                    // Need to clear out mapping whenever a player levels down as well
+                    LevelUpListenerRegistrar.clear(playerUUID);
+                    XPBarHud.updateHud(playerRef);
+                    if (config.get().isEnableItemLevelRestriction())
+                        LevelingCore.equipBlockManager.validateArmorOnReady(player);
+                    if (config.get().isEnableItemStatRequirement())
+                        LevelingCore.equipBlockStatManager.validateArmorOnReady(player);
+                })));
+        }
     }
 
     public static void clear(UUID playerId) {

@@ -5,7 +5,7 @@ import com.hypixel.hytale.server.core.universe.PlayerRef;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import com.azuredoom.levelingcore.api.LevelingCoreApi;
+import com.azuredoom.levelingcore.LevelingCore;
 
 public class LevelingCoreExpansion extends PlaceholderExpansion {
 
@@ -31,7 +31,7 @@ public class LevelingCoreExpansion extends PlaceholderExpansion {
 
     @Override
     public @Nullable String onPlaceholderRequest(PlayerRef playerRef, @NotNull String params) {
-        var levelService = LevelingCoreApi.getLevelServiceIfPresent().orElse(null);
+        var levelService = LevelingCore.getLevelService();
         if (levelService == null) {
             return null;
         }

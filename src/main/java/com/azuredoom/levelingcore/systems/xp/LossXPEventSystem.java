@@ -14,7 +14,7 @@ import com.hypixel.hytale.server.core.util.Config;
 
 import javax.annotation.Nonnull;
 
-import com.azuredoom.levelingcore.api.LevelingCoreApi;
+import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.lang.CommandLang;
 import com.azuredoom.levelingcore.ui.hud.XPBarHud;
@@ -55,10 +55,11 @@ public class LossXPEventSystem extends DeathSystems.OnDeathSystem {
         var player = store.getComponent(ref, Player.getComponentType());
         if (player == null)
             return;
+        var levelService = LevelingCore.getLevelService();
 
         store.getExternalData()
             .getWorld()
-            .execute(() -> LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService -> {
+            .execute(() -> {
                 var playerRef = player.getReference();
                 if (playerRef == null) {
                     return;
@@ -98,6 +99,6 @@ public class LossXPEventSystem extends DeathSystems.OnDeathSystem {
                     playerRefComponent.sendMessage(CommandLang.XP_LOST.param("xp", actualLoss));
                 }
                 XPBarHud.updateHud(playerRefComponent);
-            }));
+            });
     }
 }

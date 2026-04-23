@@ -22,7 +22,6 @@ import java.util.logging.Level;
 import javax.annotation.Nonnull;
 
 import com.azuredoom.levelingcore.LevelingCore;
-import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.level.mobs.CoreLevelMode;
 import com.azuredoom.levelingcore.level.mobs.mapping.MobBossMapping;
@@ -338,12 +337,7 @@ public final class MobLevelingUtil {
         final var nearbyRadius = 40f;
         final var nearbyRadiusSq = nearbyRadius * nearbyRadius;
 
-        var lvlOpt = LevelingCoreApi.getLevelServiceIfPresent();
-        if (lvlOpt.isEmpty()) {
-            return 5;
-        }
-
-        var lvlService = lvlOpt.get();
+        var levelService = LevelingCore.getLevelService();
 
         for (var playerRefComponent : playerRefs) {
             var playerRef = playerRefComponent.getReference();
@@ -354,7 +348,7 @@ public final class MobLevelingUtil {
             var pPos = playerRefComponent.getTransform().getPosition();
             // TODO: Update 5 changes to JOML so this will be distanceSquared
             if (pPos.distanceSquaredTo(mobPos) <= nearbyRadiusSq) {
-                var lvl = lvlService.getLevel(playerRefComponent.getUuid());
+                var lvl = levelService.getLevel(playerRefComponent.getUuid());
                 sum += lvl;
                 count++;
             }

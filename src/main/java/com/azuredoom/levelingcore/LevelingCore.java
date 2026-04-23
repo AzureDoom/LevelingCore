@@ -21,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.*;
 import javax.annotation.Nonnull;
 
-import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.commands.*;
 import com.azuredoom.levelingcore.compat.dynamictooltips.DynamicTooltipsLibCompat;
 import com.azuredoom.levelingcore.compat.placeholderapi.PlaceholderAPICompat;
@@ -187,36 +186,35 @@ public class LevelingCore extends JavaPlugin {
                 PlayerReadyEvent.class,
                 (playerReadyEvent -> {
                     var player = playerReadyEvent.getPlayer();
-                    LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService -> {
-                        var playerRef = player.getReference();
-                        if (playerRef == null) {
-                            LOGGER.at(Level.WARNING).log("Player reference is null");
-                            return;
-                        }
-                        var playerRefComponent = playerRef.getStore()
-                            .getComponent(playerRef, PlayerRef.getComponentType());
-                        if (playerRefComponent == null) {
-                            LOGGER.at(Level.WARNING).log("Player ref component is null");
-                            return;
-                        }
-                        var uuid = playerRefComponent.getUuid();
-                        var level = levelService.getLevel(uuid);
-                        int targetTotal;
-                        if (config.get().isUseStatsPerLevelMapping()) {
-                            targetTotal = statsPerLevel.getCumulativeStatsForLevel(
-                                level,
-                                level * config.get().getStatsPerLevel()
-                            );
-                        } else {
-                            targetTotal = level * config.get().getStatsPerLevel();
-                        }
-                        var used = levelService.getUsedAbilityPoints(uuid);
-                        var currentTotal = levelService.getAvailableAbilityPoints(uuid) + used;
+                    var playerRef = player.getReference();
+                    if (playerRef == null) {
+                        LOGGER.at(Level.WARNING).log("Player reference is null");
+                        return;
+                    }
+                    var playerRefComponent = playerRef.getStore()
+                        .getComponent(playerRef, PlayerRef.getComponentType());
+                    if (playerRefComponent == null) {
+                        LOGGER.at(Level.WARNING).log("Player ref component is null");
+                        return;
+                    }
+                    var uuid = playerRefComponent.getUuid();
+                    var levelService = LevelingCore.getLevelService();
+                    var level = levelService.getLevel(uuid);
+                    int targetTotal;
+                    if (config.get().isUseStatsPerLevelMapping()) {
+                        targetTotal = statsPerLevel.getCumulativeStatsForLevel(
+                            level,
+                            level * config.get().getStatsPerLevel()
+                        );
+                    } else {
+                        targetTotal = level * config.get().getStatsPerLevel();
+                    }
+                    var used = levelService.getUsedAbilityPoints(uuid);
+                    var currentTotal = levelService.getAvailableAbilityPoints(uuid) + used;
 
-                        if (currentTotal != targetTotal) {
-                            levelService.setAbilityPoints(uuid, Math.max(0, targetTotal));
-                        }
-                    });
+                    if (currentTotal != targetTotal) {
+                        levelService.setAbilityPoints(uuid, Math.max(0, targetTotal));
+                    }
                     if (LevelingCore.getConfig().get().isEnableItemLevelRestriction())
                         LevelingCore.equipBlockManager.validateArmorOnReady(player);
                     if (LevelingCore.getConfig().get().isEnableItemStatRequirement())

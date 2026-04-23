@@ -16,7 +16,6 @@ import java.util.logging.Level;
 import javax.annotation.Nonnull;
 
 import com.azuredoom.levelingcore.LevelingCore;
-import com.azuredoom.levelingcore.api.LevelingCoreApi;
 
 public class SkillPointResetInteraction extends SimpleInstantInteraction {
 
@@ -84,7 +83,7 @@ public class SkillPointResetInteraction extends SimpleInstantInteraction {
         statMap.removeModifier(DefaultEntityStatTypes.getMana(), MANA_MOD_KEY);
         statMap.setStatValue(DefaultEntityStatTypes.getMana(), 0);
 
-        var levelService = LevelingCoreApi.getLevelServiceIfPresent().orElse(null);
+        var levelService = LevelingCore.getLevelService();
         if (levelService == null) {
             LevelingCore.LOGGER.at(Level.WARNING).log("SkillPointResetInteraction: Level service not present.");
             context.getState().state = InteractionState.Failed;

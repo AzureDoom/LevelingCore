@@ -22,7 +22,7 @@ import com.hypixel.hytale.server.core.util.Config;
 
 import javax.annotation.Nonnull;
 
-import com.azuredoom.levelingcore.api.LevelingCoreApi;
+import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.lang.CommandLang;
 import com.azuredoom.levelingcore.utils.StatsUtils;
@@ -68,7 +68,7 @@ public class StatsScreen extends InteractiveCustomUIPage<StatsScreen.BindingData
     }
 
     public void update(UICommandBuilder uiCommandBuilder, Store<EntityStore> store) {
-        var levelService = LevelingCoreApi.getLevelServiceIfPresent().orElse(null);
+        var levelService = LevelingCore.getLevelService();
         if (levelService == null) {
             uiCommandBuilder.set("#PNTSLabel.TextSpans", Message.raw("Service unavailable"));
             return;
@@ -206,7 +206,7 @@ public class StatsScreen extends InteractiveCustomUIPage<StatsScreen.BindingData
             return;
         }
 
-        var levelService = LevelingCoreApi.getLevelServiceIfPresent().orElse(null);
+        var levelService = LevelingCore.getLevelService();
         if (levelService == null) {
             playerRef.sendMessage(CommandLang.NOT_INITIALIZED);
             return;

@@ -20,7 +20,6 @@ import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import java.util.Objects;
 
 import com.azuredoom.levelingcore.LevelingCore;
-import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.compat.classescore.ClassesCoreCompat;
 import com.azuredoom.levelingcore.config.GUIConfig;
 import com.azuredoom.levelingcore.utils.MobLevelingUtil;
@@ -70,12 +69,7 @@ public class ShowLvlHeadSystem implements Runnable {
         }
 
         var guiConfig = config.get();
-        var levelingServiceOpt = LevelingCoreApi.getLevelServiceIfPresent();
-        if (levelingServiceOpt.isEmpty()) {
-            return;
-        }
-
-        var levelingService = levelingServiceOpt.get();
+        var levelService = LevelingCore.getLevelService();
         var hasClassesCore = PluginManager.get()
             .getPlugin(new PluginIdentifier("com.azuredoom", "classescore")) != null;
 
@@ -91,7 +85,7 @@ public class ShowLvlHeadSystem implements Runnable {
                 }
 
                 localeHolder[0] = playerRef.getLanguage();
-                var lvl = levelingService.getLevel(playerRef.getUuid());
+                var lvl = levelService.getLevel(playerRef.getUuid());
                 var className = hasClassesCore ? ClassesCoreCompat.getPlayerClass(playerRef.getUuid()) : null;
 
                 insertNameplate(

@@ -23,7 +23,6 @@ import java.util.Objects;
 import javax.annotation.Nonnull;
 
 import com.azuredoom.levelingcore.LevelingCore;
-import com.azuredoom.levelingcore.api.LevelingCoreApi;
 import com.azuredoom.levelingcore.compat.party.PartyPluginCompat;
 import com.azuredoom.levelingcore.compat.party.PartyProCompat;
 import com.azuredoom.levelingcore.config.GUIConfig;
@@ -127,47 +126,46 @@ public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
                 var xpAmount = Math.round(base * levelScale * xpScale);
                 if (xpAmount <= 0)
                     return;
+                var levelService = LevelingCore.getLevelService();
                 store.getExternalData().getWorld().execute(() -> {
-                    LevelingCoreApi.getLevelServiceIfPresent().ifPresent(levelService -> {
-                        var levelBefore = levelService.getLevel(playerUUID);
+                    var levelBefore = levelService.getLevel(playerUUID);
+                    if (
+                        PluginManager.get()
+                            .getPlugin(new PluginIdentifier("tsumori", "partypro")) != null
+                    ) {
+                        PartyProCompat.onXPGain(xpAmount, playerUUID, levelService, config, playerRefComponent);
+                    } else if (
+                        PluginManager.get()
+                            .getPlugin(new PluginIdentifier("com.carsonk", "Party Plugin")) != null
+                    ) {
+                        PartyPluginCompat.onXPGain(
+                            xpAmount,
+                            playerUUID,
+                            levelService,
+                            config,
+                            playerRefComponent
+                        );
+                    } else {
+                        // Fallback to default XP gain if supported Party mods are not installed
                         if (
-                            PluginManager.get()
-                                .getPlugin(new PluginIdentifier("tsumori", "partypro")) != null
-                        ) {
-                            PartyProCompat.onXPGain(xpAmount, playerUUID, levelService, config, playerRefComponent);
-                        } else if (
-                            PluginManager.get()
-                                .getPlugin(new PluginIdentifier("com.carsonk", "Party Plugin")) != null
-                        ) {
-                            PartyPluginCompat.onXPGain(
-                                xpAmount,
-                                playerUUID,
-                                levelService,
-                                config,
-                                playerRefComponent
-                            );
-                        } else {
-                            // Fallback to default XP gain if supported Party mods are not installed
-                            if (
-                                !config.get().isDisableXPGainNotification() && !levelService.isMaxLevel(
-                                    playerUUID
-                                )
+                            !config.get().isDisableXPGainNotification() && !levelService.isMaxLevel(
+                                playerUUID
                             )
-                                NotificationsUtil.sendXPGainNotification(
-                                    playerRefComponent,
-                                    xpAmount
-                                );
-                            levelService.addXp(playerUUID, xpAmount);
-                            XPBarHud.updateHud(playerRefComponent);
-                        }
-                        LevelingCore.mobLevelRegistry.remove(entityUuid);
-                        LevelingCore.mobLevelPersistence.remove(entityUuid);
-                        var levelAfter = levelService.getLevel(playerUUID);
-                        if (levelAfter > levelBefore) {
-                            if (config.get().isEnableLevelChatMsgs())
-                                playerRefComponent.sendMessage(CommandLang.LEVEL_UP.param("level", levelAfter));
-                        }
-                    });
+                        )
+                            NotificationsUtil.sendXPGainNotification(
+                                playerRefComponent,
+                                xpAmount
+                            );
+                        levelService.addXp(playerUUID, xpAmount);
+                        XPBarHud.updateHud(playerRefComponent);
+                    }
+                    LevelingCore.mobLevelRegistry.remove(entityUuid);
+                    LevelingCore.mobLevelPersistence.remove(entityUuid);
+                    var levelAfter = levelService.getLevel(playerUUID);
+                    if (levelAfter > levelBefore) {
+                        if (config.get().isEnableLevelChatMsgs())
+                            playerRefComponent.sendMessage(CommandLang.LEVEL_UP.param("level", levelAfter));
+                    }
                 });
             }
         }
