@@ -94,7 +94,6 @@ shadowJar {
         )
     }
 
-    relocate 'org.h2', 'com.azuredoom.levelingcore.libs.h2'
     relocate 'com.zaxxer.hikari', 'com.azuredoom.levelingcore.libs.hikari'
     relocate 'org.slf4j', 'com.azuredoom.levelingcore.libs.slf4j'
     relocate 'org.yaml.snakeyaml', 'com.azuredoom.levelingcore.libs.snakeyaml'
