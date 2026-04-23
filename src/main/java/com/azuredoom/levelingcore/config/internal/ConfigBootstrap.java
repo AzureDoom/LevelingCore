@@ -24,8 +24,6 @@ import com.azuredoom.levelingcore.level.stats.StatsPerLevelMapping;
  */
 public final class ConfigBootstrap {
 
-    private ConfigBootstrap() {}
-
     /**
      * Record Bootstrap is a utility data holder used during the initialization of the LevelingCore system. It
      * encapsulates core parts necessary for the functionality of the leveling system. The record is primarily designed
@@ -56,7 +54,7 @@ public final class ConfigBootstrap {
      * @return A {@code Bootstrap} record containing the initialized {@code LevelService} and a {@code closeable}
      *         resource for managing the cleanup of associated resources.
      */
-    public static Bootstrap bootstrap(Path dataDir) {
+    public Bootstrap bootstrap(Path dataDir) {
         if (dataDir == null) {
             throw new LevelingCoreException("dataDir cannot be null");
         }

@@ -73,7 +73,9 @@ public class LevelingCore extends JavaPlugin {
 
     public static final Path configPath = Paths.get("./mods/com.azuredoom_levelingcore/data/config/");
 
-    public static final ConfigBootstrap.Bootstrap bootstrap = ConfigBootstrap.bootstrap(configPath);
+    private final ConfigBootstrap bootstrap;
+
+    private ConfigBootstrap.Bootstrap activeBootstrap;
 
     public static LevelServiceImpl levelingService;
 
@@ -150,6 +152,7 @@ public class LevelingCore extends JavaPlugin {
         super(init);
         INSTANCE = this;
         config = this.withConfig("levelingcore", GUIConfig.CODEC);
+        bootstrap = new ConfigBootstrap();
     }
 
     @Override
@@ -173,7 +176,8 @@ public class LevelingCore extends JavaPlugin {
         INSTANCE = this;
         config.save();
         LOGGER.at(Level.INFO).log("Leveling Core initializing");
-        levelingService = bootstrap.service();
+        activeBootstrap = bootstrap.bootstrap(configPath);
+        levelingService = activeBootstrap.service();
         this.registerAllCommands();
         this.registerAllSystems();
         this.getCodecRegistry(Interaction.CODEC)
@@ -280,7 +284,9 @@ public class LevelingCore extends JavaPlugin {
         super.shutdown();
         LOGGER.at(Level.INFO).log("Leveling Core shutting down");
         try {
-            LevelingCore.bootstrap.closeable().close();
+            if (activeBootstrap != null) {
+                activeBootstrap.closeable().close();
+            }
         } catch (Exception e) {
             throw new LevelingCoreException("Failed to close resources", e);
         }
@@ -311,6 +317,7 @@ public class LevelingCore extends JavaPlugin {
         return config;
     }
 
+    @SuppressWarnings("unused")
     public static MobEncounterProfileResolver getMobEncounterProfileResolver() {
         return mobEncounterProfileResolver;
     }
