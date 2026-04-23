@@ -1,6 +1,5 @@
 package com.azuredoom.levelingcore.systems.level;
 
-import com.azuredoom.levelingcore.utils.LevelingUtil;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
@@ -16,15 +15,14 @@ import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
-import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.config.GUIConfig;
-import com.azuredoom.levelingcore.level.formulas.loader.LevelTableLoader;
 import com.azuredoom.levelingcore.level.mobs.PersistedMobLevel;
+import com.azuredoom.levelingcore.utils.LevelingUtil;
 import com.azuredoom.levelingcore.utils.MobLevelingUtil;
 import com.azuredoom.levelingcore.utils.PendingUpdate;
 
