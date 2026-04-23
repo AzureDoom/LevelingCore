@@ -10,11 +10,19 @@ public class LevelingUtil {
     private LevelingUtil() {}
 
     /**
-     * Computes the maximum level based on the leveling configuration and formula type. The formula type determines
-     * which specific logic and configuration are used to calculate the maximum level.
+     * Determines the maximum mob level based on the formula type defined in the LevelingCore configuration.
+     * <p>
+     * The value is resolved according to the configured formula type:
+     * <ul>
+     * <li><b>LINEAR</b> – Returns the maximum level specified in the linear formula configuration.</li>
+     * <li><b>TABLE</b> – Loads the configured level table file and determines the maximum level from the table
+     * data.</li>
+     * <li><b>CUSTOM</b> – Returns the maximum level defined in the custom formula configuration.</li>
+     * <li><b>Other / default</b> – Falls back to the maximum level defined in the exponential formula
+     * configuration.</li>
+     * </ul>
      *
-     * @return the computed maximum level as an integer. The value depends on the formula type specified in the
-     *         configuration (e.g., LINEAR, TABLE, CUSTOM, or EXPONENTIAL).
+     * @return the maximum mob level determined from the active formula configuration
      */
     public static int computeMaxLevel() {
         var internalConfig = LevelingCore.levelingCoreConfig;

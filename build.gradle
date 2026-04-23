@@ -184,7 +184,9 @@ if (keyPropsFile.exists()) {
                     '-F', "versionNumber=${project.version}",
                     '-F', "channel=${project.release_type}",
                     '-F', "gameVersions=${project.hytale_version}",
-                    '-F', "changelog=${changelogText}"
+                    '-F', "changelog=${changelogText}",
+                    '-F', "modIds[]=2ebf130e-2189-4e90-9323-803a374d05ce:1.5.2",
+                    '-F', "modIds[]=9e3f3c46-92e1-4f57-8702-4ec11d7d10b4:1.10.2"
             )
         }
     }

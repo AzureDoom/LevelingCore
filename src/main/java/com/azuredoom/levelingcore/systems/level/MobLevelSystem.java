@@ -1,5 +1,6 @@
 package com.azuredoom.levelingcore.systems.level;
 
+import com.azuredoom.levelingcore.utils.LevelingUtil;
 import com.hypixel.hytale.component.ArchetypeChunk;
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
@@ -203,35 +204,14 @@ public class MobLevelSystem extends EntityTickingSystem<EntityStore> {
     }
 
     /**
-     * Determines the maximum mob level based on the formula type defined in the LevelingCore configuration.
-     * <p>
-     * The value is resolved according to the configured formula type:
-     * <ul>
-     * <li><b>LINEAR</b> – Returns the maximum level specified in the linear formula configuration.</li>
-     * <li><b>TABLE</b> – Loads the configured level table file and determines the maximum level from the table
-     * data.</li>
-     * <li><b>CUSTOM</b> – Returns the maximum level defined in the custom formula configuration.</li>
-     * <li><b>Other / default</b> – Falls back to the maximum level defined in the exponential formula
-     * configuration.</li>
-     * </ul>
+     * Computes the maximum level based on the leveling configuration and formula type. The formula type determines
+     * which specific logic and configuration are used to calculate the maximum level.
      *
-     * @return the maximum mob level determined from the active formula configuration
+     * @return the computed maximum level as an integer. The value depends on the formula type specified in the
+     *         configuration (e.g., LINEAR, TABLE, CUSTOM, or EXPONENTIAL).
      */
     private int computeMobMaxLevel() {
-        var internalConfig = LevelingCore.levelingCoreConfig;
-        var type = internalConfig.formula.type.trim().toUpperCase(Locale.ROOT);
-
-        return switch (type) {
-            case "LINEAR" -> internalConfig.formula.linear.maxLevel;
-            case "TABLE" -> {
-                var tableFormula = LevelTableLoader.loadOrCreateFromDataDir(
-                    internalConfig.formula.table.file
-                );
-                yield Math.max(1, tableFormula.getMaxLevel());
-            }
-            case "CUSTOM" -> internalConfig.formula.custom.maxLevel;
-            default -> internalConfig.formula.exponential.maxLevel;
-        };
+        return LevelingUtil.computeMaxLevel();
     }
 
     @NullableDecl
