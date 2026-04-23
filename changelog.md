@@ -1,5 +1,3 @@
-v1.0.3
-- Cleans up mob leveling for left over instance check. 
-- Adds support for marking mobs as elites.
-- Added new configuration options for normal, elite and boss mob health, damage, damage resistance and xp drop.
-- All commands now require the prefix /levelingcore
+v1.0.4
+- Fixes issue where h2 DB connections don't always properly close on shutdown.
+- Relocates most DB drivers but h2 to help avoid any issues with any other mods shipping those DB drivers as well.
