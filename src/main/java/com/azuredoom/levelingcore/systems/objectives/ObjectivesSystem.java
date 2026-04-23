@@ -23,8 +23,6 @@ public class ObjectivesSystem extends EntityTickingSystem<EntityStore> {
 
     private final Set<UUID> rewardedObjectives = ConcurrentHashMap.newKeySet();
 
-    // private boolean printedObjectives = false;
-
     @Override
     public void tick(
         float dt,
@@ -36,14 +34,6 @@ public class ObjectivesSystem extends EntityTickingSystem<EntityStore> {
         if (index != 0) {
             return;
         }
-
-        // if (!printedObjectives) {
-        // printedObjectives = true;
-        //
-        // ObjectiveAsset.getAssetMap()
-        // .getAssetMap()
-        // .forEach((id, asset) -> LevelingCore.LOGGER.at(Level.INFO).log("Objective ID: {0}", id));
-        // }
 
         var levelService = LevelingCoreApi.getLevelServiceIfPresent().orElse(null);
         if (levelService == null) {
