@@ -5,6 +5,7 @@ plugins {
     id 'com.diffplug.spotless' version '8.1.0'
     id 'com.gradleup.shadow' version '9.3.0'
     id 'com.azuredoom.hytale-tools' version '1.0.23'
+    id 'com.azuredoom.hytalepublisher' version '1.0.0'
 }
 
 configurations {
@@ -154,151 +155,40 @@ idea {
     }
 }
 
-def keyPropsFile = new File(rootProject.projectDir, "key.properties")
+hytalePublisher {
+    version       = project.version
+    releaseType   = "release"
+    changelogFile = "changelog.md"
 
-if (keyPropsFile.exists()) {
-    tasks.register("publishToModtale", Exec) {
-        group = "publishing"
-        description = "Publishes the built jar and changelog to Modtale.net."
-        dependsOn tasks.named("build")
-        def curlExe = org.gradle.internal.os.OperatingSystem.current().isWindows()
-                ? "C:/Windows/System32/curl.exe"
-                : "curl"
+    modtale {
+        enabled   = true
+        projectId = project.modtale_uuid
 
-        doFirst {
-            def releaseProp = new Properties()
-            releaseProp.load(new FileInputStream(keyPropsFile))
-            def apiKey = releaseProp.getProperty("modTaleKey")
-            def projectId = releaseProp.getProperty("modTaleProjectId")
-            def jarFile = layout.buildDirectory
-                    .file("libs/${project.name}-${project.version}.jar")
-                    .get().asFile
-            def changelogFile = rootProject.file("changelog.md")
-            def changelogText = changelogFile.text
-
-            commandLine(
-                    curlExe, '-X', 'POST',
-                    "https://api.modtale.net/api/v1/projects/$projectId/versions",
-                    '-H', "X-MODTALE-KEY: ${apiKey}",
-                    '-F', "file=@${jarFile.absolutePath}",
-                    '-F', "versionNumber=${project.version}",
-                    '-F', "channel=${project.release_type}",
-                    '-F', "gameVersions=${project.hytale_version}",
-                    '-F', "changelog=${changelogText}",
-                    '-F', "modIds[]=2ebf130e-2189-4e90-9323-803a374d05ce:1.5.2:optional",
-                    '-F', "modIds[]=9e3f3c46-92e1-4f57-8702-4ec11d7d10b4:1.10.2:optional"
-            )
-        }
+        optional "9e3f3c46-92e1-4f57-8702-4ec11d7d10b4", "1.10.2"
+        optional "2ebf130e-2189-4e90-9323-803a374d05ce", "1.5.2"
     }
-    // TODO: Move to hytale.curseforge.com when actually working because CurseForge didn't bother getting this ready dispute early access to Hytale.
-    tasks.register("publishToCurseForge", Exec) {
-        group = "publishing"
-        description = "Publishes the built jar and changelog to CurseForge."
-        dependsOn tasks.named("build")
 
-        def curlExe = org.gradle.internal.os.OperatingSystem.current().isWindows()
-                ? "C:/Windows/System32/curl.exe"
-                : "curl"
+    curseforge {
+        enabled   = true
+        projectId = project.curseforgeID
 
-        doFirst {
-            def releaseProp = new Properties()
-            releaseProp.load(new FileInputStream(keyPropsFile))
-            def apiKey = releaseProp.getProperty("curseKey")
-
-            def jarFile = layout.buildDirectory
-                    .file("libs/${project.name}-${project.version}.jar")
-                    .get().asFile
-
-            def changelogText = rootProject.file("changelog.md").text
-            def cfReleaseType = project.release_type.toString().toLowerCase()
-
-            def requiredDeps = [
-                    "multiplehud"
-            ]
-
-            def optionalDeps = [
-                    "hyui",
-                    "partypro",
-                    "party-info",
-                    "better-modlist",
-                    "update-checker",
-                    "automultihud",
-                    "placeholder-api",
-                    "placeholderlib",
-                    "dynamictooltipslib",
-                    "docs",
-                    "rpgmobs",
-                    "elite-mobs"
-            ]
-
-            def dependencies = []
-
-            requiredDeps.each {
-                dependencies << [ slug: it, type: "requiredDependency" ]
-            }
-            optionalDeps.each {
-                dependencies << [ slug: it, type: "optionalDependency" ]
-            }
-
-            def metadataObj = [
-                    changelog     : changelogText,
-                    changelogType : "markdown",
-                    displayName   : "${project.name} ${project.version}",
-                    gameVersions  : [14284],
-                    releaseType   : cfReleaseType,
-                    relations     : [ projects: dependencies ]
-            ]
-            def metadataJson = groovy.json.JsonOutput.toJson(metadataObj)
-
-            commandLine(
-                    curlExe,
-                    "-f", "-sS",
-                    "-X", "POST",
-                    "https://legacy.curseforge.com/api/projects/${project.curseforgeID}/upload-file",
-                    "-H", "X-Api-Token: ${apiKey}",
-                    "-F", "metadata=${metadataJson};type=application/json",
-                    "-F", "file=@${jarFile.absolutePath}"
-            )
-        }
+        required "multiplehud"
+        optional "dynamictooltipslib"
+        optional "update-checker"
+        optional "better-modlist"
+        optional "party-info"
+        optional "partypro"
+        optional "hyui"
+        optional "automultihud"
+        optional "placeholder-api"
+        optional "placeholderlib"
+        optional "docs"
+        optional "rpgmobs"
+        optional "elite-mobs"
     }
-    tasks.register("publishToModifold", Exec) {
-        group = "publishing"
-        description = "Publishes the built jar and changelog to Modifold."
-        dependsOn tasks.named("build")
 
-        def curlExe = org.gradle.internal.os.OperatingSystem.current().isWindows()
-                ? "C:/Windows/System32/curl.exe"
-                : "curl"
-
-        doFirst {
-            def releaseProp = new Properties()
-            releaseProp.load(new FileInputStream(keyPropsFile))
-
-            def apiKey = releaseProp.getProperty("modifoldKey")
-            def projectSlug = releaseProp.getProperty("modifoldProjectId")
-
-            if (!apiKey) throw new GradleException("Missing modifoldKey in key.properties")
-            if (!projectSlug) throw new GradleException("Missing modifoldProjectId in key.properties")
-
-            def jarFile = layout.buildDirectory
-                    .file("libs/${project.name}-${project.version}.jar")
-                    .get().asFile
-
-            def changelogText = rootProject.file("changelog.md").text
-
-            commandLine(
-                    curlExe,
-                    "-sS",
-                    "-X", "POST",
-                    "https://api.modifold.com/projects/${projectSlug}/versions",
-                    "-H", "Authorization: Bearer ${apiKey}",
-                    "-F", "file=@${jarFile.absolutePath}",
-                    "-F", "version_number=${project.version}",
-                    "-F", "release_channel=${project.release_type.toString().toLowerCase()}",
-                    "-F", 'game_versions=["Early Access"]',
-                    "-F", 'loaders=["vanilla"]',
-                    "-F", "changelog=${changelogText}"
-            )
-        }
+    modifold {
+        enabled   = true
+        projectId = project.mod_id
     }
 }
