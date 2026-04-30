@@ -20,4 +20,5 @@ run
 libs/PartyPro
 
 .vscode
+bin
 key.properties
