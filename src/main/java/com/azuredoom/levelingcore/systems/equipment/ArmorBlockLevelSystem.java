@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.utils.NotificationsUtil;
 
+// TODO: Update 5 changes import of InventoryChangeEvent to com.hypixel.hytale.server.core.event.events.ecs.InventoryChangeEvent
 public class ArmorBlockLevelSystem extends EntityEventSystem<EntityStore, InventoryChangeEvent> {
 
     protected final Set<UUID> ignoreArmorEvents = ConcurrentHashMap.newKeySet();

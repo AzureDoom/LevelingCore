@@ -27,6 +27,7 @@ public class ShowStatsCommand extends AbstractPlayerCommand {
     public ShowStatsCommand(Config<GUIConfig> config) {
         super("showstats", "Shows player stats");
         this.requirePermission("levelingcore.showstats");
+        //TODO: Update changes setPermissionGroup(GameMode.Adventure) to setPermissionGroups("hytale:Adventurer")
         this.setPermissionGroup(GameMode.Adventure);
         this.config = config;
     }
