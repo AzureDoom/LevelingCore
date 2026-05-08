@@ -1,9 +1,6 @@
 package com.azuredoom.levelingcore.database;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.UUID;
 import java.util.logging.Level;
 import javax.sql.DataSource;
@@ -62,21 +59,47 @@ public class JdbcLevelRepository {
         ) {
             stmt.execute(sql);
 
-            stmt.execute("ALTER TABLE player_levels ADD COLUMN IF NOT EXISTS str INT DEFAULT 0 NOT NULL");
-            stmt.execute("ALTER TABLE player_levels ADD COLUMN IF NOT EXISTS agi INT DEFAULT 0 NOT NULL");
-            stmt.execute("ALTER TABLE player_levels ADD COLUMN IF NOT EXISTS per INT DEFAULT 0 NOT NULL");
-            stmt.execute("ALTER TABLE player_levels ADD COLUMN IF NOT EXISTS vit INT DEFAULT 0 NOT NULL");
-            stmt.execute("ALTER TABLE player_levels ADD COLUMN IF NOT EXISTS intelligence INT DEFAULT 0 NOT NULL");
-            stmt.execute("ALTER TABLE player_levels ADD COLUMN IF NOT EXISTS con INT DEFAULT 0 NOT NULL");
-            stmt.execute("ALTER TABLE player_levels ADD COLUMN IF NOT EXISTS ability_points INT DEFAULT 5 NOT NULL");
-            stmt.execute(
-                "ALTER TABLE player_levels ADD COLUMN IF NOT EXISTS used_ability_points INT DEFAULT 0 NOT NULL"
-            );
-            stmt.execute(
-                "ALTER TABLE player_levels ADD COLUMN IF NOT EXISTS player_name VARCHAR(64)"
-            );
+            addColumnIfMissing(connection, "player_levels", "str", "INT DEFAULT 0 NOT NULL");
+            addColumnIfMissing(connection, "player_levels", "agi", "INT DEFAULT 0 NOT NULL");
+            addColumnIfMissing(connection, "player_levels", "per", "INT DEFAULT 0 NOT NULL");
+            addColumnIfMissing(connection, "player_levels", "vit", "INT DEFAULT 0 NOT NULL");
+            addColumnIfMissing(connection, "player_levels", "intelligence", "INT DEFAULT 0 NOT NULL");
+            addColumnIfMissing(connection, "player_levels", "con", "INT DEFAULT 0 NOT NULL");
+            addColumnIfMissing(connection, "player_levels", "ability_points", "INT DEFAULT 5 NOT NULL");
+            addColumnIfMissing(connection, "player_levels", "used_ability_points", "INT DEFAULT 0 NOT NULL");
+            addColumnIfMissing(connection, "player_levels", "player_name", "VARCHAR(64)");
         } catch (Exception e) {
             throw new LevelingCoreException("Failed to create player_levels table", e);
+        }
+    }
+
+    private void addColumnIfMissing(Connection connection, String table, String column, String definition) throws SQLException {
+        if (columnExists(connection, table, column)) {
+            return;
+        }
+
+        try (var stmt = connection.createStatement()) {
+            stmt.execute("ALTER TABLE " + table + " ADD COLUMN " + column + " " + definition);
+        }
+    }
+
+    private boolean columnExists(Connection connection, String table, String column) throws SQLException {
+        var meta = connection.getMetaData();
+
+        try (var rs = meta.getColumns(null, null, table, column)) {
+            if (rs.next()) {
+                return true;
+            }
+        }
+
+        try (var rs = meta.getColumns(null, null, table.toUpperCase(), column.toUpperCase())) {
+            if (rs.next()) {
+                return true;
+            }
+        }
+
+        try (var rs = meta.getColumns(null, null, table.toLowerCase(), column.toLowerCase())) {
+            return rs.next();
         }
     }
 
@@ -228,10 +251,12 @@ public class JdbcLevelRepository {
         try (var c = dataSource.getConnection()) {
             c.setAutoCommit(false);
 
-            try (var st = c.createStatement()) {
-                st.execute("SET WRITE_DELAY 1000");
-                st.execute("SET LOCK_MODE 0");
-            } catch (Exception ignored) {}
+            if (isH2(c)) {
+                try (var st = c.createStatement()) {
+                    st.execute("SET WRITE_DELAY 1000");
+                    st.execute("SET LOCK_MODE 0");
+                }
+            }
 
             final var levelToNewXp = new java.util.HashMap<Integer, Long>(1024);
 
@@ -300,6 +325,13 @@ public class JdbcLevelRepository {
         // Only update meta after successful commit
         metaPut("formula.type", newDesc.type());
         metaPut("formula.params", newDesc.params());
+    }
+
+    private boolean isH2(Connection connection) throws SQLException {
+        return connection.getMetaData()
+                .getDatabaseProductName()
+                .toLowerCase()
+                .contains("h2");
     }
 
     /**
