@@ -31,7 +31,7 @@ public class SetStatsCommand extends AbstractPlayerCommand {
 
     public SetStatsCommand() {
         super("setstats", "Set stats value to player");
-        this.requirePermission("levelingcore.addstats");
+        // this.requirePermission("levelingcore.addstats");
         this.playerArg = this.withRequiredArg(
             "player",
             "Player to add stats to.",

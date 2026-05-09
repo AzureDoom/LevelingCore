@@ -20,7 +20,7 @@ public class ShowLeaderboardCommand extends AbstractPlayerCommand {
 
     public ShowLeaderboardCommand() {
         super("leaderboard", "Shows the player leaderboard");
-        this.requirePermission("levelingcore.leaderboard");
+        // this.requirePermission("levelingcore.leaderboard");
         // TODO: Update changes setPermissionGroup(GameMode.Adventure) to setPermissionGroups("hytale:Adventurer")
         this.setPermissionGroup(GameMode.Adventure);
     }

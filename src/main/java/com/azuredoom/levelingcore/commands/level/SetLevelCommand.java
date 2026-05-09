@@ -36,7 +36,7 @@ public class SetLevelCommand extends AbstractPlayerCommand {
 
     public SetLevelCommand(Config<GUIConfig> config) {
         super("setlevel", "Set level of player");
-        this.requirePermission("levelingcore.setlevel");
+        // this.requirePermission("levelingcore.setlevel");
         this.config = config;
         this.playerArg = this.withRequiredArg(
             "player",

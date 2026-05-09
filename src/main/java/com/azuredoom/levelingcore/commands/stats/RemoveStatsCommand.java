@@ -31,7 +31,7 @@ public class RemoveStatsCommand extends AbstractPlayerCommand {
 
     public RemoveStatsCommand() {
         super("removestats", "Remove stats from player");
-        this.requirePermission("levelingcore.addstats");
+        // this.requirePermission("levelingcore.addstats");
         this.playerArg = this.withRequiredArg(
             "player",
             "Player to remove stats to.",

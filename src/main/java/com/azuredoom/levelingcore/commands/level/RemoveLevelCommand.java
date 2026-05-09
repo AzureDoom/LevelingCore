@@ -35,7 +35,7 @@ public class RemoveLevelCommand extends AbstractPlayerCommand {
 
     public RemoveLevelCommand(Config<GUIConfig> config) {
         super("removelevel", "Remove level from player");
-        this.requirePermission("levelingcore.removelevel");
+        // this.requirePermission("levelingcore.removelevel");
         this.config = config;
         this.playerArg = this.withRequiredArg(
             "player",

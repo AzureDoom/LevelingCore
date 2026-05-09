@@ -39,7 +39,7 @@ public class AddXpCommand extends AbstractPlayerCommand {
 
     public AddXpCommand(Config<GUIConfig> config) {
         super("addxp", "Add XP to player");
-        this.requirePermission("levelingcore.addxp");
+        // this.requirePermission("levelingcore.addxp");
         this.config = config;
         this.playerArg = this.withRequiredArg(
             "player",

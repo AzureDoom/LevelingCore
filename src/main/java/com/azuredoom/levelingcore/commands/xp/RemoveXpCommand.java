@@ -38,7 +38,7 @@ public class RemoveXpCommand extends AbstractPlayerCommand {
 
     public RemoveXpCommand(Config<GUIConfig> config) {
         super("removexp", "Remove XP from player");
-        this.requirePermission("levelingcore.removexp");
+        // this.requirePermission("levelingcore.removexp");
         this.config = config;
         this.playerArg = this.withRequiredArg(
             "player",
