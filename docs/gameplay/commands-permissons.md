@@ -11,6 +11,9 @@ Opens the player stats GUI, allowing players to view their current leveling stat
 ### Usage
 `/levelingcore showstats`
 
+### Permission
+`com.azuredoom.levelingcore.command.levelingcore.showstats`
+
 ## `/levelingcore leaderboard`
 
 Opens the leaderboard GUI, allowing players to view level rankings of all the players in the server.
@@ -19,7 +22,7 @@ Opens the leaderboard GUI, allowing players to view level rankings of all the pl
 `/levelingcore leaderboard`
 
 ### Permission
-`levelingcore.showstats`
+`com.azuredoom.levelingcore.command.levelingcore.leaderboard`
 
 ## `/levelingcore setlevel`
 Sets a player’s level to an exact value. This directly overwrites the player’s current level.
@@ -33,7 +36,7 @@ Sets a player’s level to an exact value. This directly overwrites the player�
 `level` — Level to set the player to
 
 ### Permission
-`levelingcore.setlevel`
+`com.azuredoom.levelingcore.command.levelingcore.setlevel`
 
 ## `/levelingcore addlevel`
 Adds a specified number of levels to a player.
@@ -47,7 +50,7 @@ Adds a specified number of levels to a player.
 `level` — Number of levels to add
 
 ### Permission
-`levelingcore.addlevel`
+`com.azuredoom.levelingcore.command.levelingcore.addlevel`
 
 ## `/levelingcore removelevel`
 Removes a specified number of levels from a player.
@@ -61,7 +64,7 @@ Removes a specified number of levels from a player.
 `level` — Number of levels to remove
 
 ### Permission
-`levelingcore.removelevel`
+`com.azuredoom.levelingcore.command.levelingcore.removelevel`
 
 ## `/levelingcore addxp`
 Adds experience points (XP) to a player and recalculates their level accordingly.
@@ -75,7 +78,7 @@ Adds experience points (XP) to a player and recalculates their level accordingly
 `xpvalue` — Amount of XP to add
 
 ### Permission
-`levelingcore.addxp`
+`com.azuredoom.levelingcore.command.levelingcore.addxp`
 
 ## `/levelingcore removexp`
 Removes experience points (XP) from a player and updates their level if necessary.
@@ -88,7 +91,7 @@ Removes experience points (XP) from a player and updates their level if necessar
 `xpvalue` — Amount of XP to remove
 
 ### Permission
-`levelingcore.removexp`
+`com.azuredoom.levelingcore.command.levelingcore.removexp`
 
 ## `/levelingcore addstats`
 Adds a specified amount of stat value to a player.
@@ -110,7 +113,7 @@ Adds a specified amount of stat value to a player.
 `value` — The number of stat points to add.
 
 ### Permission
-`levelingcore.addstats`
+`com.azuredoom.levelingcore.command.levelingcore.addstats`
 
 ## `/levelingcore removestats`
 Removes a specified amount of stat value from a player.
@@ -132,7 +135,7 @@ Removes a specified amount of stat value from a player.
 `value` — The number of stat points to remove.
 
 ### Permission
-`levelingcore.removestats`
+`com.azuredoom.levelingcore.command.levelingcore.removestats`
 
 ## `/levelingcore setstats`
 Sets a specified amount of stat value to a player.
@@ -154,4 +157,4 @@ Sets a specified amount of stat value to a player.
 `value` — The number of stat points to set.
 
 ### Permission
-`levelingcore.setstats`
+`com.azuredoom.levelingcore.command.levelingcore.setstats`
