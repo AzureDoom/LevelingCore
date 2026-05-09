@@ -73,7 +73,12 @@ public class JdbcLevelRepository {
         }
     }
 
-    private void addColumnIfMissing(Connection connection, String table, String column, String definition) throws SQLException {
+    private void addColumnIfMissing(
+        Connection connection,
+        String table,
+        String column,
+        String definition
+    ) throws SQLException {
         if (columnExists(connection, table, column)) {
             return;
         }
@@ -329,9 +334,9 @@ public class JdbcLevelRepository {
 
     private boolean isH2(Connection connection) throws SQLException {
         return connection.getMetaData()
-                .getDatabaseProductName()
-                .toLowerCase()
-                .contains("h2");
+            .getDatabaseProductName()
+            .toLowerCase()
+            .contains("h2");
     }
 
     /**
