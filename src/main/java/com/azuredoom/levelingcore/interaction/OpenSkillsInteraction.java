@@ -1,14 +1,10 @@
 package com.azuredoom.levelingcore.interaction;
 
-import com.azuredoom.levelingcore.compat.hyui.HyUICompat;
-import com.azuredoom.levelingcore.ui.page.StatsScreen;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.common.plugin.PluginIdentifier;
 import com.hypixel.hytale.protocol.InteractionState;
 import com.hypixel.hytale.protocol.InteractionType;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
-import com.hypixel.hytale.server.core.HytaleServer;
-import com.hypixel.hytale.server.core.command.system.CommandManager;
 import com.hypixel.hytale.server.core.entity.InteractionContext;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.interaction.interaction.CooldownHandler;
@@ -17,11 +13,12 @@ import com.hypixel.hytale.server.core.plugin.PluginManager;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 import javax.annotation.Nonnull;
 
 import com.azuredoom.levelingcore.LevelingCore;
+import com.azuredoom.levelingcore.compat.hyui.HyUICompat;
+import com.azuredoom.levelingcore.ui.page.StatsScreen;
 
 public class OpenSkillsInteraction extends SimpleInstantInteraction {
 
@@ -90,9 +87,9 @@ public class OpenSkillsInteraction extends SimpleInstantInteraction {
                 HyUICompat.showStats(playerRef, store, entityRef);
             } else {
                 var page = new StatsScreen(
-                        playerRef,
-                        CustomPageLifetime.CanDismissOrCloseThroughInteraction,
-                        LevelingCore.getConfig()
+                    playerRef,
+                    CustomPageLifetime.CanDismissOrCloseThroughInteraction,
+                    LevelingCore.getConfig()
                 );
 
                 player.getPageManager().openCustomPage(entityRef, store, page);
