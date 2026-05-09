@@ -1,3 +1,3 @@
-v1.0.5
+v1.0.6
 
-- Fixes an issue with adding leveling levels on some DBs
+- Updates Tome of Skills interaction to not use command but open page directly instead.
