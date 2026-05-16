@@ -22,6 +22,7 @@ import java.util.logging.*;
 import javax.annotation.Nonnull;
 
 import com.azuredoom.levelingcore.commands.*;
+import com.azuredoom.levelingcore.compat.HStats;
 import com.azuredoom.levelingcore.compat.dynamictooltips.DynamicTooltipsLibCompat;
 import com.azuredoom.levelingcore.compat.placeholderapi.PlaceholderAPICompat;
 import com.azuredoom.levelingcore.compat.placeholderlib.PlaceholderLibCompat;
@@ -263,6 +264,7 @@ public class LevelingCore extends JavaPlugin {
         if (PluginManager.get().getPlugin(new PluginIdentifier("org.herolias", "DynamicTooltipsLib")) != null) {
             DynamicTooltipsLibCompat.register();
         }
+        new HStats("937eca15-2942-44cd-b6a8-650afd1d1b39", "1.0.7", LOGGER);
     }
 
     /**

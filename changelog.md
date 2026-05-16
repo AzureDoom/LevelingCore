@@ -1,3 +1,3 @@
-v1.0.6
+v1.0.7
 
-- Updates Tome of Skills interaction to not use command but open page directly instead.
+- Implemented HStats support.
