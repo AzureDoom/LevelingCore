@@ -1,17 +1,11 @@
 package com.azuredoom.levelingcore.utils;
 
-import com.hypixel.hytale.common.plugin.PluginIdentifier;
 import com.hypixel.hytale.server.core.event.events.player.PlayerReadyEvent;
-import com.hypixel.hytale.server.core.plugin.PluginManager;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.util.Config;
 
-import java.util.logging.Level;
-
 import com.azuredoom.levelingcore.LevelingCore;
-import com.azuredoom.levelingcore.compat.MultipleHudCompat;
 import com.azuredoom.levelingcore.config.GUIConfig;
-import com.azuredoom.levelingcore.lang.CommandLang;
 import com.azuredoom.levelingcore.ui.hud.XPBarHud;
 
 public class HudPlayerReady {
@@ -40,19 +34,7 @@ public class HudPlayerReady {
             if (playerRef == null)
                 return;
             var xpHud = new XPBarHud(playerRef, levelService, config);
-            // TODO: Update 5 removes the need for MultipleHud/AutoMultiHud and setCustomHud -> addCustomHud with keyed
-            // huds
-            // instead
-            // player.getHudManager().addCustomHud(playerRef, xpHud);
-            if (PluginManager.get().getPlugin(new PluginIdentifier("Buuz135", "MultipleHUD")) != null) {
-                MultipleHudCompat.showHud(player, playerRef, xpHud);
-            } else {
-                if (PluginManager.get().getPlugin(new PluginIdentifier("AutoMultiHud", "AutoMultiHud")) == null) {
-                    playerRef.sendMessage(CommandLang.MISSING_MULTIPLE_HUD);
-                    LevelingCore.LOGGER.at(Level.WARNING).log(CommandLang.MISSING_MULTIPLE_HUD.getRawText());
-                }
-                player.getHudManager().setCustomHud(playerRef, xpHud);
-            }
+            player.getHudManager().addCustomHud(playerRef, xpHud);
             XPBarHud.updateHud(playerRef);
         });
     }

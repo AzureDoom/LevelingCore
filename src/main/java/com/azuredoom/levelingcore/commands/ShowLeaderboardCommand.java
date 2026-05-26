@@ -2,7 +2,6 @@ package com.azuredoom.levelingcore.commands;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.protocol.GameMode;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
@@ -21,8 +20,7 @@ public class ShowLeaderboardCommand extends AbstractPlayerCommand {
     public ShowLeaderboardCommand() {
         super("leaderboard", "Shows the player leaderboard");
         // this.requirePermission("levelingcore.leaderboard");
-        // TODO: Update changes setPermissionGroup(GameMode.Adventure) to setPermissionGroups("hytale:Adventurer")
-        this.setPermissionGroup(GameMode.Adventure);
+        this.setPermissionGroups("hytale:None");
     }
 
     @Override

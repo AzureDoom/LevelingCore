@@ -346,8 +346,7 @@ public final class MobLevelingUtil {
             }
 
             var pPos = playerRefComponent.getTransform().getPosition();
-            // TODO: Update 5 changes to JOML so this will be distanceSquared
-            if (pPos.distanceSquaredTo(mobPos) <= nearbyRadiusSq) {
+            if (pPos.distanceSquared(mobPos) <= nearbyRadiusSq) {
                 var lvl = levelService.getLevel(playerRefComponent.getUuid());
                 sum += lvl;
                 count++;

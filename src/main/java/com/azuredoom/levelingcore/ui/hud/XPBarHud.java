@@ -29,7 +29,7 @@ public class XPBarHud extends CustomUIHud {
         @NonNullDecl LevelServiceImpl levelServiceImpl,
         Config<GUIConfig> config
     ) {
-        super(playerRef);
+        super(playerRef, "levelingcore_xpbar");
         this.levelServiceImpl = levelServiceImpl;
         this.config = config;
         hudMap.put(playerRef, this);
@@ -113,10 +113,4 @@ public class XPBarHud extends CustomUIHud {
     public static void removeHud(@NonNullDecl PlayerRef playerRef) {
         hudMap.remove(playerRef);
     }
-
-    // TODO: Uncomment this with Update 5
-    // @Override
-    // public @NotNull String getKey() {
-    // return "levelingcore_xpbar";
-    // }
 }

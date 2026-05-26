@@ -3,7 +3,6 @@ package com.azuredoom.levelingcore.commands;
 import com.hypixel.hytale.common.plugin.PluginIdentifier;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.protocol.GameMode;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
@@ -27,8 +26,7 @@ public class ShowStatsCommand extends AbstractPlayerCommand {
     public ShowStatsCommand(Config<GUIConfig> config) {
         super("showstats", "Shows player stats");
         // this.requirePermission("levelingcore.showstats");
-        // TODO: Update changes setPermissionGroup(GameMode.Adventure) to setPermissionGroups("hytale:Adventurer")
-        this.setPermissionGroup(GameMode.Adventure);
+        this.setPermissionGroups("hytale:None");
         this.config = config;
     }
 
