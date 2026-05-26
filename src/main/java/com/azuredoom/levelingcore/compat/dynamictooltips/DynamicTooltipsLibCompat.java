@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.level.itemlevellock.ItemStatRequirement;
 
+@SuppressWarnings("unused")
 public class DynamicTooltipsLibCompat {
 
     private static boolean registered = false;
