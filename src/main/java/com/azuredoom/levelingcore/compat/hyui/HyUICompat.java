@@ -18,6 +18,7 @@ import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.lang.CommandLang;
 import com.azuredoom.levelingcore.utils.StatsUtils;
 
+@SuppressWarnings("unused")
 public class HyUICompat {
 
     private HyUICompat() {}
