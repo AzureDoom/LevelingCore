@@ -1,7 +1,7 @@
 {
     "Group": "com.azuredoom",
     "Name": "levelingcore",
-    "Version": "1.0.7",
+    "Version": "1.0.8",
     "Description": "A modern, flexible leveling system for Hytale",
     "Authors": [
         {
@@ -9,7 +9,7 @@
         }
     ],
     "Website": "https://modtale.net/mod/levelingcore",
-    "ServerVersion": "2026.03.26-89796e57b",
+    "ServerVersion": "0.5.1",
     "Dependencies": {
         "Hytale:EntityModule": "*",
         "Hytale:InteractionModule": "*",
@@ -17,11 +17,9 @@
         "Hytale:AssetModule": "*"
     },
     "OptionalDependencies": {
-        "Buuz135:MultipleHUD": "*",
         "com.carsonk:Party Plugin": "*",
         "tsumori:partypro": "*",
         "Ellie:HyUI": "*",
-        "AutoMultiHud:AutoMultiHud": "*",
         "HelpChat:PlaceholderAPI": ">= 1.0.4",
         "PlaceholderLib:PlaceholderLib": "*",
         "org.herolias:DynamicTooltipsLib": "*",
