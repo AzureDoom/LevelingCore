@@ -4,8 +4,8 @@ plugins {
     id 'maven-publish'
     id 'com.diffplug.spotless' version '8.1.0'
     id 'com.gradleup.shadow' version '9.3.0'
-    id 'com.azuredoom.hytale-tools' version '1.0.26'
-    id 'com.azuredoom.hytalepublisher' version '1.1.1'
+    id 'com.azuredoom.hytale-tools' version '1.+'
+    id 'com.azuredoom.hytalepublisher' version '1.+'
 }
 
 configurations {
@@ -44,10 +44,18 @@ hytaleTools {
     disabledByDefault = project.disabled_by_default.toString().toBoolean()
     includesPack = project.includes_pack.toString().toBoolean()
     patchline = project.patchline.toString()
+
+    debugEnabled = true
+    debugPort = 5005
+    debugSuspend = false
+
+    hotSwapEnabled = true
+    requireDcevm = true
+    useHotswapAgent = true
+    hotswapAgentPath = '/mnt/4C56E67556E65EE8/HyTale Mods/hotswap-agent-2.0.3.jar'
 }
 
 dependencies {
-    implementation 'com.buuz135:MultipleHUD:1.0.7'
     compileOnly 'curse.maven:partyinfo-1429469:7526614'
     compileOnly 'curse.maven:partypro-1438292:7818004'
     compileOnly 'curse.maven:hyui-1431415:7820303'
@@ -55,7 +63,7 @@ dependencies {
     compileOnly 'at.helpch:placeholderapi-hytale:1.0.8'
     compileOnly 'curse.maven:dynamictooltipslib-1459711:7817318'
     implementation 'com.azuredoom.classescore:Classescore:0.1.3-alpha.1'
-    implementation 'com.azuredoom.tagcore:TagCore:1.1.2'
+    implementation 'com.azuredoom.tagcore:TagCore:1.1.5'
     compileOnly 'curse.maven:endgame-1431338:7826907'
     compileOnly 'curse.maven:rpgmobs-1444529:7845829'
     compileOnly 'curse.maven:elite-1441945:7566545'
