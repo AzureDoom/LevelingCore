@@ -5,6 +5,7 @@ import java.util.Optional;
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.level.LevelServiceImpl;
 
+@SuppressWarnings("unused")
 public final class LevelingCoreApi {
 
     private LevelingCoreApi() {}
