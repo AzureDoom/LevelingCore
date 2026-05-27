@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.config.internal.ConfigManager;
@@ -32,7 +31,7 @@ public class ItemToLevelMapping {
                             "defaultitemlevelmapping.csv not found in resources (expected at " + RESOURCE_DEFAULT + ")"
                         );
                     }
-                    LevelingCore.LOGGER.at(Level.INFO)
+                    LevelingCore.LOGGER.atInfo()
                         .log("Creating default Item Level Mapping config at " + configPath);
                     Files.copy(in, configPath, StandardCopyOption.REPLACE_EXISTING);
                 }
@@ -40,7 +39,7 @@ public class ItemToLevelMapping {
 
             var mapping = readXpCsv(configPath);
 
-            LevelingCore.LOGGER.at(Level.INFO)
+            LevelingCore.LOGGER.atInfo()
                 .log("Loaded Item Level Mapping mapping from " + configPath + " " + mapping.size() + " entries)");
             return mapping;
 
@@ -72,7 +71,7 @@ public class ItemToLevelMapping {
 
                 var parts = line.split(",", 2);
                 if (parts.length != 2) {
-                    LevelingCore.LOGGER.at(Level.WARNING).log("Skipping invalid CSV line: " + line);
+                    LevelingCore.LOGGER.atWarning().log("Skipping invalid CSV line: " + line);
                     continue;
                 }
 
@@ -80,7 +79,7 @@ public class ItemToLevelMapping {
                 var xpStr = parts[1].trim();
 
                 if (npcTypeId.isEmpty()) {
-                    LevelingCore.LOGGER.at(Level.WARNING).log("Skipping CSV line with empty itemnameid: " + line);
+                    LevelingCore.LOGGER.atWarning().log("Skipping CSV line with empty itemnameid: " + line);
                     continue;
                 }
 
@@ -88,7 +87,7 @@ public class ItemToLevelMapping {
                 try {
                     xp = Integer.parseInt(xpStr);
                 } catch (NumberFormatException nfe) {
-                    LevelingCore.LOGGER.at(Level.WARNING)
+                    LevelingCore.LOGGER.atWarning()
                         .log(
                             "Invalid XP value for " + npcTypeId + ": " + xpStr + " (line: " + line + ")"
                         );

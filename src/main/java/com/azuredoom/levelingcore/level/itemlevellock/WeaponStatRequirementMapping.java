@@ -6,7 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.config.internal.ConfigManager;
@@ -33,7 +32,7 @@ public final class WeaponStatRequirementMapping {
                         );
                     }
 
-                    LevelingCore.LOGGER.at(Level.INFO)
+                    LevelingCore.LOGGER.atInfo()
                         .log("Creating default Item Stat Requirement config at " + configPath);
 
                     Files.copy(in, configPath, StandardCopyOption.REPLACE_EXISTING);
@@ -67,7 +66,7 @@ public final class WeaponStatRequirementMapping {
 
                 var parts = line.split(",", 7);
                 if (parts.length != 7) {
-                    LevelingCore.LOGGER.at(Level.WARNING)
+                    LevelingCore.LOGGER.atWarning()
                         .log("Skipping invalid weapon requirement line: " + line);
                     continue;
                 }
@@ -89,7 +88,7 @@ public final class WeaponStatRequirementMapping {
                         )
                     );
                 } catch (NumberFormatException ex) {
-                    LevelingCore.LOGGER.at(Level.WARNING)
+                    LevelingCore.LOGGER.atWarning()
                         .log("Skipping invalid stat requirement line: " + line);
                 }
             }

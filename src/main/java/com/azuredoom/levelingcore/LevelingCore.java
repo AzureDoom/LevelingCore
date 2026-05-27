@@ -177,7 +177,7 @@ public class LevelingCore extends JavaPlugin {
     protected void setup() {
         INSTANCE = this;
         config.save();
-        LOGGER.at(Level.INFO).log("Leveling Core initializing");
+        LOGGER.atInfo().log("Leveling Core initializing");
         activeBootstrap = bootstrap.bootstrap(configPath);
         levelingService = activeBootstrap.service();
         this.registerAllCommands();
@@ -194,13 +194,13 @@ public class LevelingCore extends JavaPlugin {
                     var player = playerReadyEvent.getPlayer();
                     var playerRef = player.getReference();
                     if (playerRef == null) {
-                        LOGGER.at(Level.WARNING).log("Player reference is null");
+                        LOGGER.atWarning().log("Player reference is null");
                         return;
                     }
                     var playerRefComponent = playerRef.getStore()
                         .getComponent(playerRef, PlayerRef.getComponentType());
                     if (playerRefComponent == null) {
-                        LOGGER.at(Level.WARNING).log("Player ref component is null");
+                        LOGGER.atWarning().log("Player ref component is null");
                         return;
                     }
                     var uuid = playerRefComponent.getUuid();
@@ -288,7 +288,7 @@ public class LevelingCore extends JavaPlugin {
             LevelingCore.itemStatBlockPacketManager.shutdown();
         }
         super.shutdown();
-        LOGGER.at(Level.INFO).log("Leveling Core shutting down");
+        LOGGER.atInfo().log("Leveling Core shutting down");
         try {
             if (activeBootstrap != null) {
                 activeBootstrap.closeable().close();

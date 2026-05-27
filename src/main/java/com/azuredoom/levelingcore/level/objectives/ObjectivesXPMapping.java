@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.config.internal.ConfigManager;
@@ -34,7 +33,7 @@ public class ObjectivesXPMapping {
                                 + ")"
                         );
                     }
-                    LevelingCore.LOGGER.at(Level.INFO)
+                    LevelingCore.LOGGER.atInfo()
                         .log("Creating default Objectives XP Mapping config at " + configPath);
                     Files.copy(in, configPath, StandardCopyOption.REPLACE_EXISTING);
                 }
@@ -42,7 +41,7 @@ public class ObjectivesXPMapping {
 
             var mapping = readXpCsv(configPath);
 
-            LevelingCore.LOGGER.at(Level.INFO)
+            LevelingCore.LOGGER.atInfo()
                 .log("Loaded Objectives XP Mapping mapping from " + configPath + " " + mapping.size() + " entries)");
             return mapping;
 
@@ -74,7 +73,7 @@ public class ObjectivesXPMapping {
 
                 var parts = line.split(",", 2);
                 if (parts.length != 2) {
-                    LevelingCore.LOGGER.at(Level.WARNING).log("Skipping invalid CSV line: " + line);
+                    LevelingCore.LOGGER.atWarning().log("Skipping invalid CSV line: " + line);
                     continue;
                 }
 
@@ -82,7 +81,7 @@ public class ObjectivesXPMapping {
                 var xpStr = parts[1].trim();
 
                 if (objectiveId.isEmpty()) {
-                    LevelingCore.LOGGER.at(Level.WARNING).log("Skipping CSV line with empty objectiveId: " + line);
+                    LevelingCore.LOGGER.atWarning().log("Skipping CSV line with empty objectiveId: " + line);
                     continue;
                 }
 
@@ -90,7 +89,7 @@ public class ObjectivesXPMapping {
                 try {
                     xp = Integer.parseInt(xpStr);
                 } catch (NumberFormatException nfe) {
-                    LevelingCore.LOGGER.at(Level.WARNING)
+                    LevelingCore.LOGGER.atWarning()
                         .log(
                             "Invalid XP value for " + objectiveId + ": " + xpStr + " (line: " + line + ")"
                         );

@@ -8,7 +8,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.logging.Level;
 
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.config.internal.ConfigManager;
@@ -41,7 +40,7 @@ public class StatsPerLevelMapping {
                                 + ")"
                         );
                     }
-                    LevelingCore.LOGGER.at(Level.INFO)
+                    LevelingCore.LOGGER.atInfo()
                         .log("Creating default Stats Per Level Mapping config at " + configPath);
                     Files.copy(in, configPath, StandardCopyOption.REPLACE_EXISTING);
                 }
@@ -54,7 +53,7 @@ public class StatsPerLevelMapping {
                 cumulativeStatsPerLevel.put(entry.getKey(), total += entry.getValue());
             }
 
-            LevelingCore.LOGGER.at(Level.INFO)
+            LevelingCore.LOGGER.atInfo()
                 .log(
                     "Loaded Stats Per Level Mapping mapping from " + configPath + " " + addedStatsPerLevel.size()
                         + " entries)"
@@ -103,7 +102,7 @@ public class StatsPerLevelMapping {
 
                 var parts = line.split(",", 2);
                 if (parts.length != 2) {
-                    LevelingCore.LOGGER.at(Level.WARNING).log("Skipping invalid CSV line: " + line);
+                    LevelingCore.LOGGER.atWarning().log("Skipping invalid CSV line: " + line);
                     continue;
                 }
 
@@ -114,7 +113,7 @@ public class StatsPerLevelMapping {
                 try {
                     stats = Integer.parseInt(statsStr);
                 } catch (NumberFormatException nfe) {
-                    LevelingCore.LOGGER.at(Level.WARNING)
+                    LevelingCore.LOGGER.atWarning()
                         .log("Invalid Stats value for " + statsStr + ": " + lvlStr + " (line: " + line + ")");
                     continue;
                 }
@@ -123,7 +122,7 @@ public class StatsPerLevelMapping {
                 try {
                     lvl = Integer.parseInt(lvlStr);
                 } catch (NumberFormatException nfe) {
-                    LevelingCore.LOGGER.at(Level.WARNING)
+                    LevelingCore.LOGGER.atWarning()
                         .log(
                             "Invalid Stats value for " + statsStr + ": " + lvlStr + " (line: " + line + ")"
                         );

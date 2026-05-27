@@ -2,7 +2,6 @@ package com.azuredoom.levelingcore.database;
 
 import java.sql.*;
 import java.util.UUID;
-import java.util.logging.Level;
 import javax.sql.DataSource;
 
 import com.azuredoom.levelingcore.LevelingCore;
@@ -241,7 +240,7 @@ public class JdbcLevelRepository {
             new FormulaDescriptor(oldType, oldParams)
         );
 
-        LevelingCore.LOGGER.at(Level.INFO).log("Starting formula migration to {0}", newDesc.type());
+        LevelingCore.LOGGER.atInfo().log("Starting formula migration to {0}", newDesc.type());
 
         final var select = "SELECT player_id, xp FROM player_levels";
 
@@ -310,7 +309,7 @@ public class JdbcLevelRepository {
 
                         processed++;
                         if ((processed % 50_000) == 0) {
-                            LevelingCore.LOGGER.at(Level.INFO).log("Migration staging progress: {0} rows", processed);
+                            LevelingCore.LOGGER.atInfo().log("Migration staging progress: {0} rows", processed);
                         }
                     }
                 }
@@ -322,7 +321,7 @@ public class JdbcLevelRepository {
 
             c.commit();
 
-            LevelingCore.LOGGER.at(Level.INFO).log("Formula migration completed successfully");
+            LevelingCore.LOGGER.atInfo().log("Formula migration completed successfully");
         } catch (Exception e) {
             throw new LevelingCoreException("Failed to migrate XP to preserve levels", e);
         }
@@ -488,7 +487,7 @@ public class JdbcLevelRepository {
     public void close() {
         try {
             if (dataSource instanceof AutoCloseable c) {
-                LevelingCore.LOGGER.at(Level.INFO).log("Closing JDBC datasource");
+                LevelingCore.LOGGER.atInfo().log("Closing JDBC datasource");
                 c.close();
             }
         } catch (Exception e) {

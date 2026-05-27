@@ -184,7 +184,6 @@ hytalePublisher {
         projectId = project.curseforgeID
 
         required "multiplehud"
-        optional "dynamictooltipslib"
         optional "update-checker"
         optional "better-modlist"
         optional "party-info"

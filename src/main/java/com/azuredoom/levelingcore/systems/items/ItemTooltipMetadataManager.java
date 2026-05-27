@@ -85,7 +85,7 @@ public class ItemTooltipMetadataManager {
             scanForWeapons();
             ready = true;
         } catch (Exception e) {
-            LevelingCore.LOGGER.at(Level.WARNING)
+            LevelingCore.LOGGER.atWarning()
                 .withCause(e)
                 .log("Failed to apply LevelingCore item display metadata");
         }
@@ -120,7 +120,7 @@ public class ItemTooltipMetadataManager {
                 this.processedItems.add(itemId);
             }
         } catch (Exception e) {
-            LevelingCore.LOGGER.at(Level.WARNING)
+            LevelingCore.LOGGER.atWarning()
                 .withCause(e)
                 .log("LevelingCore weapon display scan failed");
         }
@@ -220,7 +220,7 @@ public class ItemTooltipMetadataManager {
                 } catch (NumberFormatException ignored) {}
             }
         } catch (Exception e) {
-            LevelingCore.LOGGER.at(Level.WARNING)
+            LevelingCore.LOGGER.atWarning()
                 .withCause(e)
                 .log("Failed to extract weapon damage from item " + item.getId());
         }
@@ -281,7 +281,7 @@ public class ItemTooltipMetadataManager {
                 }
             }
         } catch (Exception e) {
-            LevelingCore.LOGGER.at(Level.WARNING)
+            LevelingCore.LOGGER.atWarning()
                 .withCause(e)
                 .log("Failed reflection crawl while extracting item damage text");
         }

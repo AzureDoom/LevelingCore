@@ -18,7 +18,6 @@ import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
 import javax.annotation.Nonnull;
 
 import com.azuredoom.levelingcore.LevelingCore;
@@ -88,7 +87,7 @@ public final class MobLevelingUtil {
 
             var modeOpt = CoreLevelMode.fromString(modeStr);
             if (modeOpt.isEmpty()) {
-                LevelingCore.LOGGER.at(Level.INFO)
+                LevelingCore.LOGGER.atInfo()
                     .log("Unknown level mode " + modeStr + ", skipping");
                 continue;
             }
@@ -285,27 +284,27 @@ public final class MobLevelingUtil {
         var chunk = world.getChunkIfInMemory(ChunkUtil.indexChunkFromBlock((int) mobPos.x, (int) mobPos.z));
 
         if (chunk == null) {
-            LevelingCore.LOGGER.at(Level.WARNING).log("Chunk not in memory; defaulting to 1");
+            LevelingCore.LOGGER.atWarning().log("Chunk not in memory; defaulting to 1");
             return 1;
         }
 
         var blockChunk = chunk.getBlockChunk();
         if (blockChunk == null) {
-            LevelingCore.LOGGER.at(Level.WARNING).log("Block chunk not found; defaulting to 1");
+            LevelingCore.LOGGER.atWarning().log("Block chunk not found; defaulting to 1");
             return 1;
         }
 
         var envID = blockChunk.getEnvironment(mobPos);
         var envAsset = Environment.getAssetMap().getAsset(envID);
         if (envAsset == null) {
-            LevelingCore.LOGGER.at(Level.WARNING)
+            LevelingCore.LOGGER.atWarning()
                 .log("Environment id " + envID + " does not exist in asset registry; defaulting to 1");
             return 1;
         }
 
         var envName = envAsset.getId();
         if (envName == null) {
-            LevelingCore.LOGGER.at(Level.WARNING)
+            LevelingCore.LOGGER.atWarning()
                 .log("Environment does not exist in asset registry; defaulting to 1");
             return 1;
         }

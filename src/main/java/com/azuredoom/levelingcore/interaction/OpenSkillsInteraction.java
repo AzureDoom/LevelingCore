@@ -13,7 +13,6 @@ import com.hypixel.hytale.server.core.plugin.PluginManager;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
-import java.util.logging.Level;
 import javax.annotation.Nonnull;
 
 import com.azuredoom.levelingcore.LevelingCore;
@@ -45,7 +44,7 @@ public class OpenSkillsInteraction extends SimpleInstantInteraction {
 
         var playerRef = commandBuffer.getComponent(ref, PlayerRef.getComponentType());
         if (playerRef == null) {
-            LevelingCore.LOGGER.at(Level.INFO)
+            LevelingCore.LOGGER.atInfo()
                 .log(
                     "SkillPointResetInteraction requires a Player but was used for entity: %s",
                     ref
@@ -56,7 +55,7 @@ public class OpenSkillsInteraction extends SimpleInstantInteraction {
 
         var player = commandBuffer.getComponent(ref, Player.getComponentType());
         if (player == null) {
-            LevelingCore.LOGGER.at(Level.INFO)
+            LevelingCore.LOGGER.atInfo()
                 .log(
                     "OpenSkillsInteraction: Player component missing for entity: %s (uuid=%s)",
                     ref,

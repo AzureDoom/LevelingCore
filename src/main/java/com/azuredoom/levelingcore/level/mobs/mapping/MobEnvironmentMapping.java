@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.config.internal.ConfigManager;
@@ -34,7 +33,7 @@ public class MobEnvironmentMapping {
                                 + ")"
                         );
                     }
-                    LevelingCore.LOGGER.at(Level.INFO)
+                    LevelingCore.LOGGER.atInfo()
                         .log("Creating default Mob Environment Levels Mapping config at " + configPath);
                     Files.copy(in, configPath, StandardCopyOption.REPLACE_EXISTING);
                 }
@@ -42,7 +41,7 @@ public class MobEnvironmentMapping {
 
             var mapping = readXpCsv(configPath);
 
-            LevelingCore.LOGGER.at(Level.INFO)
+            LevelingCore.LOGGER.atInfo()
                 .log(
                     "Loaded Mob Environment Levels Mapping mapping from " + configPath + " " + mapping.size()
                         + " entries)"
@@ -77,7 +76,7 @@ public class MobEnvironmentMapping {
 
                 var parts = line.split(",", 2);
                 if (parts.length != 2) {
-                    LevelingCore.LOGGER.at(Level.WARNING).log("Skipping invalid CSV line: " + line);
+                    LevelingCore.LOGGER.atWarning().log("Skipping invalid CSV line: " + line);
                     continue;
                 }
 
@@ -85,7 +84,7 @@ public class MobEnvironmentMapping {
                 var lvlStr = parts[1].trim();
 
                 if (envStr.isEmpty()) {
-                    LevelingCore.LOGGER.at(Level.WARNING).log("Skipping CSV line with empty environment: " + line);
+                    LevelingCore.LOGGER.atWarning().log("Skipping CSV line with empty environment: " + line);
                     continue;
                 }
 
@@ -93,7 +92,7 @@ public class MobEnvironmentMapping {
                 try {
                     lvl = Integer.parseInt(lvlStr);
                 } catch (NumberFormatException nfe) {
-                    LevelingCore.LOGGER.at(Level.WARNING)
+                    LevelingCore.LOGGER.atWarning()
                         .log(
                             "Invalid Environment value for " + envStr + ": " + lvlStr + " (line: " + line + ")"
                         );

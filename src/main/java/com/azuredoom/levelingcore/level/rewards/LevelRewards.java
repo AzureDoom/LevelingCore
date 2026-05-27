@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.config.internal.ConfigManager;
@@ -36,7 +35,7 @@ public class LevelRewards {
                                 + ")"
                         );
                     }
-                    LevelingCore.LOGGER.at(Level.INFO).log("Creating default Level Rewards config at " + configPath);
+                    LevelingCore.LOGGER.atInfo().log("Creating default Level Rewards config at " + configPath);
                     Files.copy(in, configPath, StandardCopyOption.REPLACE_EXISTING);
                 }
             }
@@ -44,7 +43,7 @@ public class LevelRewards {
             var mapping = readXpCsv(configPath);
 
             int rewardCount = mapping.values().stream().mapToInt(List::size).sum();
-            LevelingCore.LOGGER.at(Level.INFO)
+            LevelingCore.LOGGER.atInfo()
                 .log(
                     "Loaded Level Rewards mapping from " + configPath + " (" + mapping.size() + " levels, "
                         + rewardCount + " rewards)"
@@ -76,7 +75,7 @@ public class LevelRewards {
 
                 var parts = line.split(",", 3);
                 if (parts.length != 3) {
-                    LevelingCore.LOGGER.at(Level.WARNING).log("Skipping invalid CSV line: " + line);
+                    LevelingCore.LOGGER.atWarning().log("Skipping invalid CSV line: " + line);
                     continue;
                 }
 
@@ -85,7 +84,7 @@ public class LevelRewards {
                 var lvlString = parts[2].trim();
 
                 if (itemNameId.isEmpty()) {
-                    LevelingCore.LOGGER.at(Level.WARNING).log("Skipping CSV line with empty itemNameId: " + line);
+                    LevelingCore.LOGGER.atWarning().log("Skipping CSV line with empty itemNameId: " + line);
                     continue;
                 }
 
@@ -93,7 +92,7 @@ public class LevelRewards {
                 try {
                     quantity = Integer.parseInt(quantityString);
                 } catch (NumberFormatException nfe) {
-                    LevelingCore.LOGGER.at(Level.WARNING)
+                    LevelingCore.LOGGER.atWarning()
                         .log("Invalid quantity for " + itemNameId + ": " + quantityString + " (line: " + line + ")");
                     continue;
                 }
@@ -102,7 +101,7 @@ public class LevelRewards {
                 try {
                     lvl = Integer.parseInt(lvlString);
                 } catch (NumberFormatException nfe) {
-                    LevelingCore.LOGGER.at(Level.WARNING)
+                    LevelingCore.LOGGER.atWarning()
                         .log("Invalid level for " + itemNameId + ": " + lvlString + " (line: " + line + ")");
                     continue;
                 }

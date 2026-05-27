@@ -7,7 +7,6 @@ import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 
 import java.util.List;
-import java.util.logging.Level;
 
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.compat.elitemobs.EliteMobsCompat;
@@ -121,7 +120,7 @@ public final class MobEncounterProfileResolver {
             int mappedLevel = MobBossMapping.findLevel(bossRules, instanceName, entity.getNPCTypeId());
             return mappedLevel >= 0;
         } catch (Exception ex) {
-            LevelingCore.LOGGER.at(Level.WARNING)
+            LevelingCore.LOGGER.atWarning()
                 .withCause(ex)
                 .log("Failed to resolve boss mapping for npc, defaulting to NORMAL tier.");
             return false;

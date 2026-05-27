@@ -12,7 +12,6 @@ import com.hypixel.hytale.server.core.modules.interaction.interaction.config.Sim
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 
-import java.util.logging.Level;
 import javax.annotation.Nonnull;
 
 import com.azuredoom.levelingcore.LevelingCore;
@@ -50,7 +49,7 @@ public class SkillPointResetInteraction extends SimpleInstantInteraction {
 
         var playerRef = commandBuffer.getComponent(ref, PlayerRef.getComponentType());
         if (playerRef == null) {
-            LevelingCore.LOGGER.at(Level.INFO)
+            LevelingCore.LOGGER.atInfo()
                 .log(
                     "SkillPointResetInteraction requires a Player but was used for entity: %s",
                     ref
@@ -61,7 +60,7 @@ public class SkillPointResetInteraction extends SimpleInstantInteraction {
 
         var player = commandBuffer.getComponent(ref, Player.getComponentType());
         if (player == null) {
-            LevelingCore.LOGGER.at(Level.INFO)
+            LevelingCore.LOGGER.atInfo()
                 .log(
                     "SkillPointResetInteraction: Player component missing for entity: %s (uuid=%s)",
                     ref,
@@ -85,7 +84,7 @@ public class SkillPointResetInteraction extends SimpleInstantInteraction {
 
         var levelService = LevelingCore.getLevelService();
         if (levelService == null) {
-            LevelingCore.LOGGER.at(Level.WARNING).log("SkillPointResetInteraction: Level service not present.");
+            LevelingCore.LOGGER.atWarning().log("SkillPointResetInteraction: Level service not present.");
             context.getState().state = InteractionState.Failed;
             return;
         }

@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.config.internal.ConfigManager;
@@ -35,7 +34,7 @@ public class MobInstanceMapping {
                                 + RESOURCE_DEFAULT + ")"
                         );
                     }
-                    LevelingCore.LOGGER.at(Level.INFO)
+                    LevelingCore.LOGGER.atInfo()
                         .log("Creating default Mob Instance Levels Mapping config at " + configPath);
                     Files.copy(in, configPath, StandardCopyOption.REPLACE_EXISTING);
                 }
@@ -43,7 +42,7 @@ public class MobInstanceMapping {
 
             var mapping = readXpCsv(configPath);
 
-            LevelingCore.LOGGER.at(Level.INFO)
+            LevelingCore.LOGGER.atInfo()
                 .log("Loaded Mob Instance Levels Mapping from " + configPath + " (" + mapping.size() + " entries)");
             return mapping;
 
@@ -74,7 +73,7 @@ public class MobInstanceMapping {
 
                 var parts = line.split(",", 2);
                 if (parts.length != 2) {
-                    LevelingCore.LOGGER.at(Level.WARNING).log("Skipping invalid CSV line: " + line);
+                    LevelingCore.LOGGER.atWarning().log("Skipping invalid CSV line: " + line);
                     continue;
                 }
 
@@ -82,7 +81,7 @@ public class MobInstanceMapping {
                 var lvlStr = parts[1].trim();
 
                 if (instancePattern.isEmpty()) {
-                    LevelingCore.LOGGER.at(Level.WARNING).log("Skipping CSV line with empty instance: " + line);
+                    LevelingCore.LOGGER.atWarning().log("Skipping CSV line with empty instance: " + line);
                     continue;
                 }
 
@@ -90,7 +89,7 @@ public class MobInstanceMapping {
                 try {
                     lvl = Integer.parseInt(lvlStr);
                 } catch (NumberFormatException nfe) {
-                    LevelingCore.LOGGER.at(Level.WARNING)
+                    LevelingCore.LOGGER.atWarning()
                         .log("Invalid Instance value for " + instancePattern + ": " + lvlStr + " (line: " + line + ")");
                     continue;
                 }

@@ -6,7 +6,6 @@ import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
-import java.util.logging.Level;
 
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.exceptions.LevelingCoreException;
@@ -48,7 +47,7 @@ public final class ConfigManager {
                             "default.yml not found in resources (expected at /default.yml)"
                         );
                     }
-                    LevelingCore.LOGGER.at(Level.INFO).log("Creating default config at " + configPath);
+                    LevelingCore.LOGGER.atInfo().log("Creating default config at " + configPath);
                     Files.copy(in, configPath, StandardCopyOption.REPLACE_EXISTING);
                 } catch (Exception e) {
                     throw new LevelingCoreException("Failed to create default config", e);

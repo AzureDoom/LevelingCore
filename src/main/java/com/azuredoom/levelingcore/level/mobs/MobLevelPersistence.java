@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.logging.Level;
 
 import com.azuredoom.levelingcore.LevelingCore;
 
@@ -59,7 +58,7 @@ public final class MobLevelPersistence {
                 dirty.set(false);
             }
         } catch (Exception e) {
-            LevelingCore.LOGGER.at(Level.WARNING)
+            LevelingCore.LOGGER.atWarning()
                 .withCause(e)
                 .log("Failed to load mob level persistence from " + filePath);
             persisted.clear();
@@ -102,7 +101,7 @@ public final class MobLevelPersistence {
 
             dirty.set(false);
         } catch (Exception e) {
-            LevelingCore.LOGGER.at(Level.WARNING)
+            LevelingCore.LOGGER.atWarning()
                 .withCause(e)
                 .log("Failed to save mob level persistence to " + filePath);
         }
