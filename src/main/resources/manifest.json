@@ -20,7 +20,7 @@
         "com.carsonk:Party Plugin": "*",
         "tsumori:partypro": "*",
         "Ellie:HyUI": "*",
-        "HelpChat:PlaceholderAPI": ">= 1.0.4",
+        "HelpChat:PlaceholderAPI": ">=1.0.4",
         "PlaceholderLib:PlaceholderLib": "*",
         "org.herolias:DynamicTooltipsLib": "*",
         "IwakuraEnterprises:Voile": "*",
