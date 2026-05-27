@@ -28,16 +28,6 @@ public class ShowLvlHeadSystem implements Runnable {
 
     private final Config<GUIConfig> config;
 
-    /**
-     * A marker string used to identify and differentiate nameplate components in the system. This marker is composed of
-     * zero-width Unicode characters (\u200B, \u200C, \u200D) that are invisible in rendered output but can be used for
-     * internal processing or as separators in nameplate configuration and formatting.
-     * <p>
-     * This constantly enables the system to embed or parse hidden metadata within strings associated with nameplates,
-     * ensuring that visual elements remain unaffected while still allowing for structured data handling.
-     */
-    private static final String NAMEPLATE_MARKER = "\u200B\u200C\u200D";
-
     public ShowLvlHeadSystem(Config<GUIConfig> config) {
         this.config = config;
     }
@@ -206,7 +196,7 @@ public class ShowLvlHeadSystem implements Runnable {
             return;
         }
 
-        var newText = safeBaseName + NAMEPLATE_MARKER + desiredSuffix;
+        var newText = safeBaseName + desiredSuffix;
 
         if (current != null) {
             if (newText.equals(current.getText())) {
