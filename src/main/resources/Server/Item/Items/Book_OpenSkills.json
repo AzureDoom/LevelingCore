@@ -29,8 +29,7 @@
         ]
       }
     ],
-    "OutputQuantity": 1,
-    "TimeSeconds": 1
+    "OutputQuantity": 1
   },
   "MaxStack": 1,
   "PlayerAnimationsId": "Spellbook",
