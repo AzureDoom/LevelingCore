@@ -62,7 +62,6 @@ dependencies {
     compileOnly 'curse.maven:hyui-1431415:7820303'
     compileOnly 'curse.maven:placeholderlib-1438208:7540696'
     compileOnly 'at.helpch:placeholderapi-hytale:1.0.8'
-    compileOnly 'curse.maven:dynamictooltipslib-1459711:7817318'
     implementation 'com.azuredoom.classescore:Classescore:0.1.5'
     implementation 'com.azuredoom.tagcore:TagCore:1.1.6'
     compileOnly 'curse.maven:endgame-1431338:7826907'

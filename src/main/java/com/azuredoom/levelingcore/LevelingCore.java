@@ -23,7 +23,6 @@ import javax.annotation.Nonnull;
 
 import com.azuredoom.levelingcore.commands.*;
 import com.azuredoom.levelingcore.compat.HStats;
-import com.azuredoom.levelingcore.compat.dynamictooltips.DynamicTooltipsLibCompat;
 import com.azuredoom.levelingcore.compat.placeholderapi.PlaceholderAPICompat;
 import com.azuredoom.levelingcore.compat.placeholderlib.PlaceholderLibCompat;
 import com.azuredoom.levelingcore.config.GUIConfig;
@@ -52,6 +51,8 @@ import com.azuredoom.levelingcore.systems.equipment.ArmorBlockLevelSystem;
 import com.azuredoom.levelingcore.systems.equipment.ArmorBlockStatSystem;
 import com.azuredoom.levelingcore.systems.items.HandGateTickingSystem;
 import com.azuredoom.levelingcore.systems.items.ItemBlockPacketManager;
+import com.azuredoom.levelingcore.systems.items.ItemTooltipInventoryApplySystem;
+import com.azuredoom.levelingcore.systems.items.ItemTooltipMetadataManager;
 import com.azuredoom.levelingcore.systems.items.stats.HandStatGateTickingSystem;
 import com.azuredoom.levelingcore.systems.items.stats.ItemStatBlockPacketManager;
 import com.azuredoom.levelingcore.systems.level.LevelDownTickingSystem;
@@ -261,8 +262,11 @@ public class LevelingCore extends JavaPlugin {
         if (LevelingCore.getConfig().get().isEnableItemStatRequirement()) {
             LevelingCore.itemStatBlockPacketManager.start();
         }
-        if (PluginManager.get().getPlugin(new PluginIdentifier("org.herolias", "DynamicTooltipsLib")) != null) {
-            DynamicTooltipsLibCompat.register();
+        if (
+            LevelingCore.getConfig().get().isEnableItemLevelRestriction()
+                || LevelingCore.getConfig().get().isEnableItemStatRequirement()
+        ) {
+            ItemTooltipMetadataManager.register();
         }
         new HStats("937eca15-2942-44cd-b6a8-650afd1d1b39", "1.0.7", LOGGER);
     }
@@ -338,6 +342,9 @@ public class LevelingCore extends JavaPlugin {
         getEntityStoreRegistry().registerSystem(
             new HandStatGateTickingSystem(LevelingCore.itemStatBlockPacketManager.getHandGate())
         );
+        if (config.get().isEnableItemLevelRestriction() || config.get().isEnableItemStatRequirement()) {
+            getEntityStoreRegistry().registerSystem(new ItemTooltipInventoryApplySystem());
+        }
         getEntityStoreRegistry().registerSystem(new ObjectivesSystem());
         getEntityStoreRegistry().registerSystem(new MobLevelSystem(config));
         getEntityStoreRegistry().registerSystem(new LevelUpTickingSystem(config));
