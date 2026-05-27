@@ -32,6 +32,7 @@ repositories {
 hytaleTools {
     javaVersion = project.java_version as Integer
     hytaleVersion = project.hytale_version.toString()
+    manifestServerVersion = project.manifestServerVersion.toString()
     manifestGroup = project.manifest_group.toString()
     modId = project.mod_id.toString()
     modDescription = project.mod_description.toString()
@@ -63,7 +64,7 @@ dependencies {
     compileOnly 'at.helpch:placeholderapi-hytale:1.0.8'
     compileOnly 'curse.maven:dynamictooltipslib-1459711:7817318'
     implementation 'com.azuredoom.classescore:Classescore:0.1.5'
-    implementation 'com.azuredoom.tagcore:TagCore:1.1.5'
+    implementation 'com.azuredoom.tagcore:TagCore:1.1.6'
     compileOnly 'curse.maven:endgame-1431338:7826907'
     compileOnly 'curse.maven:rpgmobs-1444529:7845829'
     compileOnly 'curse.maven:elite-1441945:7566545'
