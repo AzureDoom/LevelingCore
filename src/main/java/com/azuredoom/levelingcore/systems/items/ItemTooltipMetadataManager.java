@@ -1,9 +1,11 @@
 package com.azuredoom.levelingcore.systems.items;
 
+import com.hypixel.hytale.common.plugin.PluginIdentifier;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.asset.type.item.config.Item;
 import com.hypixel.hytale.server.core.asset.type.item.config.metadata.ItemDisplayMetadata;
 import com.hypixel.hytale.server.core.inventory.ItemStack;
+import com.hypixel.hytale.server.core.plugin.PluginManager;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -13,13 +15,16 @@ import java.util.*;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
 
 import com.azuredoom.levelingcore.LevelingCore;
+import com.azuredoom.levelingcore.compat.classescore.ClassesCoreCompat;
 import com.azuredoom.levelingcore.level.itemlevellock.ItemStatRequirement;
 
 public class ItemTooltipMetadataManager {
+
+    private final AtomicLong revision = new AtomicLong(0L);
 
     private volatile boolean ready = false;
 
@@ -65,6 +70,10 @@ public class ItemTooltipMetadataManager {
         return ready;
     }
 
+    public long getRevision() {
+        return revision.get();
+    }
+
     private void applyAll() {
         try {
             if (LevelingCore.getConfig().get().isEnableItemLevelRestriction()) {
@@ -83,6 +92,11 @@ public class ItemTooltipMetadataManager {
             }
 
             scanForWeapons();
+            var hasClassesCore = PluginManager.get()
+                .getPlugin(new PluginIdentifier("com.azuredoom", "classescore")) != null;
+            if (hasClassesCore) {
+                ClassesCoreCompat.tryScanForItems();
+            }
             ready = true;
         } catch (Exception e) {
             LevelingCore.LOGGER.atWarning()
@@ -127,7 +141,7 @@ public class ItemTooltipMetadataManager {
     }
 
     public ItemStack applyDisplayMetadata(ItemStack stack) {
-        if (stack == null || stack.getItem() == null || stack.getItem().getId() == null) {
+        if (stack == null || stack.getItem().getId() == null) {
             return stack;
         }
 
@@ -155,11 +169,20 @@ public class ItemTooltipMetadataManager {
             return;
         }
 
-        displayDescriptionAdditions.merge(itemId, textToAppend, (oldValue, newValue) -> {
-            if (oldValue.contains(newValue.trim())) {
+        var trimmed = textToAppend.trim();
+
+        displayDescriptionAdditions.compute(itemId, (id, oldValue) -> {
+            if (oldValue != null && oldValue.contains(trimmed)) {
                 return oldValue;
             }
-            return oldValue + newValue;
+
+            revision.incrementAndGet();
+
+            if (oldValue == null || oldValue.isBlank()) {
+                return textToAppend;
+            }
+
+            return oldValue + textToAppend;
         });
     }
 

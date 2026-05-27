@@ -96,7 +96,10 @@ public class ItemTooltipInventoryApplySystem extends EntityTickingSystem<EntityS
                 continue;
             }
 
-            var signature = itemId + "|" + stack.getQuantity() + "|" + addition.hashCode();
+            var signature = itemId + "|" +
+                stack.getQuantity() + "|" +
+                addition.hashCode() + "|" +
+                ItemTooltipMetadataManager.INSTANCE.getRevision();
 
             if (signature.equals(playerCache.get(cacheKey))) {
                 continue;
