@@ -1,16 +1,13 @@
 package com.azuredoom.levelingcore.commands.stats;
 
-import com.hypixel.hytale.component.Ref;
-import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
-import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
+import com.hypixel.hytale.server.core.command.system.basecommands.AbstractAsyncCommand;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nonnull;
 
 import com.azuredoom.levelingcore.LevelingCore;
@@ -18,7 +15,7 @@ import com.azuredoom.levelingcore.lang.CommandLang;
 import com.azuredoom.levelingcore.level.stats.StatType;
 import com.azuredoom.levelingcore.level.stats.StatTypeArgumentType;
 
-public class SetStatsCommand extends AbstractPlayerCommand {
+public class SetStatsCommand extends AbstractAsyncCommand {
 
     @Nonnull
     private final RequiredArg<PlayerRef> playerArg;
@@ -49,72 +46,78 @@ public class SetStatsCommand extends AbstractPlayerCommand {
         );
     }
 
+    @NotNull
     @Override
-    protected void execute(
-        @NonNullDecl CommandContext commandContext,
-        @NonNullDecl Store<EntityStore> store,
-        @NonNullDecl Ref<EntityStore> ref,
-        @NonNullDecl PlayerRef playerRef,
-        @NonNullDecl World world
-    ) {
+    protected CompletableFuture<Void> executeAsync(@NotNull CommandContext commandContext) {
         var levelService = LevelingCore.getLevelService();
+
         if (levelService == null) {
             commandContext.sendMessage(CommandLang.NOT_INITIALIZED);
-            return;
+            return CompletableFuture.completedFuture(null);
         }
-        playerRef = this.playerArg.get(commandContext);
+
+        var playerRef = this.playerArg.get(commandContext);
         var statType = this.statArg.get(commandContext);
         var value = this.valueArg.get(commandContext);
         var playerUUID = playerRef.getUuid();
+
         switch (statType) {
             case STR -> {
-                levelService.setStr(playerUUID, value);
+                var current = levelService.getStr(playerUUID);
+                levelService.setStr(playerUUID, current + value);
                 commandContext.sendMessage(
-                    CommandLang.SET_STATS.param("stat", "strength")
+                    CommandLang.ADD_STATS.param("stat", "strength")
                         .param("value", value)
                         .param("player", playerRef.getUsername())
                 );
             }
             case AGI -> {
-                levelService.setAgi(playerUUID, value);
+                var current = levelService.getAgi(playerUUID);
+                levelService.setAgi(playerUUID, current + value);
                 commandContext.sendMessage(
-                    CommandLang.SET_STATS.param("stat", "agility")
+                    CommandLang.ADD_STATS.param("stat", "agility")
                         .param("value", value)
                         .param("player", playerRef.getUsername())
                 );
             }
             case PER -> {
-                levelService.setPer(playerUUID, value);
+                var current = levelService.getPer(playerUUID);
+                levelService.setPer(playerUUID, current + value);
                 commandContext.sendMessage(
-                    CommandLang.SET_STATS.param("stat", "perception")
+                    CommandLang.ADD_STATS.param("stat", "perception")
                         .param("value", value)
                         .param("player", playerRef.getUsername())
                 );
             }
             case VIT -> {
-                levelService.setVit(playerUUID, value);
+                var current = levelService.getVit(playerUUID);
+                levelService.setVit(playerUUID, current + value);
                 commandContext.sendMessage(
-                    CommandLang.SET_STATS.param("stat", "vitality")
+                    CommandLang.ADD_STATS.param("stat", "vitality")
                         .param("value", value)
                         .param("player", playerRef.getUsername())
                 );
             }
             case INT -> {
-                levelService.setInt(playerUUID, value);
+                var current = levelService.getInt(playerUUID);
+                levelService.setInt(playerUUID, current + value);
                 commandContext.sendMessage(
-                    CommandLang.SET_STATS.param("stat", "intelligence")
+                    CommandLang.ADD_STATS.param("stat", "intelligence")
                         .param("value", value)
                         .param("player", playerRef.getUsername())
                 );
             }
             case CON -> {
-                levelService.setCon(playerUUID, value);
+                var current = levelService.getCon(playerUUID);
+                levelService.setCon(playerUUID, current + value);
                 commandContext.sendMessage(
-                    CommandLang.SET_STATS.param("stat", "constitution")
+                    CommandLang.ADD_STATS.param("stat", "constitution")
                         .param("value", value)
                         .param("player", playerRef.getUsername())
                 );
             }
         }
+
+        return CompletableFuture.completedFuture(null);
     }
 }

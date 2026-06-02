@@ -67,6 +67,7 @@ import com.azuredoom.levelingcore.ui.hud.XPBarHud;
 import com.azuredoom.levelingcore.utils.HudPlayerReady;
 import com.azuredoom.levelingcore.utils.LevelDownListenerRegistrar;
 import com.azuredoom.levelingcore.utils.LevelUpListenerRegistrar;
+import com.azuredoom.levelingcore.utils.LevelingPlayerContextManager;
 
 public class LevelingCore extends JavaPlugin {
 
@@ -213,6 +214,12 @@ public class LevelingCore extends JavaPlugin {
                     var levelService = LevelingCore.getLevelService();
                     var level = levelService.getLevel(uuid);
                     int targetTotal;
+                    LevelingPlayerContextManager.trackPlayer(
+                        uuid,
+                        player,
+                        playerRef.getStore(),
+                        playerRef
+                    );
                     if (config.get().isAgiModifiesSpeed()) {
                         AgilitySpeedManager.trackPlayer(uuid, player, playerRef.getStore(), playerRef);
                         AgilitySpeedManager.applyForPlayer(uuid);
@@ -248,6 +255,7 @@ public class LevelingCore extends JavaPlugin {
                 XPBarHud.removeHud(event.getPlayerRef());
                 LevelUpListenerRegistrar.clear(event.getPlayerRef().getUuid());
                 LevelDownListenerRegistrar.clear(event.getPlayerRef().getUuid());
+                LevelingPlayerContextManager.clear(event.getPlayerRef().getUuid());
             });
 
         var showLvlHeadSystem = new ShowLvlHeadSystem(config);

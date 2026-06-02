@@ -1,16 +1,13 @@
 package com.azuredoom.levelingcore.commands.stats;
 
-import com.hypixel.hytale.component.Ref;
-import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
-import com.hypixel.hytale.server.core.command.system.basecommands.AbstractPlayerCommand;
+import com.hypixel.hytale.server.core.command.system.basecommands.AbstractAsyncCommand;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
-import com.hypixel.hytale.server.core.universe.world.World;
-import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
-import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.concurrent.CompletableFuture;
 import javax.annotation.Nonnull;
 
 import com.azuredoom.levelingcore.LevelingCore;
@@ -18,7 +15,7 @@ import com.azuredoom.levelingcore.lang.CommandLang;
 import com.azuredoom.levelingcore.level.stats.StatType;
 import com.azuredoom.levelingcore.level.stats.StatTypeArgumentType;
 
-public class AddStatsCommand extends AbstractPlayerCommand {
+public class AddStatsCommand extends AbstractAsyncCommand {
 
     @Nonnull
     private final RequiredArg<PlayerRef> playerArg;
@@ -49,23 +46,21 @@ public class AddStatsCommand extends AbstractPlayerCommand {
         );
     }
 
+    @NotNull
     @Override
-    protected void execute(
-        @NonNullDecl CommandContext commandContext,
-        @NonNullDecl Store<EntityStore> store,
-        @NonNullDecl Ref<EntityStore> ref,
-        @NonNullDecl PlayerRef playerRef,
-        @NonNullDecl World world
-    ) {
+    protected CompletableFuture<Void> executeAsync(@NotNull CommandContext commandContext) {
         var levelService = LevelingCore.getLevelService();
+
         if (levelService == null) {
             commandContext.sendMessage(CommandLang.NOT_INITIALIZED);
-            return;
+            return CompletableFuture.completedFuture(null);
         }
-        playerRef = this.playerArg.get(commandContext);
+
+        var playerRef = this.playerArg.get(commandContext);
         var statType = this.statArg.get(commandContext);
         var value = this.valueArg.get(commandContext);
         var playerUUID = playerRef.getUuid();
+
         switch (statType) {
             case STR -> {
                 var current = levelService.getStr(playerUUID);
@@ -122,5 +117,7 @@ public class AddStatsCommand extends AbstractPlayerCommand {
                 );
             }
         }
+
+        return CompletableFuture.completedFuture(null);
     }
 }
