@@ -188,7 +188,6 @@ hytalePublisher {
         optional "party-info"
         optional "partypro"
         optional "hyui"
-        optional "automultihud"
         optional "placeholder-api"
         optional "placeholderlib"
         optional "docs"
