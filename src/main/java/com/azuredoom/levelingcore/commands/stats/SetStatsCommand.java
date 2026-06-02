@@ -2,7 +2,6 @@ package com.azuredoom.levelingcore.commands.stats;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
@@ -17,6 +16,7 @@ import javax.annotation.Nonnull;
 import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.lang.CommandLang;
 import com.azuredoom.levelingcore.level.stats.StatType;
+import com.azuredoom.levelingcore.level.stats.StatTypeArgumentType;
 
 public class SetStatsCommand extends AbstractPlayerCommand {
 
@@ -24,7 +24,7 @@ public class SetStatsCommand extends AbstractPlayerCommand {
     private final RequiredArg<PlayerRef> playerArg;
 
     @Nonnull
-    private final RequiredArg<String> statArg;
+    private final RequiredArg<StatType> statArg;
 
     @Nonnull
     private final RequiredArg<Integer> valueArg;
@@ -39,8 +39,8 @@ public class SetStatsCommand extends AbstractPlayerCommand {
         );
         this.statArg = this.withRequiredArg(
             "stat",
-            "Stat to set to (str, agi, per, vit, int, con).",
-            ArgTypes.STRING
+            "Stat to add to (str, agi, per, vit, int, con).",
+            StatTypeArgumentType.INSTANCE
         );
         this.valueArg = this.withRequiredArg(
             "value",
@@ -63,18 +63,9 @@ public class SetStatsCommand extends AbstractPlayerCommand {
             return;
         }
         playerRef = this.playerArg.get(commandContext);
-        var statInput = this.statArg.get(commandContext);
+        var statType = this.statArg.get(commandContext);
         var value = this.valueArg.get(commandContext);
         var playerUUID = playerRef.getUuid();
-        var statType = StatType.fromString(statInput);
-        if (statType == null) {
-            commandContext.sendMessage(
-                Message.raw(
-                    "Invalid stat '" + statInput + "'. Valid stats: str, agi, per, vit, int, con"
-                )
-            );
-            return;
-        }
         switch (statType) {
             case STR -> {
                 levelService.setStr(playerUUID, value);
