@@ -72,9 +72,9 @@ When enabled, death causes the player to lose **all levels**.
 
 **Important**
 - This is an aggressive option. In most setups, you’ll want to ensure your death-handling logic clearly defines precedence between:
-    - losing XP (`EnableXPLossOnDeath`)
-    - losing a level (`EnableLevelDownOnDeath`)
-    - losing all levels (`EnableAllLevelsLostOnDeath`)
+  - losing XP (`EnableXPLossOnDeath`)
+  - losing a level (`EnableLevelDownOnDeath`)
+  - losing all levels (`EnableAllLevelsLostOnDeath`)
 
 A common rule is:
 1. If `EnableAllLevelsLostOnDeath` is true → wipe levels
@@ -103,6 +103,14 @@ When enabled, players will receive chat messages when they gain or lose levels.
 
 ---
 
+### `DisableXPGainNotification` (boolean)
+
+**Default:** false
+
+When enabled, XP gain notifications are hidden from players.
+
+---
+
 ### `EnableLevelAndXPTitles` (boolean)
 
 **Default:** true
@@ -113,7 +121,7 @@ When enabled, title popups are shown for level and XP changes.
 
 ### `ShowXPAmountInHUD` (boolean)
 
-**Default:** true
+**Default:** false
 
 When enabled, the current XP amount is displayed in the player HUD.
 
@@ -130,9 +138,9 @@ When enabled, player stats scale with level.
 
 ---
 
-### `HealthLevelUpMultiplier` (double)
+### `HealthLevelUpMultiplier` (float)
 
-**Default:** 1.2
+**Default:** 2.2
 
 Multiplier applied to health increases on level-up.
 
@@ -142,9 +150,9 @@ Example
 
 ---
 
-### `StaminaLevelUpMultiplier` (double)
+### `StaminaLevelUpMultiplier` (float)
 
-**Default:** 0.35
+**Default:** 1.35
 
 Multiplier applied to stamina increases on level-up.
 
@@ -154,9 +162,9 @@ Example
 
 ---
 
-### `ManaLevelUpMultiplier` (double)
+### `ManaLevelUpMultiplier` (float)
 
-**Default:** 0.6
+**Default:** 1.6
 
 Multiplier applied to mana increases on level-up.
 
@@ -279,6 +287,14 @@ Multiplier applied to Intelligence-based effects, such as increased mana.
 
 ---
 
+### `ConStatMultiplier` (float)
+
+**Default:** 0.8
+
+Multiplier applied to Constitution-based effects, such as reducing incoming damage.
+
+---
+
 ### `EnablePartyProXPShareCompat` (boolean)
 
 **Default:** true
@@ -292,6 +308,49 @@ Enables compatibility with [the Party Pro](https://www.curseforge.com/hytale/mod
 **Default:** true
 
 Enables compatibility with the [Party Plugin](https://www.curseforge.com/hytale/mods/party-info) for party experience sharing.
+
+---
+
+### `EnablePartyXPSplit` (boolean)
+
+**Default:** false
+
+When enabled, XP is split between eligible party members instead of only being awarded to the killer.
+
+---
+
+### `PartyGroupXPMultiplier` (double)
+
+**Default:** 0.5
+
+Multiplier applied to XP shared with the party group.
+
+---
+
+### `KillerGetsFullXp` (boolean)
+
+**Default:** true
+
+When enabled, the killer receives the full XP amount even when party XP sharing/splitting is active.
+
+---
+
+### `EnablePartyXPDistanceCheck` (boolean)
+
+**Default:** false
+
+When enabled, only party members within the configured distance can receive shared XP.
+
+---
+
+### `PartyXPDistanceBlocks` (double)
+
+**Default:** -1.0
+
+Maximum distance in blocks for party XP sharing when `EnablePartyXPDistanceCheck` is enabled.
+
+**Notes**
+- `-1.0` can be used to indicate no configured distance limit, depending on the active party XP implementation.
 
 ---
 
@@ -339,6 +398,38 @@ This means the NPC's level may spawn **below or above** the configured base leve
 
 ---
 
+### `AGIModifiesSpeed` (boolean)
+
+**Default:** true
+
+When enabled, Agility can modify player movement speed.
+
+---
+
+### `AGISpeedPerPoint` (float)
+
+**Default:** 0.0025
+
+Speed bonus granted per Agility point when `AGIModifiesSpeed` is enabled.
+
+---
+
+### `AGIMaxSpeedBonus` (float)
+
+**Default:** 0.25
+
+Maximum total speed bonus that can be granted from Agility.
+
+---
+
+### `AGISpeedRampStep` (float)
+
+**Default:** 0.1
+
+Ramp step used when applying Agility-based speed changes.
+
+---
+
 ### `MobHealthMultiplier` (float)
 
 **Default:** 2.1
@@ -349,7 +440,7 @@ Multiplier applied to mob health values based on level.
 
 ### `MobDamageMultiplier` (float)
 
-**Default:** 0.5
+**Default:** 0.25
 
 Multiplier applied to mob damage output based on level.
 
@@ -405,21 +496,21 @@ When enabled, the [Item Level Requirements](https://wiki.hytalemodding.dev/mod/l
 ---
 
 ### `EnableXPBarUI` (boolean)
-**Default:** `false`
+**Default:** `true`
 
 When enabled, the XP bar on the HUD is shown.
 
 ---
 
 ### `ShowPlayerLvls` (boolean)
-**Default:** `false`
+**Default:** `true`
 
 When enabled, player levels are shown in the player nameplate.
 
 ---
 
 ### `ShowMobLvls` (boolean)
-**Default:** `false`
+**Default:** `true`
 
 When enabled, mob levels are shown in the player nameplate. When false, will remove any mob levels in nameplates.
 
@@ -672,7 +763,7 @@ Blacklisted mob names that will not display custom nameplates. Wildcards are sup
 ---
 
 ### `EnableLeaderboardScreen` (boolean)
-**Default:** `false`
+**Default:** `true`
 
 When enabled, the [Leaderboard Screen](https://wiki.hytalemodding.dev/mod/levelingcore/leaderboard-screen) is shown.
 
@@ -777,7 +868,7 @@ Controls the XP multiplier applied to mobs that are not elite or boss mobs.
 ---
 
 ### `EliteMobHealthMultiplier` (float)
-**Default:** 1.75`
+**Default:** `1.75`
 
 Controls the health multiplier applied to elite mobs.
 
@@ -832,6 +923,28 @@ Controls the XP multiplier applied to boss mobs.
 
 ---
 
+### `EliteMobs` (List\<String\>)
+
+**Default:** See the list below
+
+A list of mob entity IDs that should be treated as elite mobs. Wildcards are supported.
+
+#### Default Value
+```json
+[
+  "Crawler_Void",
+  "Dragon_Void",
+  "Eye_Void",
+  "Golem_Guardian_Void",
+  "Larva_Void",
+  "Necromancer_Void",
+  "Spawn_Void",
+  "Spectre_Void"
+]
+```
+
+---
+
 ## Example Config Snippet
 
 ```json
@@ -876,7 +989,11 @@ Controls the XP multiplier applied to boss mobs.
     "NEARBY_PLAYERS_MEAN",
     "INSTANCE"
   ],
-  "LevelVariance": 0,
+  "LevelVariance": 5,
+  "AGIModifiesSpeed": true,
+  "AGISpeedPerPoint": 0.0024999999441206455,
+  "AGIMaxSpeedBonus": 0.25,
+  "AGISpeedRampStep": 0.10000000149011612,
   "MobHealthMultiplier": 2.0999999046325684,
   "MobDamageMultiplier": 0.25,
   "MobBaseDamage": 0.0,
@@ -887,7 +1004,7 @@ Controls the XP multiplier applied to boss mobs.
   "ShowPlayerLvls": true,
   "ShowMobLvls": true,
   "MobLevelMultiplier": 0.35,
-  "MobNameplate": "{name} [Lvl. {level}]",
+  "MobNameplate": " [Lvl {level}]",
   "BlacklistedMobs": [
     "Arrow_Crossbow_Signature",
     "Arrow_Crude",
@@ -1053,7 +1170,9 @@ Controls the XP multiplier applied to boss mobs.
     "Wraith_Lantern"
   ],
   "EnableItemStatRequirement": false,
-  "BlacklistedNameplateMobs": [],
+  "BlacklistedNameplateMobs": [
+    "HyCitizens_*"
+  ],
   "EnableLeaderboardScreen": true,
   "RankOneRankColor": "#FFD700",
   "RankOneNameColor": "#FFF4B0",
@@ -1076,6 +1195,16 @@ Controls the XP multiplier applied to boss mobs.
   "BossMobHealthMultiplier": 2.0,
   "BossMobDamageMultiplier": 1.5,
   "BossMobDamageThreshold": 0.699999988079071,
-  "BossMobXPMultiplier": 1.7999999523162842
+  "BossMobXPMultiplier": 1.7999999523162842,
+  "EliteMobs": [
+    "Crawler_Void",
+    "Dragon_Void",
+    "Eye_Void",
+    "Golem_Guardian_Void",
+    "Larva_Void",
+    "Necromancer_Void",
+    "Spawn_Void",
+    "Spectre_Void"
+  ]
 }
 ```

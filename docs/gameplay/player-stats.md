@@ -10,7 +10,7 @@ draft: false
 Players gain **Ability Points** through leveling. These points can be
 spent to increase one of several core stats.\
 Spending a stat immediately updates derived values such as health,
-stamina, mana, and combat damage.
+speed, stamina, mana, and combat damage.
 
 - Use `/showstats` or the **Tome of Skills** to allocate points.
 - Use the **Reset Skills Potion** to refund all spent points.
@@ -19,7 +19,7 @@ stamina, mana, and combat damage.
 ## Stat Effects at a Glance
 
 - **STR** — increases melee damage
-- **AGI** — increases stamina and oxygen
+- **AGI** — increases speed, stamina and oxygen
 - **PER** — increases projectile damage
 - **VIT** — increases maximum health
 - **INT** — increases maximum mana and mana regeneration
@@ -72,15 +72,23 @@ Health Bonus = VIT × vitStatMultiplier
 
 -   Default multiplier: `2.0`
 
-### Agility (AGI) – Maximum Stamina and Oxygen
+### Agility (AGI) – Movement Speed, Stamina and Oxygen
 
-Increases **Maximum Stamina** and **Maximum Oxygen**.
+Increases **Maximum Speed, Stamina, and Oxygen**.
 
 ```
 Stamina Bonus = AGI × agiStatMultiplier
 Oxygen Bonus  = AGI × agiStatMultiplier
+
+Speed Bonus      = min(agiMaxSpeedBonus, AGI × agiSpeedPerPoint)
+Speed Multiplier = 1.0 + Speed Bonus
+Base Speed       = 5.0 × Speed Multiplier
 ```
--   Default multiplier: `0.25`
+
+- Default multiplier: `0.25`
+- Default agiSpeedPerPoint: `0.0025F`
+- Default agiMaxSpeedBonus: `0.25F`
+- Default agiSpeedRampStep: `0.1F`
 
 ### Intelligence (INT) – Maximum Mana
 
@@ -278,3 +286,4 @@ After a stat is spent:
     maximums**
 -   Mana regeneration is updated immediately
 -   Stat modifiers are applied as **additive max-value modifiers**
+- AGI speed changes update movement settings including base speed, max speed multiplier, run speed multiplier, and sprint speed multiplier.
