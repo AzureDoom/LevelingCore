@@ -244,6 +244,30 @@ public class GUIConfig {
         )
         .add()
         .append(
+            new KeyedCodec<>("AGIModifiesSpeed", Codec.BOOLEAN),
+            (exConfig, aBoolean, extraInfo) -> exConfig.agiModifiesSpeed = aBoolean,
+            (exConfig, extraInfo) -> exConfig.agiModifiesSpeed
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("AGISpeedPerPoint", Codec.FLOAT),
+            (exConfig, aFloat, extraInfo) -> exConfig.agiSpeedPerPoint = aFloat,
+            (exConfig, extraInfo) -> exConfig.agiSpeedPerPoint
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("AGIMaxSpeedBonus", Codec.FLOAT),
+            (exConfig, aFloat, extraInfo) -> exConfig.agiMaxSpeedBonus = aFloat,
+            (exConfig, extraInfo) -> exConfig.agiMaxSpeedBonus
+        )
+        .add()
+        .append(
+            new KeyedCodec<>("AGISpeedRampStep", Codec.FLOAT),
+            (exConfig, aFloat, extraInfo) -> exConfig.agiSpeedRampStep = aFloat,
+            (exConfig, extraInfo) -> exConfig.agiSpeedRampStep
+        )
+        .add()
+        .append(
             new KeyedCodec<>("MobHealthMultiplier", Codec.FLOAT),
             (exConfig, aFloat, extraInfo) -> exConfig.mobHealthMultiplier = aFloat,
             (exConfig, extraInfo) -> exConfig.mobHealthMultiplier
@@ -548,6 +572,14 @@ public class GUIConfig {
     private String[] levelMode = { "NEARBY_PLAYERS_MEAN", "INSTANCE" };
 
     private int levelVariance = 5;
+
+    private boolean agiModifiesSpeed = true;
+
+    private float agiSpeedPerPoint = 0.0025F;
+
+    private float agiMaxSpeedBonus = 0.25F;
+
+    private float agiSpeedRampStep = 0.1F;
 
     private float mobHealthMultiplier = 2.10F;
 
@@ -1447,6 +1479,22 @@ public class GUIConfig {
 
     public boolean isEliteMob(String npcTypeId) {
         return matchesAnyPattern(eliteMobs, npcTypeId);
+    }
+
+    public boolean isAgiModifiesSpeed() {
+        return agiModifiesSpeed;
+    }
+
+    public float getAgiSpeedPerPoint() {
+        return agiSpeedPerPoint;
+    }
+
+    public float getAgiMaxSpeedBonus() {
+        return agiMaxSpeedBonus;
+    }
+
+    public float getAgiSpeedRampStep() {
+        return agiSpeedRampStep;
     }
 
     /**

@@ -60,6 +60,7 @@ import com.azuredoom.levelingcore.systems.level.LevelUpTickingSystem;
 import com.azuredoom.levelingcore.systems.level.MobLevelSystem;
 import com.azuredoom.levelingcore.systems.nameplate.ShowLvlHeadSystem;
 import com.azuredoom.levelingcore.systems.objectives.ObjectivesSystem;
+import com.azuredoom.levelingcore.systems.stats.AgilitySpeedManager;
 import com.azuredoom.levelingcore.systems.xp.GainXPEventSystem;
 import com.azuredoom.levelingcore.systems.xp.LossXPEventSystem;
 import com.azuredoom.levelingcore.ui.hud.XPBarHud;
@@ -180,6 +181,11 @@ public class LevelingCore extends JavaPlugin {
         LOGGER.atInfo().log("Leveling Core initializing");
         activeBootstrap = bootstrap.bootstrap(configPath);
         levelingService = activeBootstrap.service();
+        levelingService.registerAgilityListener((playerId, _) -> {
+            if (config.get().isAgiModifiesSpeed()) {
+                AgilitySpeedManager.applyForPlayer(playerId);
+            }
+        });
         this.registerAllCommands();
         this.registerAllSystems();
         this.getCodecRegistry(Interaction.CODEC)
@@ -207,6 +213,10 @@ public class LevelingCore extends JavaPlugin {
                     var levelService = LevelingCore.getLevelService();
                     var level = levelService.getLevel(uuid);
                     int targetTotal;
+                    if (config.get().isAgiModifiesSpeed()) {
+                        AgilitySpeedManager.trackPlayer(uuid, player, playerRef.getStore(), playerRef);
+                        AgilitySpeedManager.applyForPlayer(uuid);
+                    }
                     if (config.get().isUseStatsPerLevelMapping()) {
                         targetTotal = statsPerLevel.getCumulativeStatsForLevel(
                             level,
@@ -233,6 +243,8 @@ public class LevelingCore extends JavaPlugin {
         // Cleans up various weak hash maps and UI on player disconnect
         this.getEventRegistry()
             .registerGlobal(PlayerDisconnectEvent.class, (event) -> {
+                if (config.get().isAgiModifiesSpeed())
+                    AgilitySpeedManager.clear(event.getPlayerRef().getUuid());
                 XPBarHud.removeHud(event.getPlayerRef());
                 LevelUpListenerRegistrar.clear(event.getPlayerRef().getUuid());
                 LevelDownListenerRegistrar.clear(event.getPlayerRef().getUuid());
