@@ -36,6 +36,17 @@ public final class AgilitySpeedManager {
 
     private AgilitySpeedManager() {}
 
+    /**
+     * Registers a player's context so speed multipliers can be applied to them later.
+     * <p>
+     * Must be called before {@link #applyForPlayer(UUID)} or {@link #clear(UUID)}. The entity reference is validated
+     * immediately; if invalid the player is not tracked.
+     *
+     * @param playerId  the UUID of the player to track
+     * @param player    the {@link Player} instance
+     * @param store     the {@link Store} holding the player's entity data
+     * @param entityRef a {@link Ref} to the player's {@link EntityStore}; must be valid
+     */
     public static void trackPlayer(UUID playerId, Player player, Store<EntityStore> store, Ref<EntityStore> entityRef) {
         if (player == null || store == null || entityRef == null || !entityRef.isValid()) {
             return;
@@ -46,6 +57,15 @@ public final class AgilitySpeedManager {
         PLAYER_CONTEXTS.put(playerId, new SpeedContext(player, world, store, entityRef));
     }
 
+    /**
+     * Calculates the target speed multiplier for the player based on their current Agility stat and begins a smooth
+     * ramp towards that multiplier.
+     * <p>
+     * The target is capped by {@code agiMaxSpeedBonus} from config. The player must already be tracked via
+     * {@link #trackPlayer} for the ramp to have any effect.
+     *
+     * @param playerId the UUID of the player whose speed should be updated
+     */
     public static void applyForPlayer(UUID playerId) {
         var agility = LevelingCore.getLevelService().getAgi(playerId);
 
@@ -57,6 +77,14 @@ public final class AgilitySpeedManager {
         rampTo(playerId, targetMultiplier);
     }
 
+    /**
+     * Cancels any in-progress speed ramp and removes all stored state for the player.
+     * <p>
+     * Should be called when the player logs out or when the speed system needs to be reset to avoid memory leaks and
+     * stale ramp tasks.
+     *
+     * @param playerId the UUID of the player to clean up
+     */
     public static void clear(UUID playerId) {
         var task = RAMP_TASKS.remove(playerId);
         if (task != null) {
@@ -67,6 +95,16 @@ public final class AgilitySpeedManager {
         PLAYER_CONTEXTS.remove(playerId);
     }
 
+    /**
+     * Smoothly transitions the player's speed multiplier from its current value to {@code targetMultiplier} using
+     * fixed-delay ticks scheduled on the server executor.
+     * <p>
+     * Any previously scheduled ramp for this player is cancelled before the new one starts. The ramp task cancels
+     * itself once the target is reached.
+     *
+     * @param playerId         the UUID of the player whose speed is being ramped
+     * @param targetMultiplier the desired speed multiplier to reach
+     */
     private static void rampTo(UUID playerId, float targetMultiplier) {
         var existing = RAMP_TASKS.remove(playerId);
         if (existing != null) {
@@ -109,6 +147,17 @@ public final class AgilitySpeedManager {
         RAMP_TASKS.put(playerId, task);
     }
 
+    /**
+     * Dispatches a world-thread task that writes the given speed {@code multiplier} into the player's
+     * {@link MovementManager} settings.
+     * <p>
+     * Updates {@code baseSpeed}, {@code maxSpeedMultiplier}, {@code forwardRunSpeedMultiplier}, and
+     * {@code forwardSprintSpeedMultiplier}, then flushes the changes to the client via the player's packet handler.
+     * No-ops silently if the player context or entity ref is missing.
+     *
+     * @param playerId   the UUID of the player whose movement settings should be updated
+     * @param multiplier the speed multiplier to apply (1.0 = default speed)
+     */
     private static void applyMovementMultiplier(UUID playerId, float multiplier) {
         var context = PLAYER_CONTEXTS.get(playerId);
         if (context == null) {
