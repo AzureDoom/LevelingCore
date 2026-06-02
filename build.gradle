@@ -183,7 +183,6 @@ hytalePublisher {
         enabled   = true
         projectId = project.curseforgeID
 
-        required "multiplehud"
         optional "update-checker"
         optional "better-modlist"
         optional "party-info"
