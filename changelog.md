@@ -1,6 +1,5 @@
-v1.0.9
+v1.1.0
 
-- Fixes crash on startup.
-- Fixes update 5 server matching issue.
-- Fixes mobs getting ?? in nameplate
-- Replace dynamictooltipslib compat with new built-in system. 
+- Adds system to allow AGI to increase player speed (not possible to slow player under default atm)
+- Make stat commands properly suggest stat names
+- Make add/set/remove commands work from the server as well.
