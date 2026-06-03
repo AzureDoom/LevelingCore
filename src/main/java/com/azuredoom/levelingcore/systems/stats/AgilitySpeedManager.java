@@ -74,6 +74,11 @@ public final class AgilitySpeedManager {
             agility * LevelingCore.getConfig().get().getAgiSpeedPerPoint()
         );
 
+        var current = CURRENT_MULTIPLIERS.getOrDefault(playerId, 1.0F);
+        if (targetMultiplier == current) {
+            return;
+        }
+
         rampTo(playerId, targetMultiplier);
     }
 
