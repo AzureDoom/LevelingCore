@@ -2,7 +2,7 @@ plugins {
     id 'idea'
     id 'java'
     id 'maven-publish'
-    id 'com.diffplug.spotless' version '8.1.0'
+    id 'com.diffplug.spotless' version '8.6.0'
     id 'com.gradleup.shadow' version '9.3.0'
     id 'com.azuredoom.hytale-tools' version '1.+'
     id 'com.azuredoom.hytalepublisher' version '1.+'
