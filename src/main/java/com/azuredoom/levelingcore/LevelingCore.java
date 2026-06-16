@@ -288,7 +288,8 @@ public class LevelingCore extends JavaPlugin {
         ) {
             ItemTooltipMetadataManager.register();
         }
-        new HStats("937eca15-2942-44cd-b6a8-650afd1d1b39", "1.0.7", LOGGER);
+        if (config.get().isHStatsEnabled())
+            new HStats("937eca15-2942-44cd-b6a8-650afd1d1b39", "1.1.2", LOGGER);
     }
 
     /**

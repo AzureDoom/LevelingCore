@@ -495,6 +495,12 @@ public class GUIConfig {
             (exConfig, extraInfo) -> exConfig.eliteMobs
         )
         .add()
+        .append(
+            new KeyedCodec<>("EnableHStatsSupport", Codec.BOOLEAN),
+            (exConfig, aBoolean, extraInfo) -> exConfig.enableHStats = aBoolean,
+            (exConfig, extraInfo) -> exConfig.enableHStats
+        )
+        .add()
         .build();
 
     private boolean enableXPLossOnDeath = false;
@@ -828,6 +834,8 @@ public class GUIConfig {
         "Necromancer_Void",
         "Spawn_Void",
         "Spectre_Void" };
+
+    private boolean enableHStats = false;
 
     public GUIConfig() {}
 
@@ -1495,6 +1503,10 @@ public class GUIConfig {
 
     public float getAgiSpeedRampStep() {
         return agiSpeedRampStep;
+    }
+
+    public boolean isHStatsEnabled() {
+        return enableHStats;
     }
 
     /**
