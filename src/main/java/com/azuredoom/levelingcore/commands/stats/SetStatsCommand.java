@@ -72,6 +72,11 @@ public class SetStatsCommand extends AbstractAsyncCommand {
 
         var future = new CompletableFuture<Void>();
 
+        if (value < 0) {
+            commandContext.sendMessage(Message.raw("Value can't be below 0."));
+            return future;
+        }
+
         context.world().execute(() -> {
             try {
                 switch (statType) {
