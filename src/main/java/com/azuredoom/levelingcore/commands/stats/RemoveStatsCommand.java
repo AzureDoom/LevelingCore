@@ -84,37 +84,43 @@ public class RemoveStatsCommand extends AbstractAsyncCommand {
                 switch (statType) {
                     case STR -> {
                         var current = levelService.getStr(playerUUID);
-                        if (current - value < 0) clamped = true;
+                        if (current - value < 0)
+                            clamped = true;
                         var newVal = Math.max(0, current - value);
                         levelService.setStr(playerUUID, newVal);
                     }
                     case AGI -> {
                         var current = levelService.getAgi(playerUUID);
-                        if (current - value < 0) clamped = true;
+                        if (current - value < 0)
+                            clamped = true;
                         var newVal = Math.max(0, current - value);
                         levelService.setAgi(playerUUID, newVal);
                     }
                     case PER -> {
                         var current = levelService.getPer(playerUUID);
-                        if (current - value < 0) clamped = true;
+                        if (current - value < 0)
+                            clamped = true;
                         var newVal = Math.max(0, current - value);
                         levelService.setPer(playerUUID, newVal);
                     }
                     case VIT -> {
                         var current = levelService.getVit(playerUUID);
-                        if (current - value < 0) clamped = true;
+                        if (current - value < 0)
+                            clamped = true;
                         var newVal = Math.max(0, current - value);
                         levelService.setVit(playerUUID, newVal);
                     }
                     case INT -> {
                         var current = levelService.getInt(playerUUID);
-                        if (current - value < 0) clamped = true;
+                        if (current - value < 0)
+                            clamped = true;
                         var newVal = Math.max(0, current - value);
                         levelService.setInt(playerUUID, newVal);
                     }
                     case CON -> {
                         var current = levelService.getCon(playerUUID);
-                        if (current - value < 0) clamped = true;
+                        if (current - value < 0)
+                            clamped = true;
                         var newVal = Math.max(0, current - value);
                         levelService.setCon(playerUUID, newVal);
                     }
@@ -127,12 +133,14 @@ public class RemoveStatsCommand extends AbstractAsyncCommand {
 
                 var statName = statType.name().toLowerCase();
                 if (clamped) {
-                    commandContext.sendMessage(Message.raw(statName.toUpperCase() + " would go below 0, clamped to 0."));
+                    commandContext.sendMessage(
+                        Message.raw(statName.toUpperCase() + " would go below 0, clamped to 0.")
+                    );
                 } else {
                     commandContext.sendMessage(
-                            CommandLang.REMOVE_STATS.param("stat", statName)
-                                    .param("value", value)
-                                    .param("player", playerRef.getUsername())
+                        CommandLang.REMOVE_STATS.param("stat", statName)
+                            .param("value", value)
+                            .param("player", playerRef.getUsername())
                     );
                 }
             } catch (Exception e) {
