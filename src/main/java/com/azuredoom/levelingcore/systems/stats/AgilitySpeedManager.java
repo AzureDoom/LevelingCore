@@ -104,8 +104,8 @@ public final class AgilitySpeedManager {
      * Smoothly transitions the player's speed multiplier from its current value to {@code targetMultiplier} using
      * fixed-delay ticks scheduled on the server executor.
      * <p>
-     * Any previously scheduled ramp for this player is cancelled before the new one starts. The ramp task cancels
-     * itself once the target is reached.
+     * Any previously scheduled ramp for this player is canceled before the new one starts. The ramp task cancels itself
+     * once the target is reached.
      *
      * @param playerId         the UUID of the player whose speed is being ramped
      * @param targetMultiplier the desired speed multiplier to reach
