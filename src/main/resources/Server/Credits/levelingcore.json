@@ -1,0 +1,11 @@
+{
+  "Plugin": "com.azuredoom:LevelingCore",
+  "Description": {
+    "MessageId": "levelingcore.levelingcore.description",
+    "RawText": "A modern, flexible leveling system for Hytale."
+  },
+  "License": {
+    "MessageId": "levelingcore.levelingcore.license",
+    "RawText": "LevelingCore is licensed under MIT."
+  }
+}

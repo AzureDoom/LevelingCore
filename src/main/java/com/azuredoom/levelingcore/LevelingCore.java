@@ -1,5 +1,6 @@
 package com.azuredoom.levelingcore;
 
+import com.creditor.Creditor;
 import com.hypixel.hytale.common.plugin.PluginIdentifier;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.HytaleServer;
@@ -168,6 +169,9 @@ public class LevelingCore extends JavaPlugin {
         if (PluginManager.get().getPlugin(new PluginIdentifier("PlaceholderLib", "PlaceholderLib")) != null) {
             PlaceholderLibCompat.register();
         }
+        if (PluginManager.get().getPlugin(new PluginIdentifier("com.creditor", "Creditor")) != null) {
+            Creditor.start(this);
+        }
     }
 
     /**
@@ -290,6 +294,9 @@ public class LevelingCore extends JavaPlugin {
         }
         if (config.get().isHStatsEnabled())
             new HStats("937eca15-2942-44cd-b6a8-650afd1d1b39", "1.1.2", LOGGER);
+        if (PluginManager.get().getPlugin(new PluginIdentifier("com.creditor", "Creditor")) != null) {
+            Creditor.setup(this);
+        }
     }
 
     /**
