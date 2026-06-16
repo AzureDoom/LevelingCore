@@ -34,6 +34,8 @@ public class LevelingCoreConfig {
 
         public Linear linear = new Linear();
 
+        public Polynomial polynomial = new Polynomial();
+
         public Table table = new Table();
 
         public Custom custom = new Custom();
@@ -51,6 +53,22 @@ public class LevelingCoreConfig {
     public static class Linear {
 
         public long xpPerLevel = 100;
+
+        public int maxLevel = 100000;
+    }
+
+    public static class Polynomial {
+
+        /**
+         * Polynomial coefficients ordered from degree 0 to degree N. The XP required for a given level is computed as:
+         *
+         * <pre>
+         * xp = sum(coefficients[i] * (level - 1) ^ i)
+         * </pre>
+         *
+         * Defaults to a basic quadratic curve: {@code 100 * (level - 1)^2}.
+         */
+        public double[] coefficients = { 0.0, 0.0, 100.0 };
 
         public int maxLevel = 100000;
     }

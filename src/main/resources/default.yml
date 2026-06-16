@@ -37,6 +37,7 @@ database:
 # Supported types:
 #   - EXPONENTIAL: XP floor at level L is baseXp * (L - 1) ^ exponent
 #   - LINEAR:      XP floor at level L is xpPerLevel * (L - 1)
+#   - POLYNOMIAL:  XP floor at level L is sum(coefficients[i] * (L - 1)^i)
 #   - TABLE:       XP floor at level L is defined in a CSV file
 #   - CUSTOM:      XP floor at level L is defined by a math expression
 #
@@ -54,6 +55,13 @@ formula:
     maxLevel: 100000
   linear:
     xpPerLevel: 100
+    # Maximum level supported by this formula
+    maxLevel: 100000
+  polynomial:
+    # Coefficients ordered from degree 0 to degree N.
+    # coefficients[i] contributes coefficients[i] * (level - 1)^i to the XP threshold.
+    # Default: 100.0 * (level - 1)^2
+    coefficients: [0.0, 0.0, 100.0]
     # Maximum level supported by this formula
     maxLevel: 100000
   table:

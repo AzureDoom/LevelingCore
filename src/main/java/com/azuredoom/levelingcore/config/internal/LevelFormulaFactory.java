@@ -8,10 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.azuredoom.levelingcore.exceptions.LevelingCoreException;
-import com.azuredoom.levelingcore.level.formulas.CustomExpressionLevelFormula;
-import com.azuredoom.levelingcore.level.formulas.ExponentialLevelFormula;
-import com.azuredoom.levelingcore.level.formulas.LevelFormula;
-import com.azuredoom.levelingcore.level.formulas.LinearLevelFormula;
+import com.azuredoom.levelingcore.level.formulas.*;
 import com.azuredoom.levelingcore.level.formulas.loader.LevelTableLoader;
 
 /**
@@ -33,8 +30,8 @@ public final class LevelFormulaFactory {
      *
      * @param config the configuration object containing the formula type and its associated parameters. Must not be
      *               null and must specify a valid type ("EXPONENTIAL", "LINEAR", "TABLE", or "CUSTOM").
-     * @return an instance of {@link LevelFormula}, either {@link ExponentialLevelFormula} or
-     *         {@link LinearLevelFormula}, depending on the type specified in the configuration.
+     * @return an instance of {@link LevelFormula}, either {@link ExponentialLevelFormula}, {@link LinearLevelFormula}
+     *         or {@link PolynomialLevelFormula}, depending on the type specified in the configuration.
      * @throws LevelingCoreException if the specified formula type is unknown or unsupported.
      */
     public static LevelFormula fromConfig(LevelingCoreConfig config) {
@@ -57,6 +54,11 @@ public final class LevelFormulaFactory {
                 yield new LinearLevelFormula(xpPerLevel, maxLevel);
             }
             case "TABLE" -> LevelTableLoader.loadOrCreateFromDataDir(config.formula.table.file);
+            case "POLYNOMIAL" -> {
+                double[] coefficients = config.formula.polynomial.coefficients;
+                var maxLevel = config.formula.polynomial.maxLevel;
+                yield new PolynomialLevelFormula(coefficients, maxLevel);
+            }
             case "CUSTOM" -> {
                 var expr = config.formula.custom.xpForLevel;
                 var constants = config.formula.custom.constants;
@@ -64,7 +66,8 @@ public final class LevelFormulaFactory {
                 yield new CustomExpressionLevelFormula(expr, constants, maxLevel);
             }
             default -> throw new LevelingCoreException(
-                "Unknown formula.type '" + config.formula.type + "'. Expected EXPONENTIAL or LINEAR."
+                "Unknown formula.type '" + config.formula.type
+                    + "'. Expected EXPONENTIAL, LINEAR, POLYNOMIAL, TABLE, or CUSTOM."
             );
         };
     }
@@ -89,6 +92,18 @@ public final class LevelFormulaFactory {
                 "LINEAR",
                 "xpPerLevel=" + cfg.formula.linear.xpPerLevel
             );
+            case "POLYNOMIAL" -> {
+                var coeffsB64 = b64(
+                    java.util.Arrays.stream(cfg.formula.polynomial.coefficients)
+                        .mapToObj(Double::toString)
+                        .collect(Collectors.joining(","))
+                );
+                var maxLevel = cfg.formula.polynomial.maxLevel;
+                yield new FormulaDescriptor(
+                    "POLYNOMIAL",
+                    "coeffsB64=" + coeffsB64 + ";maxLevel=" + maxLevel
+                );
+            }
             case "TABLE" -> new FormulaDescriptor(
                 "TABLE",
                 "file=" + cfg.formula.table.file
@@ -139,6 +154,15 @@ public final class LevelFormulaFactory {
                 Long.parseLong(map.getOrDefault("xpPerLevel", "100")),
                 Integer.parseInt(map.getOrDefault("maxLevel", "100000"))
             );
+            case "POLYNOMIAL" -> {
+                var coeffs = java.util.Arrays.stream(
+                    unb64(map.getOrDefault("coeffsB64", b64("0.0,0.0,100.0"))).split(",")
+                )
+                    .mapToDouble(Double::parseDouble)
+                    .toArray();
+                var maxLevel = Integer.parseInt(map.getOrDefault("maxLevel", "100000"));
+                yield new PolynomialLevelFormula(coeffs, maxLevel);
+            }
             case "TABLE" -> {
                 var file = map.getOrDefault("file", "levels.csv");
                 yield LevelTableLoader.loadOrCreateFromDataDir(file);
