@@ -31,12 +31,12 @@ public class SetStatsCommand extends AbstractAsyncCommand {
         // this.requirePermission("levelingcore.addstats");
         this.playerArg = this.withRequiredArg(
             "player",
-            "Player to add stats to.",
+            "Player whom's stats to modify.",
             ArgTypes.PLAYER_REF
         );
         this.statArg = this.withRequiredArg(
             "stat",
-            "Stat to add to (str, agi, per, vit, int, con).",
+            "Stat to modify (str, agi, per, vit, int, con).",
             StatTypeArgumentType.INSTANCE
         );
         this.valueArg = this.withRequiredArg(
@@ -63,55 +63,49 @@ public class SetStatsCommand extends AbstractAsyncCommand {
 
         switch (statType) {
             case STR -> {
-                var current = levelService.getStr(playerUUID);
-                levelService.setStr(playerUUID, current + value);
+                levelService.setStr(playerUUID, value);
                 commandContext.sendMessage(
-                    CommandLang.ADD_STATS.param("stat", "strength")
+                    CommandLang.SET_STATS.param("stat", "strength")
                         .param("value", value)
                         .param("player", playerRef.getUsername())
                 );
             }
             case AGI -> {
-                var current = levelService.getAgi(playerUUID);
-                levelService.setAgi(playerUUID, current + value);
+                levelService.setAgi(playerUUID, value);
                 commandContext.sendMessage(
-                    CommandLang.ADD_STATS.param("stat", "agility")
+                    CommandLang.SET_STATS.param("stat", "agility")
                         .param("value", value)
                         .param("player", playerRef.getUsername())
                 );
             }
             case PER -> {
-                var current = levelService.getPer(playerUUID);
-                levelService.setPer(playerUUID, current + value);
+                levelService.setPer(playerUUID, value);
                 commandContext.sendMessage(
-                    CommandLang.ADD_STATS.param("stat", "perception")
+                    CommandLang.SET_STATS.param("stat", "perception")
                         .param("value", value)
                         .param("player", playerRef.getUsername())
                 );
             }
             case VIT -> {
-                var current = levelService.getVit(playerUUID);
-                levelService.setVit(playerUUID, current + value);
+                levelService.setVit(playerUUID, value);
                 commandContext.sendMessage(
-                    CommandLang.ADD_STATS.param("stat", "vitality")
+                    CommandLang.SET_STATS.param("stat", "vitality")
                         .param("value", value)
                         .param("player", playerRef.getUsername())
                 );
             }
             case INT -> {
-                var current = levelService.getInt(playerUUID);
-                levelService.setInt(playerUUID, current + value);
+                levelService.setInt(playerUUID, value);
                 commandContext.sendMessage(
-                    CommandLang.ADD_STATS.param("stat", "intelligence")
+                    CommandLang.SET_STATS.param("stat", "intelligence")
                         .param("value", value)
                         .param("player", playerRef.getUsername())
                 );
             }
             case CON -> {
-                var current = levelService.getCon(playerUUID);
-                levelService.setCon(playerUUID, current + value);
+                levelService.setCon(playerUUID, value);
                 commandContext.sendMessage(
-                    CommandLang.ADD_STATS.param("stat", "constitution")
+                    CommandLang.SET_STATS.param("stat", "constitution")
                         .param("value", value)
                         .param("player", playerRef.getUsername())
                 );
