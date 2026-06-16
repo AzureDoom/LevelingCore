@@ -16,6 +16,7 @@ import com.azuredoom.levelingcore.utils.LevelingUtil;
  * calculate levels and XP for individual players. It also supports notifying listeners for level-up, level-down, XP
  * gain, and XP loss events.
  */
+@SuppressWarnings("unused")
 public class LevelServiceImpl {
 
     private final LevelFormula formula;

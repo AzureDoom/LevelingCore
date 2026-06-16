@@ -11,6 +11,7 @@ package com.azuredoom.levelingcore.level.itemlevellock;
  * @param intelligence
  * @param con          constitution
  */
+@SuppressWarnings("unused")
 public record ItemStatRequirement(
     int str,
     int agi,

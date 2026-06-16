@@ -351,6 +351,7 @@ public class LevelingCore extends JavaPlugin {
         return config;
     }
 
+    @SuppressWarnings("unused")
     public static MobEncounterProfileResolver getMobEncounterProfileResolver() {
         return mobEncounterProfileResolver;
     }
