@@ -70,7 +70,9 @@ public class ExponentialLevelFormula implements LevelFormula {
     }
 
     /**
-     * Determines the level corresponding to the given number of experience points (XP) using an exponential formula.
+     * Determines the level corresponding to the given number of experience points (XP) using a binary search over the
+     * exponential curve. Returns the highest level whose XP threshold does not exceed {@code xp}, capped at
+     * {@code maxLevel} and floored at 1.
      *
      * @param xp The total experience points for which the corresponding level is to be determined. Must be
      *           non-negative.
@@ -83,24 +85,22 @@ public class ExponentialLevelFormula implements LevelFormula {
             throw new IllegalArgumentException("xp must be >= 0");
         }
 
-        double estimate = Math.pow(xp / baseXp, 1.0 / exponent);
-        int level;
-
-        if (!Double.isFinite(estimate) || estimate >= maxLevel) {
-            level = maxLevel;
-        } else if (estimate < 1.0) {
-            level = 1;
-        } else {
-            level = (int) Math.floor(estimate);
+        if (getXpForLevel(maxLevel) <= xp) {
+            return maxLevel;
         }
 
-        while (getXpForLevel(level + 1) <= xp) {
-            level++;
-        }
-        while (level > 1 && getXpForLevel(level) > xp) {
-            level--;
+        var lo = 1;
+        var hi = maxLevel;
+
+        while (lo < hi - 1) {
+            var mid = lo + (hi - lo) / 2;
+            if (getXpForLevel(mid) <= xp) {
+                lo = mid;
+            } else {
+                hi = mid;
+            }
         }
 
-        return Math.max(level, 1);
+        return Math.max(lo, 1);
     }
 }
