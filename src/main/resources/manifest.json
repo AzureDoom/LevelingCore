@@ -5,7 +5,9 @@
     "Description": "A modern, flexible leveling system for Hytale",
     "Authors": [
         {
-            "Name": "AzureDoom"
+            "Name": "AzureDoom",
+            "Email": "azuredoom@azuredoom.com",
+            "Url": "azuredoom.com"
         }
     ],
     "Website": "https://modtale.net/mod/levelingcore",
