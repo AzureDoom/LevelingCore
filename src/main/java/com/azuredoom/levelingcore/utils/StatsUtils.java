@@ -1,5 +1,6 @@
 package com.azuredoom.levelingcore.utils;
 
+import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
 import com.hypixel.hytale.server.core.entity.entities.Player;
 import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
@@ -11,7 +12,11 @@ import com.hypixel.hytale.server.core.util.Config;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
+import java.util.UUID;
+
+import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.config.GUIConfig;
+import com.azuredoom.levelingcore.level.LevelServiceImpl;
 
 /**
  * Utility class for handling player statistics operations such as modifying health, stamina, and mana. Provides methods
@@ -181,5 +186,58 @@ public class StatsUtils {
         if (value >= 500_000)
             return String.format("%.2fk", value / 1_000);
         return String.format("%.0f", value);
+    }
+
+    public static void applyStatModifiers(
+        UUID uuid,
+        Store<EntityStore> store,
+        Ref<EntityStore> ref,
+        LevelServiceImpl levelService
+    ) {
+        var playerStatMap = store.ensureAndGetComponent(ref, EntityStatMap.getComponentType());
+
+        playerStatMap.putModifier(
+            DefaultEntityStatTypes.getHealth(),
+            "LevelingCore_health_stat",
+            new StaticModifier(
+                Modifier.ModifierTarget.MAX,
+                StaticModifier.CalculationType.ADDITIVE,
+                levelService.getVit(uuid) * LevelingCore.getConfig().get().getVitStatMultiplier()
+            )
+        );
+
+        playerStatMap.putModifier(
+            DefaultEntityStatTypes.getStamina(),
+            "LevelingCore_stamina_stat",
+            new StaticModifier(
+                Modifier.ModifierTarget.MAX,
+                StaticModifier.CalculationType.ADDITIVE,
+                levelService.getAgi(uuid) * LevelingCore.getConfig().get().getAgiStatMultiplier()
+            )
+        );
+
+        playerStatMap.putModifier(
+            DefaultEntityStatTypes.getOxygen(),
+            "LevelingCore_oxygen_stat",
+            new StaticModifier(
+                Modifier.ModifierTarget.MAX,
+                StaticModifier.CalculationType.ADDITIVE,
+                levelService.getAgi(uuid) * LevelingCore.getConfig().get().getAgiStatMultiplier()
+            )
+        );
+
+        playerStatMap.putModifier(
+            DefaultEntityStatTypes.getMana(),
+            "LevelingCore_mana_stat",
+            new StaticModifier(
+                Modifier.ModifierTarget.MAX,
+                StaticModifier.CalculationType.ADDITIVE,
+                levelService.getInt(uuid) * LevelingCore.getConfig().get().getIntStatMultiplier()
+            )
+        );
+
+        playerStatMap.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getHealth());
+        playerStatMap.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getStamina());
+        playerStatMap.maximizeStatValue(EntityStatMap.Predictable.SELF, DefaultEntityStatTypes.getMana());
     }
 }

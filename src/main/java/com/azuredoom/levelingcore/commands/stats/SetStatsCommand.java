@@ -1,5 +1,6 @@
 package com.azuredoom.levelingcore.commands.stats;
 
+import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
 import com.hypixel.hytale.server.core.command.system.arguments.types.ArgTypes;
@@ -14,6 +15,8 @@ import com.azuredoom.levelingcore.LevelingCore;
 import com.azuredoom.levelingcore.lang.CommandLang;
 import com.azuredoom.levelingcore.level.stats.StatType;
 import com.azuredoom.levelingcore.level.stats.StatTypeArgumentType;
+import com.azuredoom.levelingcore.utils.LevelingPlayerContextManager;
+import com.azuredoom.levelingcore.utils.StatsUtils;
 
 public class SetStatsCommand extends AbstractAsyncCommand {
 
@@ -61,57 +64,46 @@ public class SetStatsCommand extends AbstractAsyncCommand {
         var value = this.valueArg.get(commandContext);
         var playerUUID = playerRef.getUuid();
 
-        switch (statType) {
-            case STR -> {
-                levelService.setStr(playerUUID, value);
-                commandContext.sendMessage(
-                    CommandLang.SET_STATS.param("stat", "strength")
-                        .param("value", value)
-                        .param("player", playerRef.getUsername())
-                );
-            }
-            case AGI -> {
-                levelService.setAgi(playerUUID, value);
-                commandContext.sendMessage(
-                    CommandLang.SET_STATS.param("stat", "agility")
-                        .param("value", value)
-                        .param("player", playerRef.getUsername())
-                );
-            }
-            case PER -> {
-                levelService.setPer(playerUUID, value);
-                commandContext.sendMessage(
-                    CommandLang.SET_STATS.param("stat", "perception")
-                        .param("value", value)
-                        .param("player", playerRef.getUsername())
-                );
-            }
-            case VIT -> {
-                levelService.setVit(playerUUID, value);
-                commandContext.sendMessage(
-                    CommandLang.SET_STATS.param("stat", "vitality")
-                        .param("value", value)
-                        .param("player", playerRef.getUsername())
-                );
-            }
-            case INT -> {
-                levelService.setInt(playerUUID, value);
-                commandContext.sendMessage(
-                    CommandLang.SET_STATS.param("stat", "intelligence")
-                        .param("value", value)
-                        .param("player", playerRef.getUsername())
-                );
-            }
-            case CON -> {
-                levelService.setCon(playerUUID, value);
-                commandContext.sendMessage(
-                    CommandLang.SET_STATS.param("stat", "constitution")
-                        .param("value", value)
-                        .param("player", playerRef.getUsername())
-                );
-            }
+        var context = LevelingPlayerContextManager.getContext(playerUUID);
+
+        if (context == null || context.entityRef() == null || !context.entityRef().isValid()) {
+            return CompletableFuture.completedFuture(null);
         }
 
-        return CompletableFuture.completedFuture(null);
+        var future = new CompletableFuture<Void>();
+
+        context.world().execute(() -> {
+            try {
+                switch (statType) {
+                    case STR -> levelService.setStr(playerUUID, value);
+                    case AGI -> levelService.setAgi(playerUUID, value);
+                    case PER -> levelService.setPer(playerUUID, value);
+                    case VIT -> levelService.setVit(playerUUID, value);
+                    case INT -> levelService.setInt(playerUUID, value);
+                    case CON -> levelService.setCon(playerUUID, value);
+                }
+
+                var pRef = playerRef.getReference();
+                if (pRef != null) {
+                    StatsUtils.applyStatModifiers(playerUUID, pRef.getStore(), pRef, levelService);
+                }
+
+                var statName = statType.name().toLowerCase();
+                commandContext.sendMessage(
+                    CommandLang.SET_STATS.param("stat", statName)
+                        .param("value", value)
+                        .param("player", playerRef.getUsername())
+                );
+            } catch (Exception e) {
+                LevelingCore.LOGGER.atWarning()
+                    .withCause(e)
+                    .log("Failed to set stats for player {}", playerUUID);
+                commandContext.sendMessage(Message.raw("Failed to update stats. Check the server log."));
+            } finally {
+                future.complete(null);
+            }
+        });
+
+        return future;
     }
 }
