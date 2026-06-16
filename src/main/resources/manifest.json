@@ -1,7 +1,7 @@
 {
     "Group": "com.azuredoom",
     "Name": "levelingcore",
-    "Version": "1.1.1",
+    "Version": "1.1.2",
     "Description": "A modern, flexible leveling system for Hytale",
     "Authors": [
         {
