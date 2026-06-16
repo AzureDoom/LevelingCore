@@ -27,7 +27,9 @@
         "org.herolias:DynamicTooltipsLib": "*",
         "IwakuraEnterprises:Voile": "*",
         "Cedeli:EliteMobs": "*",
-        "Frotty27:RPGMobs": "*"
+        "Frotty27:RPGMobs": "*",
+        "com.creditor:Creditor": "*",
+        "Riprod:Hexcode": "*"
     },
     "DisabledByDefault": false,
     "Main": "com.azuredoom.levelingcore.LevelingCore",
