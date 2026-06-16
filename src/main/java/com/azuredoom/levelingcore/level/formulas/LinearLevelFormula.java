@@ -53,7 +53,7 @@ public class LinearLevelFormula implements LevelFormula {
 
         long value = xpPerLevel * (long) (level - 1);
 
-        if (value < 0 || value >= Long.MAX_VALUE) {
+        if (value < 0 || value == Long.MAX_VALUE) {
             return Long.MAX_VALUE;
         }
 
