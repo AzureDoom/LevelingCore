@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
  */
 public class GUIConfig {
 
+    @SuppressWarnings("unused")
     public static final BuilderCodec<GUIConfig> CODEC = BuilderCodec.builder(GUIConfig.class, GUIConfig::new)
         .append(
             new KeyedCodec<>("EnableXPLossOnDeath", Codec.BOOLEAN),
@@ -501,6 +502,12 @@ public class GUIConfig {
             (exConfig, extraInfo) -> exConfig.enableHStats
         )
         .add()
+        .append(
+            new KeyedCodec<>("DisableLevelPenalty", Codec.BOOLEAN),
+            (exConfig, aBoolean, extraInfo) -> exConfig.disableLevelPenalty = aBoolean,
+            (exConfig, extraInfo) -> exConfig.disableLevelPenalty
+        )
+        .add()
         .build();
 
     private boolean enableXPLossOnDeath = false;
@@ -836,6 +843,8 @@ public class GUIConfig {
         "Spectre_Void" };
 
     private boolean enableHStats = false;
+
+    private boolean disableLevelPenalty = false;
 
     public GUIConfig() {}
 
@@ -1295,6 +1304,7 @@ public class GUIConfig {
      *
      * @return an array of blacklisted mob IDs
      */
+    @SuppressWarnings("unused")
     public String[] getBlacklistedMobs() {
         return blacklistedMobs;
     }
@@ -1323,6 +1333,7 @@ public class GUIConfig {
      *
      * @return An array of strings containing the names of blacklisted mobs.
      */
+    @SuppressWarnings("unused")
     public String[] getBlacklistedNameplateMobs() {
         return blacklistedNameplateMobs;
     }
@@ -1507,6 +1518,10 @@ public class GUIConfig {
 
     public boolean isHStatsEnabled() {
         return enableHStats;
+    }
+
+    public boolean isLevelPenaltyDisabled() {
+        return disableLevelPenalty;
     }
 
     /**

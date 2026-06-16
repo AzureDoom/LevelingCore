@@ -129,17 +129,20 @@ public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
                 var levelService = LevelingCore.getLevelService();
                 store.getExternalData().getWorld().execute(() -> {
                     var levelBefore = levelService.getLevel(playerUUID);
+                    var penalizedXp = applyLevelPenalty(xpAmount, levelBefore, mobLevel.level);
+                    if (penalizedXp <= 0)
+                        return;
                     if (
                         PluginManager.get()
                             .getPlugin(new PluginIdentifier("tsumori", "partypro")) != null
                     ) {
-                        PartyProCompat.onXPGain(xpAmount, playerUUID, levelService, config, playerRefComponent);
+                        PartyProCompat.onXPGain(penalizedXp, playerUUID, levelService, config, playerRefComponent);
                     } else if (
                         PluginManager.get()
                             .getPlugin(new PluginIdentifier("com.carsonk", "Party Plugin")) != null
                     ) {
                         PartyPluginCompat.onXPGain(
-                            xpAmount,
+                            penalizedXp,
                             playerUUID,
                             levelService,
                             config,
@@ -154,9 +157,9 @@ public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
                         )
                             NotificationsUtil.sendXPGainNotification(
                                 playerRefComponent,
-                                xpAmount
+                                penalizedXp
                             );
-                        levelService.addXp(playerUUID, xpAmount);
+                        levelService.addXp(playerUUID, penalizedXp);
                         XPBarHud.updateHud(playerRefComponent);
                     }
                     LevelingCore.mobLevelRegistry.remove(entityUuid);
@@ -169,5 +172,52 @@ public class GainXPEventSystem extends DeathSystems.OnDeathSystem {
                 });
             }
         }
+    }
+
+    /**
+     * Applies a level-difference XP penalty based on the gap between the player's level and the mob's level.
+     * <p>
+     * The multiplier is determined by {@code diff = mobLevel - playerLevel}:
+     * <ul>
+     * <li>-5 to +10 → 100%</li>
+     * <li>-6 to -10 → 80%</li>
+     * <li>-11 to -15 → 60%</li>
+     * <li>-16 to -20 → 20%</li>
+     * <li>below -20 → 10%</li>
+     * <li>+11 to +15 → 80%</li>
+     * <li>+16 to +20 → 20%</li>
+     * <li>above +20 → 10%</li>
+     * </ul>
+     *
+     * @param xp          the base XP amount before penalty
+     * @param playerLevel the current level of the player
+     * @param mobLevel    the level of the defeated mob
+     * @return the penalized XP amount, always non-negative
+     */
+    private static long applyLevelPenalty(long xp, int playerLevel, int mobLevel) {
+        if (LevelingCore.getConfig().get().isLevelPenaltyDisabled()) {
+            return xp;
+        }
+
+        var diff = mobLevel - playerLevel;
+        double multiplier;
+        if (diff >= -5 && diff <= 10) {
+            multiplier = 1.0;
+        } else if (diff > 10 && diff <= 15) {
+            multiplier = 0.8;
+        } else if (diff > 15 && diff <= 20) {
+            multiplier = 0.2;
+        } else if (diff > 20) {
+            multiplier = 0.1;
+        } else if (diff >= -10) {
+            multiplier = 0.8;
+        } else if (diff >= -15) {
+            multiplier = 0.6;
+        } else if (diff >= -20) {
+            multiplier = 0.2;
+        } else {
+            multiplier = 0.1;
+        }
+        return Math.max(0, Math.round(xp * multiplier));
     }
 }
