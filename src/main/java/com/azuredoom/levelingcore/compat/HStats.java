@@ -1,5 +1,6 @@
 package com.azuredoom.levelingcore.compat;
 
+import com.azuredoom.levelingcore.LevelingCore;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.universe.Universe;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.StringJoiner;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 public class HStats {
 
@@ -36,7 +38,7 @@ public class HStats {
 
         this.serverUUID = getServerUUID();
         if (this.serverUUID == null) {
-            System.out.println("[HStats] Metrics are disabled on this server.");
+            LevelingCore.LOGGER.at(Level.INFO).log("[HStats] Metrics are disabled on this server.");
             return;
         }
 
