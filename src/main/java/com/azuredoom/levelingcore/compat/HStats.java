@@ -1,6 +1,5 @@
 package com.azuredoom.levelingcore.compat;
 
-import com.azuredoom.levelingcore.LevelingCore;
 import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.HytaleServer;
 import com.hypixel.hytale.server.core.universe.Universe;
@@ -18,6 +17,8 @@ import java.util.StringJoiner;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
+
+import com.azuredoom.levelingcore.LevelingCore;
 
 public class HStats {
 
