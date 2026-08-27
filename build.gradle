@@ -58,7 +58,7 @@ hytaleTools {
 
 dependencies {
     compileOnly 'curse.maven:partyinfo-1429469:7526614'
-    vineImplementation 'curse.maven:partypro-1438292:8175016'
+    compileOnly 'curse.maven:partypro-1438292:8175016'
     compileOnly 'curse.maven:hyui-1431415:8151837'
     compileOnly 'curse.maven:placeholderlib-1438208:7540696'
     compileOnly 'at.helpch:placeholderapi-hytale:1.0.8'
@@ -67,8 +67,8 @@ dependencies {
     compileOnly 'curse.maven:endgame-1431338:8256626'
     compileOnly 'curse.maven:rpgmobs-1444529:7870536'
     compileOnly 'curse.maven:elite-1441945:7566545'
-    vineImplementation 'curse.maven:creditor-1560961:8195970'
-    vineCompileOnly 'curse.maven:hexcode-1448311:8240695'
+    compileOnly 'curse.maven:creditor-1560961:8195970'
+    compileOnly 'curse.maven:hexcode-1448311:8240695'
     //vineImplementation 'modtale:3e453e84-81af-46bf-9e7d-c7de99d9c4f0:0.1.0-alpha@jar'
 
     shadowBundle 'com.h2database:h2:2.4.240'
