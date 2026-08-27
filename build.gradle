@@ -94,6 +94,10 @@ spotless {
     }
 }
 
+tasks.named('jar', Jar) {
+    enabled = false
+}
+
 shadowJar {
     archiveClassifier.set('')
     mergeServiceFiles()
@@ -117,46 +121,6 @@ shadowJar {
 
 tasks.build {
     dependsOn("spotlessApply", "shadowJar")
-}
-
-publishing {
-    repositories {
-        maven {
-            name = project.mod_id
-            url = project.maven_url
-            credentials(PasswordCredentials)
-            authentication {
-                basic(BasicAuthentication)
-            }
-        }
-        maven {
-            name = "hmod"
-            url = project.hmod_maven_url
-            credentials {
-                username = project.findProperty("moddingMavenUsername")
-                password = project.findProperty("moddingMavenPassword")
-            }
-            authentication {
-                basic(BasicAuthentication)
-            }
-        }
-    }
-    publications {
-        maven(MavenPublication) {
-            artifactId = base.archivesName.get()
-
-            artifact(tasks.shadowJar)
-            artifact(tasks.sourcesJar)
-            artifact(tasks.javadocJar)
-            pom.withXml {
-                asNode().dependencies.dependency.each { dep ->
-                    if (dep.groupId.text() == 'com.buuz135' || dep.groupId.text() == 'curse.maven') {
-                        dep.parent().remove(dep)
-                    }
-                }
-            }
-        }
-    }
 }
 
 idea {
@@ -217,5 +181,15 @@ hytalePublisher {
         description = project.mod_description
         categories = ["plugins", "mods", "release"]
         hasNsfwContent = false
+    }
+
+    maven {
+        enabled = true
+        url = project.maven_url
+        usernameProp = "azuremavenUsername"
+        passwordProp = "azuremavenPassword"
+        publicationName = "azuremaven"
+        artifactId = base.archivesName.get()
+        jarTaskName = "shadowJar"
     }
 }
