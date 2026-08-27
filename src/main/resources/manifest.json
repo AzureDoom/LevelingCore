@@ -1,7 +1,7 @@
 {
     "Group": "com.azuredoom",
     "Name": "levelingcore",
-    "Version": "1.1.2",
+    "Version": "1.1.3",
     "Description": "A modern, flexible leveling system for Hytale",
     "Authors": [
         {
@@ -11,7 +11,7 @@
         }
     ],
     "Website": "https://modtale.net/mod/levelingcore",
-    "ServerVersion": ">=0.5.0 <0.6.0",
+    "ServerVersion": ">=0.6.0 <0.7.0",
     "Dependencies": {
         "Hytale:EntityModule": "*",
         "Hytale:InteractionModule": "*",
