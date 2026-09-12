@@ -29,7 +29,8 @@
         "Cedeli:EliteMobs": "*",
         "Frotty27:RPGMobs": "*",
         "com.creditor:Creditor": "*",
-        "Riprod:Hexcode": "*"
+        "Riprod:Hexcode": "*",
+        "Alechilles:Beacon": "*"
     },
     "DisabledByDefault": false,
     "Main": "com.azuredoom.levelingcore.LevelingCore",

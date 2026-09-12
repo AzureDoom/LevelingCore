@@ -69,6 +69,7 @@ dependencies {
     compileOnly 'curse.maven:elite-1441945:7566545'
     compileOnly 'curse.maven:creditor-1560961:8195970'
     compileOnly 'curse.maven:hexcode-1448311:8240695'
+    vineImplementation 'curse.maven:beacon-1520383:8790104'
     //vineImplementation 'modtale:3e453e84-81af-46bf-9e7d-c7de99d9c4f0:0.1.0-alpha@jar'
 
     shadowBundle 'com.h2database:h2:2.4.240'
@@ -144,6 +145,7 @@ hytalePublisher {
         optional "9e3f3c46-92e1-4f57-8702-4ec11d7d10b4", "1.10.2"
         optional "2ebf130e-2189-4e90-9323-803a374d05ce", "1.5.2"
         optional "9edc380c-42f2-4a78-ad80-dc7a399a7699", "0.8.6-Beta"
+        optional "c0e9d87b-e72e-4b39-bb3b-cb67c23ec8be", "0.6.0"
     }
 
     curseforge {
@@ -163,6 +165,7 @@ hytalePublisher {
         optional "classescore"
         optional "creditor"
         optional "hexcode"
+        optional "beacon"
     }
 
     modifold {
@@ -171,6 +174,7 @@ hytalePublisher {
 
         optional "classescore"
         optional "hexcode"
+        optional "beacon"
     }
 
     thunderstore {
