@@ -1,3 +1,3 @@
-v1.1.3
+v1.1.4
 
-- Built for 0.6.+
+- Adds optional beacon support for reporting
