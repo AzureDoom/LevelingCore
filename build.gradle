@@ -54,6 +54,7 @@ hytaleTools {
     requireDcevm = true
     useHotswapAgent = true
     hotswapAgentPath = '/mnt/4C56E67556E65EE8/HyTale Mods/hotswap-agent-2.0.3.jar'
+    generateAssetsBinary = false
 }
 
 dependencies {
