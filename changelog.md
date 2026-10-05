@@ -1,3 +1,3 @@
-v1.1.4
+v1.1.5
 
-- Adds optional beacon support for reporting
+- Fixes class loading issue when Creditor is not installed.
