@@ -2,7 +2,6 @@ package com.azuredoom.levelingcore.utils;
 
 import com.hypixel.hytale.component.CommandBuffer;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.server.core.asset.type.environment.config.Environment;
 import com.hypixel.hytale.server.core.entity.UUIDComponent;
 import com.hypixel.hytale.server.core.entity.entities.Player;
@@ -11,6 +10,7 @@ import com.hypixel.hytale.server.core.modules.entitystats.EntityStatMap;
 import com.hypixel.hytale.server.core.modules.entitystats.asset.DefaultEntityStatTypes;
 import com.hypixel.hytale.server.core.modules.entitystats.modifier.Modifier;
 import com.hypixel.hytale.server.core.modules.entitystats.modifier.StaticModifier;
+import com.hypixel.hytale.server.core.universe.world.chunk.section.EnvironmentSection;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.Config;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
@@ -281,21 +281,35 @@ public final class MobLevelingUtil {
     ) {
         var world = store.getExternalData().getWorld();
         var mobPos = transform.getPosition();
-        var chunk = world.getChunkIfInMemory(ChunkUtil.indexChunkFromBlock((int) mobPos.x, (int) mobPos.z));
+        var chunkStore = world.getChunkStore();
 
-        if (chunk == null) {
+        int x = (int) Math.floor(mobPos.x);
+        int y = (int) Math.floor(mobPos.y);
+        int z = (int) Math.floor(mobPos.z);
+
+        var sectionRef = chunkStore.getChunkSectionReferenceAtBlock(x, y, z);
+
+        if (sectionRef == null) {
             LevelingCore.LOGGER.atWarning().log("Chunk not in memory; defaulting to 1");
             return 1;
         }
 
-        var blockChunk = chunk.getBlockChunk();
-        if (blockChunk == null) {
-            LevelingCore.LOGGER.atWarning().log("Block chunk not found; defaulting to 1");
+        var environmentSection = chunkStore.getStore()
+            .getComponent(
+                sectionRef,
+                EnvironmentSection.getComponentType()
+            );
+
+        if (environmentSection == null) {
+            LevelingCore.LOGGER.atWarning()
+                .log("Environment section not found; defaulting to 1");
             return 1;
         }
 
-        var envID = blockChunk.getEnvironment(mobPos);
+        int envID = environmentSection.get(x, y, z);
+
         var envAsset = Environment.getAssetMap().getAsset(envID);
+
         if (envAsset == null) {
             LevelingCore.LOGGER.atWarning()
                 .log("Environment id " + envID + " does not exist in asset registry; defaulting to 1");

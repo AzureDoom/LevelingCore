@@ -1,5 +1,6 @@
 package com.azuredoom.levelingcore.commands.xp;
 
+import com.hypixel.hytale.protocol.packets.interface_.EventTitleStyle;
 import com.hypixel.hytale.server.core.Message;
 import com.hypixel.hytale.server.core.command.system.CommandContext;
 import com.hypixel.hytale.server.core.command.system.arguments.system.RequiredArg;
@@ -103,7 +104,7 @@ public class RemoveXpCommand extends AbstractAsyncCommand {
                         playerRef,
                         levelTotalMsg,
                         removedXPMsg,
-                        true
+                        EventTitleStyle.Major
                     );
                 }
 
