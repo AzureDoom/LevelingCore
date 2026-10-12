@@ -1,3 +1,3 @@
-v1.1.5
+v1.2.0
 
-- Fixes class loading issue when Creditor is not installed.
+- Updated for 0.7.x/Chapter 1
